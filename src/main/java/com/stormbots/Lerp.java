@@ -1,6 +1,6 @@
 package com.stormbots;
 
-class Lerp{
+public class Lerp{
 
     private double inMax;
     private double inMin;
@@ -55,7 +55,7 @@ class Lerp{
 	 * named.
 	 */
 	@Deprecated
-	static double map(double x, double in_min, double in_max, double out_min, double out_max) {
+	public static double map(double x, double in_min, double in_max, double out_min, double out_max) {
 		return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 	}
 }
