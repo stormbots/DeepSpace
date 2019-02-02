@@ -14,7 +14,7 @@ class Lerp{
      * @param outputMin 
      * @param outputMax
      */
-    Lerp( double inMin, double inMax, double outputMin, double outputMax) {
+    public Lerp( double inMin, double inMax, double outputMin, double outputMax) {
         this.inMax = inMax;
         this.inMin = inMin;
         this.outputMin = outputMin;

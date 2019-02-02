@@ -10,4 +10,13 @@ public class Clamp{
 		}
 		return x;
 	}
+	public static boolean bounded(double x, double min, double max) {
+		if(x < min) {
+			return false;
+		}
+		if(x > max) {
+			return false;
+		}
+		return true;
+	}
 }
