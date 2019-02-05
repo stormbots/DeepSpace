@@ -43,26 +43,15 @@ public class ArmElevator extends Subsystem {
 	double elevatorVel = 0;
 
 	public ArmElevator() {
-		// bind elevator motors here
-		// old values vvvvvvv
-		double voltageRampRate = 0.2;
-		elevMotor.configOpenloopRamp(voltageRampRate, 30);
 
 	}
 
 	public enum Mode {
-		MANUAL, BUTTON, HOMING, DISABLED //Manual Velocity may not be necessary or wanted
+		MANUAL, CLOSEDLOOP, HOMING, DISABLED //Manual Velocity may not be necessary or wanted
 										
-      }
-      public enum elevMode{
-            MANUAL, BUTTON, HOMING, DISABLED
-      }
-      public enum armMode{
-            MANUAL, BUTTON, HOMING, DISABLED
       }
 
 	private Mode mode = Mode.MANUAL;
-	private boolean homed = false;
 
 	public void setMode(Mode newMode) {
 		mode = newMode;
@@ -71,77 +60,28 @@ public class ArmElevator extends Subsystem {
             return mode;
       }
 
-	public enum ElevatorPosition {
-
-	}
-
-	public enum ArmMode {
-
-	}
-
-	public void reset(TalonSRX motor) {
-		motor.setSelectedSensorPosition(0, 0, 20);
-	}
-
-	void updateElevator() {
-
-            elevCurrentPos = elevMotor.getSelectedSensorPosition(0);
-
-		switch (mode) {
-		case MANUAL:
-                  Clamp.clamp(elevatorPos, eMinPos, eMaxPos);
-                  elevatorVel = FB.fb(elevatorPos, elevCurrentPos, elevatorFB);
-                 
-			break;
-		case BUTTON: //Closed Loop
-
-			break;
-		case HOMING:
-                  if(!elevLimit.get()) {
-                        elevatorVel = 0;
-                  }
-                  else {
-                        elevatorVel = -0.3;
-                  }
-
-                  break;  
-            case DISABLED:
-
-                  break;
-            }
-
-            elevMotor.set(ControlMode.PercentOutput, elevatorVel);
-      }
-
-      void updateArm(){
-
-            armCurrentPos = armMotor.getSelectedSensorPosition(0);
+      void update(){
 
             switch(mode){
                   case MANUAL:
-                        Clamp.clamp(armPos, aMinPos, aMaxPos);
-                        armVel = FB.fb(armPos, armCurrentPos, armFB); //find voltage needed to keep arm level (kf),
-                        //then add kf*cos(x) to output of PID loop, x=0 rad when arm is level
 
                   break;
-                  case BUTTON:
 
+                  case CLOSEDLOOP:
+                        
                   break;
+
                   case HOMING:
-                        if(!armLimit.get()) {
-                              armVel = 0;
-                        }
-                        else {
-                              armVel = -0.3;
-                        }
 
                   break;
+
                   case DISABLED:
 
                   break;
-
             }
+
       }
+
 
 	@Override
 	public void initDefaultCommand() {
