@@ -28,7 +28,7 @@ public class Robot extends TimedRobot {
   public static ExampleSubsystem m_subsystem = new ExampleSubsystem();
   public static OI m_oi;
 
-  public Chassis drive = new Chassis();
+  public static Chassis drive = new Chassis();
 
   Command m_autonomousCommand;
   SendableChooser<Command> m_chooser = new SendableChooser<>();
@@ -69,9 +69,6 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledPeriodic() {
     Scheduler.getInstance().run();
-
-    drive.stop();
-    
   }
 
   /**
@@ -135,8 +132,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void testPeriodic() {
-
-    drive.forwardHalf();
 
   }
 }
