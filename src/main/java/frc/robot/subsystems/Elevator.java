@@ -21,6 +21,7 @@ public class Elevator extends Subsystem {
       // Put methods for controlling this subsystem
       // here. Call these from Commands.
       public TalonSRX elevMotor = new TalonSRX(10);
+      //ublic TalonSRX elevMotor2 = new TalonSRX(11);
       DigitalInput elevLimit = new DigitalInput(0);
 
       double maxPos = 10000; // placeholder
@@ -34,14 +35,16 @@ public class Elevator extends Subsystem {
 
 
       public Elevator(){
+
+            // bind elevator motors here
             reset();
-            double voltageRampRate = 0.2;
+            double voltageRampRate = 0.2; //old values vvvvvv
 		elevMotor.configOpenloopRamp(voltageRampRate, 30);
 
       }
 
       public enum ElevMode {
-		MANUAL, BUTTON, HOMING, DISABLED
+		MANUAL, CLOSEDLOOP, HOMING, DISABLED
 										
       }
       private ElevMode mode = ElevMode.MANUAL;
@@ -67,19 +70,25 @@ public class Elevator extends Subsystem {
 		double ticks() {return this.ticks;};
       }
 
-      public void elevatorUpdate(){
+      public void updateElevator(){
             
             currentPos = elevMotor.getSelectedSensorPosition(0);
 
             switch(mode){
                   case MANUAL:
+                  /*
+                        Clamp.clamp(elevatorPos, minPos, maxPos);
+                        elevatorVel = FB.fb(elevatorPos, currentPos, fbGain);
+                        */
+                  break;
+
+                  case CLOSEDLOOP:
                         Clamp.clamp(elevatorPos, minPos, maxPos);
                         elevatorVel = FB.fb(elevatorPos, currentPos, fbGain);
                   break;
-                  case BUTTON:
 
-                  break;
                   case HOMING:
+
                         if(!elevLimit.get()) {
                               elevatorVel = 0;
                         }
@@ -87,6 +96,7 @@ public class Elevator extends Subsystem {
                               elevatorVel = -0.3;
                         }
                   break;
+
                   case DISABLED:
                   
                   break;

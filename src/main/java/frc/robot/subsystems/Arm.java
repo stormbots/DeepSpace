@@ -52,7 +52,7 @@ public class Arm extends Subsystem {
 
       public ArmMode getMode(){
             return mode;
-      }
+      } 
 
       public void reset() {
             armMotor.setSelectedSensorPosition(0, 0, 20);
