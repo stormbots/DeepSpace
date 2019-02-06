@@ -23,9 +23,12 @@ public class Pixy2 extends Subsystem{
     spi.setSampleDataOnTrailingEdge();
     spi.setChipSelectActiveLow();
 
-    System.out.print("Setting up Pixy Cam ");
-    System.out.println(getVersion());
-
+    // Print some helpful info during bootup
+    System.out.println("Setting up Pixy Cam");
+    System.out.println("  "+getVersion());
+    System.out.println("  "+getResolution());
+    // System.out.println("  "+getFPS());
+    // setLamp(true,false);
   }
 
   public void initDefaultCommand(){
@@ -41,7 +44,7 @@ public class Pixy2 extends Subsystem{
     if(buffer.limit()==buffer.position())buffer.flip(); 
 
     spi.write(buffer, buffer.limit());
-    Timer.delay(0.0001); //wait for Pixy's guaranteed response time
+    Timer.delay(0.0001); //wait for Pixy's 100us guaranteed response time 
     spi.read(true, input, input.remaining());
     return getNextPacket(input);
   }
@@ -76,6 +79,12 @@ public class Pixy2 extends Subsystem{
       packet.length = buffer.get();
       packet.checksum = buffer.getShort();
 
+      //Handle Error Packets
+      if(packet.type == 0x03){
+        // System.err.println("PIXY ERROR: "+buffer.get());
+        continue;
+      }
+      
       //Get Data byte
       if(buffer.remaining()<packet.length){continue;}
       // packet.data.put(buffer.get(packet.length));
@@ -90,6 +99,9 @@ public class Pixy2 extends Subsystem{
       return packet;
     }
     // Only get here when empty, so return a blank packet
+    packet.data.clear();
+    // System.out.println("Packet valid?" + packet.valid);
+    // debugPrintBuffer("P:", packet.data);
     return packet;
   }
 
@@ -180,13 +192,40 @@ public class Pixy2 extends Subsystem{
 
 
     PixyPacket response = syncTransfer(output);
-    if(response.valid == false) return new Line[]{};
+    if(response.valid == false || response.length == 0){
+      // System.err.println("LINE: No data!");
+      return new Line[]{};
+    }
+
 
     Line line = new Line();
-    response.data.get(); //feature type, discard
-    line.featureLength = response.data.get();
-    line.featureData = response.data.get();
+    
+    int feauture_type = response.data.get();
+    int feauture_length = response.data.get();
+    if(feauture_type==0 || feauture_length==0)return new Line[]{};
 
+    debugPrintBuffer("LINE: ", response.data);
+    // LINE: [2..8|40]1.6.[51.22.49.9.159.0.]0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.
+    // Line (0,-97)->(9,0)
+    //note,  resolution is Resolution 79 x 52
+
+    line.x0 = response.data.get();
+    line.y0 = response.data.get();
+    line.x1 = response.data.get();
+    line.y1 = response.data.get();
+    byte index = response.data.get(); //returned line number
+    byte flag = response.data.get(); // Line, or Line with intersection present
+
+    System.out.println(line+" ["+flag+","+index+"] -> ");
+
+    System.out.printf("Relative: (%.2f,%.2f)->(%.2f,%.2f)\n",
+    line.x0/79.0-0.5,
+    1-line.y0/52.0,
+    line.x1/79.0-0.5,
+    1-line.y1/52.0
+    );
+
+    
     return new Line[]{line};
   }
 
@@ -201,7 +240,8 @@ public class Pixy2 extends Subsystem{
 
     for(int i = 0 ; i<cap ; i++){
       if(i==position)System.out.print('[');
-      System.out.printf("%x.",buffer.get());
+      // System.out.printf("%x.",buffer.get()); //byte version
+      System.out.printf("%d.",0xFF&(int)buffer.get()); //unsigned integer
       if(i==limit-1)System.out.print(']');
     }
     buffer.position(position);

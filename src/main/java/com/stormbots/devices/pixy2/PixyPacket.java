@@ -21,12 +21,10 @@ class PixyPacket{
     ByteBuffer data = ByteBuffer.allocate(40).order(ByteOrder.LITTLE_ENDIAN);
 
     public PixyPacket(){
-        this.valid = false;
     }
 
     public boolean validateChecksum(){
         // TODO: Check the checksum
-        this.valid = true;
         return this.valid;
     }
     
