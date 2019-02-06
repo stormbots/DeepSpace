@@ -14,6 +14,8 @@ public class Pixy2 extends Subsystem{
   private short PIXY_SYNC_NOCHECKSUM = (short)0xc1ae;
   private short PIXY_SYNC_CHECKSUM = (short)0xc1af;
 
+  private Resolution resolution;
+
   private SPI spi;
   public Pixy2(SPI.Port port){
     spi = new SPI(port);
@@ -36,6 +38,12 @@ public class Pixy2 extends Subsystem{
 
   @Override
   public void periodic(){
+    // getBlocks(1, 5);
+    // try{ 
+    //   System.out.println(getMainFeatures(0, 1)[0].normalizeCenter().toString());
+    // }catch(Exception e){
+    //   System.out.println("Line: X(");
+    // }
   }
 
   public PixyPacket syncTransfer(ByteBuffer buffer){
@@ -142,6 +150,7 @@ public class Pixy2 extends Subsystem{
     PixyPacket response = syncTransfer(output);
     if(response.valid == false) return new Block[]{};
 
+    //debugPrintBuffer("BLOCKS:", response.data);
     Block block = new Block();
     block.xCenter = (int) response.data.getShort();
     block.yCenter = (int) response.data.getShort();
@@ -174,12 +183,17 @@ public class Pixy2 extends Subsystem{
     output.put((byte)0); // unused but required
 
     PixyPacket response = syncTransfer(output);
+    if(response.valid==false) return new Resolution();
     
-    Resolution resolution = new Resolution();
+    resolution = new Resolution();
     resolution.width = (int) response.data.getShort();
     resolution.height = (int) response.data.getShort();
 
     return resolution;
+  }
+  public Resolution Resolution(){
+    if(resolution!=null) return resolution;
+    return getResolution();
   }
 
   public Line[] getMainFeatures(int featureType, int featureBitmap) {
@@ -197,17 +211,12 @@ public class Pixy2 extends Subsystem{
       return new Line[]{};
     }
 
-
     Line line = new Line();
-    
     int feauture_type = response.data.get();
     int feauture_length = response.data.get();
     if(feauture_type==0 || feauture_length==0)return new Line[]{};
 
-    debugPrintBuffer("LINE: ", response.data);
-    // LINE: [2..8|40]1.6.[51.22.49.9.159.0.]0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.
-    // Line (0,-97)->(9,0)
-    //note,  resolution is Resolution 79 x 52
+    // debugPrintBuffer("LINE: ", response.data);
 
     line.x0 = response.data.get();
     line.y0 = response.data.get();
@@ -215,16 +224,6 @@ public class Pixy2 extends Subsystem{
     line.y1 = response.data.get();
     byte index = response.data.get(); //returned line number
     byte flag = response.data.get(); // Line, or Line with intersection present
-
-    System.out.println(line+" ["+flag+","+index+"] -> ");
-
-    System.out.printf("Relative: (%.2f,%.2f)->(%.2f,%.2f)\n",
-    line.x0/79.0-0.5,
-    1-line.y0/52.0,
-    line.x1/79.0-0.5,
-    1-line.y1/52.0
-    );
-
     
     return new Line[]{line};
   }

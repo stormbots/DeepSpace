@@ -1,8 +1,9 @@
 package com.stormbots.devices.pixy2;
 
 public class Resolution{
-    public int width = 0;
-    public int height = 0;
+    //Just in case, pick a sane default for Block and Line processing
+    public int width = 79;
+    public int height = 52;
 
     public Resolution(){}
 
