@@ -7,19 +7,22 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.revrobotics.CANDigitalInput;
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import static com.stormbots.Clamp.*;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.stormbots.Clamp;
 import com.stormbots.Lerp;
 import com.stormbots.closedloop.FB;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.PIDBase;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * An example subsystem.  You can replace me with your own Subsystem.
@@ -30,8 +33,9 @@ public class Intake extends Subsystem {
 
 
   //Pivot 
-  private CANSparkMax motorPivot = new CANSparkMax(7, MotorType.kBrushless);
-  private CANEncoder encPivot = new CANEncoder(motorPivot);
+  // private CANSparkMax motorPivot = new CANSparkMax(5, MotorType.kBrushless); //origionally port 7
+  // private CANEncoder encPivot = new CANEncoder(motorPivot);
+  private TalonSRX motorPivot = new TalonSRX(5); //origionally port 7
   private DigitalInput limitPivot = new DigitalInput(8);
   //Roller
   private CANSparkMax motorRollers = new CANSparkMax(8, MotorType.kBrushless);
@@ -40,6 +44,7 @@ public class Intake extends Subsystem {
 
 
   double powerPivot = 0;
+  double powerRollers = 0;
   double targetPosition = 0;
 
   double PIVOT_MIN= 15;
@@ -48,10 +53,11 @@ public class Intake extends Subsystem {
   
   public enum Mode {CLOSEDLOOP,MANUAL,HABLIFT,DISABLE};
   private Mode mode = Mode.MANUAL;
-  private Lerp pivotToDegrees = new Lerp(0, 40, 90, 0);
+  private Lerp pivotToDegrees = new Lerp(0, 4096/2, -90, 90);
 
   public Intake() {
     //Enable maybe if required // motorPivot.setInverted(false);
+    motorPivot.setSelectedSensorPosition(0);
   }
 
   
@@ -63,20 +69,27 @@ public class Intake extends Subsystem {
 
   
   public void update(){
+    double kPivotGain = SmartDashboard.getNumber("IntakePivotGain", 0.035);
+    double kPivotFF = SmartDashboard.getNumber("IntakePivotFFGain", 0.2445);
+
+    kPivotFF = 0.2445;
+    kPivotGain = 0.035;
+    targetPosition = 90;
     //setup variables and defaults
     double targetPosition = this.targetPosition;
     double currentPosition = getPosition();  
-    
+
     //Check Soft Limits
     if(mode == Mode.HABLIFT){
       targetPosition = clamp(targetPosition,PIVOT_MIN_HAB,PIVOT_MAX);
     }
     else{
-      targetPosition = clamp(targetPosition,PIVOT_MIN,PIVOT_MAX);
+      //TODO Re-enable targetPosition = clamp(targetPosition,PIVOT_MIN,PIVOT_MAX);
     }
 
 
     //State Machine things!
+    mode = Mode.CLOSEDLOOP;//TODO REMOVE ME
 
     switch(mode){
       case MANUAL:
@@ -85,7 +98,13 @@ public class Intake extends Subsystem {
       case CLOSEDLOOP:
       
         //run feedback function
-        FB.fb(targetPosition, currentPosition, 0.1);
+        //powerPivot = FB.fb(targetPosition, currentPosition, kPivotGain);
+        powerPivot = FB.fb(targetPosition, currentPosition, kPivotGain)
+         + Math.cos(targetPosition*(Math.PI/180.0 ))*kPivotFF;
+         System.out.println("FB: " + FB.fb(targetPosition, currentPosition, kPivotGain));
+         System.out.println("Cos: " +Math.cos(targetPosition*(Math.PI/180.0) )*kPivotFF );
+         System.out.println("Math Cos: " +targetPosition *(Math.PI/180.0) );
+         System.out.println("kPivot: " +kPivotGain);
         break;
       case HABLIFT:
       
@@ -96,14 +115,24 @@ public class Intake extends Subsystem {
       }
    
     //Check physical limits of motion
-    if(powerPivot > 0 && isPivotLimitPressed()){ powerPivot = 0;}
+    // if(powerPivot > 0 && isPivotLimitPressed() ) { powerPivot = 0;}
     if(powerPivot < 0  && currentPosition < PIVOT_MIN) { powerPivot = 0;}
       //normal mode
       //power lift mode
 
     
+
+    powerPivot = Clamp.clamp(powerPivot, -0.3, 0.3);
+
+
+    System.out.println("TARGET: " + targetPosition);
+    System.out.println("DEG: " + currentPosition);    
+    System.out.println("PWR: " + powerPivot);
+
     //set output power
-    motorPivot.set(powerPivot);
+    // motorPivot.set(-powerPivot);
+    motorPivot.set(ControlMode.PercentOutput, -powerPivot);
+    motorRollers.set(powerRollers);
   }
 
 
@@ -121,7 +150,10 @@ public class Intake extends Subsystem {
 
   /** Returns Degrees */
   public double getPosition(){
-    return pivotToDegrees.get(encPivot.getPosition());
+    // return pivotToDegrees.get(encPivot.getPosition());
+
+
+    return pivotToDegrees.get(motorPivot.getSelectedSensorPosition(0));
   }
 
   public boolean isOnTarget(int tolerance){
@@ -135,6 +167,16 @@ public class Intake extends Subsystem {
 
   public boolean isPivotLimitPressed() { 
     return limitPivot.get() == true;
+  }
+
+  public  void stopRollers() {
+    if(hasBall() == true) {
+      powerRollers = 0;
+    }
+ 
+      
+    
+  
   }
 
 

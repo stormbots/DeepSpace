@@ -14,6 +14,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.Intake;
+
+
+// IMPORT MOTORS BOTH NORMAL AND NEO 
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -25,6 +29,7 @@ import frc.robot.subsystems.ExampleSubsystem;
 public class Robot extends TimedRobot {
   public static ExampleSubsystem m_subsystem = new ExampleSubsystem();
   public static OI m_oi;
+  public static Intake intake = new Intake();
 
   Command m_autonomousCommand;
   SendableChooser<Command> m_chooser = new SendableChooser<>();
@@ -114,12 +119,14 @@ public class Robot extends TimedRobot {
     }
   }
 
+  
   /**
    * This function is called periodically during operator control.
    */
   @Override
   public void teleopPeriodic() {
     Scheduler.getInstance().run();
+    intake.update();
   }
 
   /**
