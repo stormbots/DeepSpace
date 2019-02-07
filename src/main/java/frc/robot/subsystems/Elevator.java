@@ -7,12 +7,15 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.stormbots.Clamp;
+import com.stormbots.Lerp;
 import com.stormbots.closedloop.FB;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import frc.robot.subsystems.ArmElevator.Mode;
 
 /**
  * Add your docs here.
@@ -21,6 +24,7 @@ public class Elevator extends Subsystem {
       // Put methods for controlling this subsystem
       // here. Call these from Commands.
       public TalonSRX elevMotor = new TalonSRX(10);
+     
       //ublic TalonSRX elevMotor2 = new TalonSRX(11);
       DigitalInput elevLimit = new DigitalInput(0);
 
@@ -31,6 +35,8 @@ public class Elevator extends Subsystem {
       // add more positions for lvl 1,2,3 of cargo and hatches
       double fbGain;
       double elevatorVel = 0;
+
+      public Lerp elevLerp = new Lerp(-1, 1, minPos, maxPos);
 
 
 
@@ -43,19 +49,20 @@ public class Elevator extends Subsystem {
 
       }
 
-      public enum ElevMode {
-		MANUAL, CLOSEDLOOP, HOMING, DISABLED
-										
-      }
-      private ElevMode mode = ElevMode.MANUAL;
+
+      private Mode mode = Mode.MANUAL;
       private boolean eHomed = false;
       
-      public void setMode(ElevMode newMode) {
+      public void setMode(Mode newMode) {
 		mode = newMode;
       }
 
-      public ElevMode getMode(){
+      public Mode getMode(){
             return mode;
+      }
+
+      public void setPos(double pos){
+            elevatorPos = pos;
       }
 
       public void reset(){
@@ -111,7 +118,8 @@ public class Elevator extends Subsystem {
 		if(!elevLimit.get()) {
 			eHomed = true;
 			reset();
-		}
+            }
+            elevMotor.set(ControlMode.PercentOutput, elevatorVel);
       }
 
       @Override

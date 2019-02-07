@@ -7,10 +7,12 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.stormbots.Clamp;
 import com.stormbots.closedloop.FB;
 import com.stormbots.Lerp;
+import frc.robot.subsystems.ArmElevator.Mode;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.command.Subsystem;
@@ -24,7 +26,7 @@ public class Arm extends Subsystem {
       public TalonSRX armMotor = new TalonSRX(12);
       public DigitalInput armLimit = new DigitalInput(0);
 
-      double maxPos = 5000.0;
+      double maxPos = 5000.0; //placeholder
       double minPos = 0.0;
       double targetArmPos = 0.0;
       double currentArmPos = 0.0;
@@ -45,14 +47,20 @@ public class Arm extends Subsystem {
       public Lerp armAngle = new Lerp(0, 4096/4, 0, 120); //CHANGE!!!! BAD VALUES, VERY BAD
 
       private boolean aHomed = false;
+
+      private Mode mode = Mode.CLOSEDLOOP;
       
-      public void setMode(ArmMode newMode) {
+      public void setMode(Mode newMode) {
 		mode = newMode;
       }
 
-      public ArmMode getMode(){
+      public Mode getMode(){
             return mode;
       } 
+
+      public void setPos(double pos){
+            targetArmPos = pos;
+      }
 
       public void reset() {
             armMotor.setSelectedSensorPosition(0, 0, 20);
@@ -66,10 +74,11 @@ public class Arm extends Subsystem {
 		double ticks() {return this.ticks;};
       }
 
-      public enum ArmMode{
+      /* public enum Mode{
             MANUAL, CLOSEDLOOP, HOMING, DISABLED
       }
-      private ArmMode mode = ArmMode.CLOSEDLOOP;
+      */
+      
 
       public void updateArm(){
 
@@ -115,7 +124,9 @@ public class Arm extends Subsystem {
 		if(!armLimit.get()) {
 			aHomed = true;
 			reset();
-		}
+            }
+
+            armMotor.set(ControlMode.PercentOutput, armVel);
       }
 
 

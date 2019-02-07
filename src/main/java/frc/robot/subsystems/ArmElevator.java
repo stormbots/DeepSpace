@@ -7,15 +7,8 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.stormbots.Clamp;
-import com.stormbots.closedloop.FB;
-import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.Elevator;
-
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import frc.robot.*;
 
 /**
  * Add your docs here.
@@ -23,39 +16,36 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 public class ArmElevator extends Subsystem {
 	// Put methods for controlling this subsystem
 	// here. Call these from Commands.
-	public TalonSRX elevMotor = new TalonSRX(10);
+	/*public TalonSRX elevMotor = new TalonSRX(10);
 	public TalonSRX armMotor = new TalonSRX(12);
       DigitalInput elevLimit = new DigitalInput(0);
       DigitalInput armLimit = new DigitalInput(1);
-
-	double eMaxPos = 10000; // placeholder
-	double eMinPos = 0;
-	double aMaxPos = 5000; // placeholder
-	double aMinPos = 0;
-	double armPos = 0;
-	double elevatorPos = 0;
-	double armCurrentPos = 0;
-	double elevCurrentPos = 0;
-	// add more positions for lvl 1,2,3 of cargo and hatches
-	double elevatorFB;
-	double armFB;
-	double armVel = 0;
-	double elevatorVel = 0;
+      */
+      
+      /*public Arm arm = new Arm();
+      public Elevator elevator = new Elevator();
+      */
 
 	public ArmElevator() {
 
 	}
 
 	public enum Mode {
-		MANUAL, CLOSEDLOOP, HOMING, DISABLED //Manual Velocity may not be necessary or wanted
+		MANUAL, CLOSEDLOOP, HOMING, SEPARATE, DISABLED
 										
       }
 
-	private Mode mode = Mode.MANUAL;
+	private Mode mode = Mode.SEPARATE;
 
 	public void setMode(Mode newMode) {
-		mode = newMode;
+            mode = newMode;
+            Robot.elev.setMode(mode);
+            Robot.arm.setMode(mode);
+            
+            //change both elevator and arm to correct mode
       }
+
+
       public Mode getMode(){
             return mode;
       }
@@ -64,19 +54,27 @@ public class ArmElevator extends Subsystem {
 
             switch(mode){
                   case MANUAL:
+                        //elevator.setMode(ElevMode.MANUAL);
+                        //arm.setMode(ArmMode.MANUAL);
 
                   break;
 
                   case CLOSEDLOOP:
                         
+
                   break;
 
                   case HOMING:
+                        
+
+                  break;
+
+                  case SEPARATE:
 
                   break;
 
                   case DISABLED:
-
+                        
                   break;
             }
 
