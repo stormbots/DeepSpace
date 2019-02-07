@@ -7,7 +7,10 @@
 
 package frc.robot;
 
+import com.stormbots.devices.pixy2.Pixy2;
+
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -27,6 +30,7 @@ import frc.robot.subsystems.Chassis;
 public class Robot extends TimedRobot {
   public static ExampleSubsystem m_subsystem = new ExampleSubsystem();
   public static OI m_oi;
+  public static Pixy2 pixy = new Pixy2(Port.kOnboardCS0);
 
   public static Chassis drive = new Chassis();
 
@@ -40,6 +44,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     m_oi = new OI();
+
     m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
     // chooser.addOption("My Auto", new MyAutoCommand());
     SmartDashboard.putData("Auto mode", m_chooser);
@@ -64,6 +69,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void disabledInit() {
+    System.out.println(pixy.setLamp(false,false));
   }
 
   @Override
@@ -116,6 +122,8 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+
+    System.out.println(pixy.setLamp(true,false));
   }
 
   /**
