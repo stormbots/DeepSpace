@@ -45,15 +45,30 @@ public class OI {
   public static Joystick driveStick = new Joystick(0);
 
 
-  // ------- CHASSIS VARS
+  // ------- CHASSIS VARS ------- //
+
+  /**
+   *     
+   * @return
+   */
   public static double getDriveFwdL() {
     return driveStick.getRawAxis(1);
+    //return driveStick.getRawAxis(1)*Math.abs(driveStick.getRawAxis(1));
   }
 
+  /**
+   * 
+   * @return
+   */
   public static double getDriveFwdR() {
     return driveStick.getRawAxis(3);
+    //return driveStick.getRawAxis(3)*Math.abs(driveStick.getRawAxis(3));
   }
 
+  /**
+   * Shifts from high to low or from low to high when button 8 is pressed
+   * @return if shifted high
+   */
   public static boolean getShiftHigh() {
     return driveStick.getRawButton(8);
   }

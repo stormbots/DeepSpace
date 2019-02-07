@@ -7,6 +7,7 @@ package com.stormbots.devices.pixy2;
  */
 public class Line{
     public double x0=0,y0=0,x1=0,y1=0;
+    boolean normalized = false;
     //TODO : Possibly determine out a good way to verify the resolution without soaking time in critical loop
     //Possibly static class variables?
 
@@ -24,6 +25,8 @@ public class Line{
 
     /** Convert coordinates to [-0.1..0.1], with the bottom center of the screen as (0,0) */
     public Line normalizeBottom(){
+        if(normalized)return this;
+        normalized = true; 
         x0 = 2*(x0/79.0-0.5);
         y0 = 2*(1-y0/52.0);
         x1 = 2*(x1/79.0-0.5);
@@ -33,6 +36,8 @@ public class Line{
     
     /** Convert coordinates to [-0.1..0.1], with the center of the screen as (0,0)  */
     public Line normalizeCenter(){
+        if(normalized)return this;
+        normalized = true; 
         x0 = 2*(x0/79.0-0.5);
         y0 = 2*(0.5-y0/52.0);
         x1 = 2*(x1/79.0-0.5);

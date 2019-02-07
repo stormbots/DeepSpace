@@ -7,18 +7,16 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.revrobotics.CANDigitalInput;
+import static com.stormbots.Clamp.bounded;
+import static com.stormbots.Clamp.clamp;
+
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import static com.stormbots.Clamp.*;
-
 import com.stormbots.Lerp;
 import com.stormbots.closedloop.FB;
 
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.PIDBase;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
 /**

@@ -20,6 +20,7 @@ import frc.robot.commands.ChassisTeleopDrive;
  */
 public class Chassis extends Subsystem {
 
+  //Motors must be burshless or the robot will explode
   public CANSparkMax motorL = new CANSparkMax(1, MotorType.kBrushless);
   public CANSparkMax slaveL1 = new CANSparkMax(2, MotorType.kBrushless);
   public CANSparkMax slaveL2 = new CANSparkMax(3, MotorType.kBrushless);
@@ -27,8 +28,10 @@ public class Chassis extends Subsystem {
   public CANSparkMax slaveR1 = new CANSparkMax(5, MotorType.kBrushless);
   public CANSparkMax slaveR2 = new CANSparkMax(6, MotorType.kBrushless);
 
+  //Motor 1 and 4 are the leaders of their sides. 1 for left and 4 for right.
   public DifferentialDrive driver = new DifferentialDrive(motorL, motorR);
 
+  //Gearbox Shifters
   public Solenoid shifterL = new Solenoid(1);
   public Solenoid shifterR = new Solenoid(2);
   
