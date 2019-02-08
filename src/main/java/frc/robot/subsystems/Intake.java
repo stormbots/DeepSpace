@@ -102,8 +102,8 @@ public class Intake extends Subsystem {
         powerPivot = FB.fb(targetPosition, currentPosition, kPivotGain)
          + Math.cos(targetPosition*(Math.PI/180.0 ))*kPivotFF;
          System.out.println("FB: " + FB.fb(targetPosition, currentPosition, kPivotGain));
-         System.out.println("Cos: " +Math.cos(targetPosition*(Math.PI/180.0) )*kPivotFF );
-         System.out.println("Math Cos: " +targetPosition *(Math.PI/180.0) );
+         System.out.println("Cos: " +Math.cos(currentPosition*(Math.PI/180.0) )*kPivotFF );
+         System.out.println("Math Cos: " +currentPosition *(Math.PI/180.0) );
          System.out.println("kPivot: " +kPivotGain);
         break;
       case HABLIFT:
