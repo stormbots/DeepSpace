@@ -29,10 +29,11 @@ public class ChassisTeleopDrive extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.drive.driver.tankDrive(OI.getDriveFwdL(), OI.getDriveFwdR());
+    //Robot.drive.driver.tankDrive(OI.getDriveFwdL(), OI.getDriveFwdR());
+    Robot.drive.driver.tankDrive(OI.getDriveFwdR(), OI.getDriveFwdL());
     
     Robot.drive.shifterL.set(OI.getShiftHigh()); // may require a ! to invert
-    Robot.drive.shifterR.set(OI.getShiftHigh()); // see above
+    Robot.drive.shifterR.set(!OI.getShiftHigh()); // see above
 
   }
 

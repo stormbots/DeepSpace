@@ -29,10 +29,10 @@ import frc.robot.subsystems.Chassis;
  */
 public class Robot extends TimedRobot {
   public static ExampleSubsystem m_subsystem = new ExampleSubsystem();
-  public static OI m_oi;
   public static Pixy2 pixy = new Pixy2(Port.kOnboardCS0);
 
   public static Chassis drive = new Chassis();
+  public static OI m_oi = new OI();
 
   Command m_autonomousCommand;
   SendableChooser<Command> m_chooser = new SendableChooser<>();
@@ -43,7 +43,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    m_oi = new OI();
 
     m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
     // chooser.addOption("My Auto", new MyAutoCommand());
@@ -69,7 +68,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void disabledInit() {
-    System.out.println(pixy.setLamp(false,false));
+    // System.out.println(pixy.setLamp(false,false));
   }
 
   @Override
@@ -123,7 +122,7 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
 
-    System.out.println(pixy.setLamp(true,false));
+    // System.out.println(pixy.setLamp(true,false));
   }
 
   /**
@@ -132,7 +131,6 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     Scheduler.getInstance().run();
-
   }
 
   /**

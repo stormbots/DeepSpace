@@ -8,6 +8,8 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.buttons.JoystickButton;
+import frc.robot.commands.ChassisPixyDrive;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -43,7 +45,13 @@ public class OI {
   // button.whenReleased(new ExampleCommand());
 
   public static Joystick driveStick = new Joystick(0);
+  JoystickButton pixyfollower = new JoystickButton(driveStick, 5);
+  
+  public OI (){
 
+    pixyfollower.whileHeld(new ChassisPixyDrive());
+
+  }
 
   // ------- CHASSIS VARS ------- //
 
@@ -52,8 +60,8 @@ public class OI {
    * @return
    */
   public static double getDriveFwdL() {
-    return driveStick.getRawAxis(1);
-    //return driveStick.getRawAxis(1)*Math.abs(driveStick.getRawAxis(1));
+    //return driveStick.getRawAxis(1);
+    return -driveStick.getRawAxis(1)*Math.abs(driveStick.getRawAxis(1));
   }
 
   /**
@@ -61,8 +69,8 @@ public class OI {
    * @return
    */
   public static double getDriveFwdR() {
-    return driveStick.getRawAxis(3);
-    //return driveStick.getRawAxis(3)*Math.abs(driveStick.getRawAxis(3));
+    //return driveStick.getRawAxis(3);
+    return -driveStick.getRawAxis(3)*Math.abs(driveStick.getRawAxis(3));
   }
 
   /**
@@ -70,7 +78,7 @@ public class OI {
    * @return if shifted high
    */
   public static boolean getShiftHigh() {
-    return driveStick.getRawButton(8);
+    return driveStick.getRawButton(6);
   }
 
 }
