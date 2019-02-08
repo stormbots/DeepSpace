@@ -26,8 +26,9 @@ public class Elevator extends Subsystem {
       public TalonSRX elevMotor = new TalonSRX(10);
      
       //ublic TalonSRX elevMotor2 = new TalonSRX(11);
-      DigitalInput elevLimit = new DigitalInput(0);
+      DigitalInput elevLimit = new DigitalInput(2);
 
+      //Elevator has two positions that need to be programmed in supposedly
       double maxPos = 10000; // placeholder
       double minPos = 0;
       double elevatorPos = 0;

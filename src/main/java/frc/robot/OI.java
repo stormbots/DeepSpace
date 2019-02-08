@@ -16,7 +16,7 @@ import frc.robot.subsystems.ArmElevator;
  */
 public class OI {
 
-  public Joystick stick = new Joystick(0);
+  public Joystick clyde = new Joystick(0);
   //// CREATING BUTTONS
   // One type of button is a joystick button which is any button on a
   //// joystick.
@@ -30,7 +30,11 @@ public class OI {
   // commands the same as any other Button.
 
   public double getElevatorPos(){
-    return stick.getRawAxis(3);
+    return clyde.getRawAxis(3);
+  }
+
+  public double getArmPos(){
+    return clyde.getRawAxis(2);
   }
   
 
