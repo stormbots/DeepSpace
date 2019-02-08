@@ -14,6 +14,7 @@ import static com.stormbots.Clamp.*;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.stormbots.Clamp;
 import com.stormbots.Lerp;
 import com.stormbots.closedloop.FB;
@@ -33,19 +34,21 @@ public class Intake extends Subsystem {
 
 
   //Pivot 
-  // private CANSparkMax motorPivot = new CANSparkMax(5, MotorType.kBrushless); //origionally port 7
-  // private CANEncoder encPivot = new CANEncoder(motorPivot);
-  private TalonSRX motorPivot = new TalonSRX(5); //origionally port 7
-  private DigitalInput limitPivot = new DigitalInput(8);
+  private CANSparkMax pivotMotor = new CANSparkMax(5, MotorType.kBrushless); //origionally port 7
+  private CANEncoder pivotEnc = new CANEncoder(pivotMotor);
+  private DigitalInput pivotLimit = new DigitalInput(8);
   //Roller
-  private CANSparkMax motorRollers = new CANSparkMax(8, MotorType.kBrushless);
+  private CANSparkMax rollerMotor = new CANSparkMax(8, MotorType.kBrushless);
   //PassThrough
   private DigitalInput ballSensor = new DigitalInput(9);
 
+  private VictorSPX beltMotor = new VictorSPX(6);
+  //Belt passthru
 
-  double powerPivot = 0;
-  double powerRollers = 0;
-  double targetPosition = 0;
+  double beltPower = 0;
+  double pivotPower = 0;
+  double rollerPower = 0;
+  double pivotTargetPosition = 0;
 
   double PIVOT_MIN= 15;
   double PIVOT_MIN_HAB= 0;
@@ -53,11 +56,11 @@ public class Intake extends Subsystem {
   
   public enum Mode {CLOSEDLOOP,MANUAL,HABLIFT,DISABLE};
   private Mode mode = Mode.MANUAL;
-  private Lerp pivotToDegrees = new Lerp(0, 4096/2, -90, 90);
+  private Lerp pivotToDegrees = new Lerp(0, 0.5, -90, 90);
 
   public Intake() {
     //Enable maybe if required // motorPivot.setInverted(false);
-    motorPivot.setSelectedSensorPosition(0);
+    //TODO Reset encoder somehow?
   }
 
   
@@ -74,9 +77,9 @@ public class Intake extends Subsystem {
 
     kPivotFF = 0.2445;
     kPivotGain = 0.035;
-    targetPosition = 90;
+    pivotTargetPosition = 90;
     //setup variables and defaults
-    double targetPosition = this.targetPosition;
+    double targetPosition = this.pivotTargetPosition;
     double currentPosition = getPosition();  
 
     //Check Soft Limits
@@ -89,7 +92,7 @@ public class Intake extends Subsystem {
 
 
     //State Machine things!
-    mode = Mode.CLOSEDLOOP;//TODO REMOVE ME
+    mode = Mode.CLOSEDLOOP;//TODO REMOVE ME WHEN WE FINISH THE SUBSYSTEM
 
     switch(mode){
       case MANUAL:
@@ -99,65 +102,57 @@ public class Intake extends Subsystem {
       
         //run feedback function
         //powerPivot = FB.fb(targetPosition, currentPosition, kPivotGain);
-        powerPivot = FB.fb(targetPosition, currentPosition, kPivotGain)
-         + Math.cos(targetPosition*(Math.PI/180.0 ))*kPivotFF;
-         System.out.println("FB: " + FB.fb(targetPosition, currentPosition, kPivotGain));
-         System.out.println("Cos: " +Math.cos(currentPosition*(Math.PI/180.0) )*kPivotFF );
-         System.out.println("Math Cos: " +currentPosition *(Math.PI/180.0) );
-         System.out.println("kPivot: " +kPivotGain);
+        pivotPower = FB.fb(targetPosition, currentPosition, kPivotGain)
+         + Math.cos(currentPosition*(Math.PI/180.0 ))*kPivotFF;
         break;
       case HABLIFT:
       
         break;
       case DISABLE: 
-        powerPivot = 0;
+        pivotPower = 0;
         break;
       }
    
     //Check physical limits of motion
     // if(powerPivot > 0 && isPivotLimitPressed() ) { powerPivot = 0;}
-    if(powerPivot < 0  && currentPosition < PIVOT_MIN) { powerPivot = 0;}
+    if(pivotPower < 0  && currentPosition < PIVOT_MIN) { pivotPower = 0;}
       //normal mode
       //power lift mode
 
     
 
-    powerPivot = Clamp.clamp(powerPivot, -0.3, 0.3);
+    pivotPower = Clamp.clamp(pivotPower, -0.3, 0.3);
 
 
     System.out.println("TARGET: " + targetPosition);
     System.out.println("DEG: " + currentPosition);    
-    System.out.println("PWR: " + powerPivot);
+    System.out.println("PWR: " + pivotPower);
 
     //set output power
-    // motorPivot.set(-powerPivot);
-    motorPivot.set(ControlMode.PercentOutput, -powerPivot);
-    motorRollers.set(powerRollers);
+    pivotMotor.set(-pivotPower);
+    rollerMotor.set(rollerPower);
   }
 
 
   public void setPower(double power){
-    this.powerPivot = power;
+    this.pivotPower = power;
   }
   
   public void setMode(Mode newMode){
     this.mode = newMode;
   }
 
-  public void setTargetPosition(int target ){
-    this.targetPosition = target;
+  public void setTargetPosition(double target ){
+    this.pivotTargetPosition = target;
   }
 
   /** Returns Degrees */
   public double getPosition(){
-    // return pivotToDegrees.get(encPivot.getPosition());
-
-
-    return pivotToDegrees.get(motorPivot.getSelectedSensorPosition(0));
+    return pivotToDegrees.get(pivotEnc.getPosition());
   }
 
-  public boolean isOnTarget(int tolerance){
-    return bounded(getPosition(),targetPosition-tolerance,targetPosition+tolerance);
+  public boolean isOnTarget(double tolerance){
+    return bounded(getPosition(),pivotTargetPosition-tolerance,pivotTargetPosition+tolerance);
   }
 
   /** True if ball is in passthrough */
@@ -166,19 +161,16 @@ public class Intake extends Subsystem {
   }
 
   public boolean isPivotLimitPressed() { 
-    return limitPivot.get() == true;
+    return pivotLimit.get() == true;
   }
 
-  public  void stopRollers() {
-    if(hasBall() == true) {
-      powerRollers = 0;
-    }
- 
-      
-    
-  
+  public void setRollerPower(double newPower){
+    rollerPower = newPower;
   }
 
+  public void setBeltPower(double newPower){
+    beltPower = newPower;
+  }
 
 }
 
