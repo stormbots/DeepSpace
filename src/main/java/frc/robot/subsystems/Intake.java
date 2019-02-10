@@ -58,10 +58,20 @@ public class Intake extends Subsystem {
   private Mode mode = Mode.MANUAL;
   private Lerp pivotToDegrees = new Lerp(0, 0.5, -90, 90);
 
+  double kPivotGain = 0; /* SET VIA PREFERENCES, DO NOT USE */
+  double kPivotFF = 0; /* SET VIA PREFERENCES, DO NOT USE */
+
+  pivotTargetPosition = 90;
+
   public Intake() {
     //Enable maybe if required // motorPivot.setInverted(false);
     //TODO Reset encoder somehow?
-  }
+
+    double kPivotGain = SmartDashboard.getNumber("IntakePivotGain", 0.035);
+    double kPivotFF = SmartDashboard.getNumber("IntakePivotFFGain", 0.2445);
+    kPivotFF = 0.2445;
+    kPivotGain = 0.035;
+    }
 
   
   @Override
@@ -72,12 +82,6 @@ public class Intake extends Subsystem {
 
   
   public void update(){
-    double kPivotGain = SmartDashboard.getNumber("IntakePivotGain", 0.035);
-    double kPivotFF = SmartDashboard.getNumber("IntakePivotFFGain", 0.2445);
-
-    kPivotFF = 0.2445;
-    kPivotGain = 0.035;
-    pivotTargetPosition = 90;
     //setup variables and defaults
     double targetPosition = this.pivotTargetPosition;
     double currentPosition = getPosition();  
