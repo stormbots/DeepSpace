@@ -36,42 +36,61 @@ public class Intake extends Subsystem {
   //Pivot 
   private CANSparkMax pivotMotor = new CANSparkMax(5, MotorType.kBrushless); //origionally port 7
   private CANEncoder pivotEnc = new CANEncoder(pivotMotor);
-  private DigitalInput pivotLimit = new DigitalInput(8);
   //Roller
   private CANSparkMax rollerMotor = new CANSparkMax(8, MotorType.kBrushless);
   //PassThrough
-  private DigitalInput ballSensor = new DigitalInput(9);
 
-  private VictorSPX beltMotor = new VictorSPX(6);
   //Belt passthru
+  private VictorSPX beltMotor = new VictorSPX(6);
+  private VictorSPX beltMotorB = new VictorSPX(6);
 
   double beltPower = 0;
   double pivotPower = 0;
   double rollerPower = 0;
   double pivotTargetPosition = 0;
 
-  double PIVOT_MIN= 15;
-  double PIVOT_MIN_HAB= 0;
-  double PIVOT_MAX = 90;
   
   public enum Mode {CLOSEDLOOP,MANUAL,HABLIFT,DISABLE};
-  private Mode mode = Mode.MANUAL;
-  private Lerp pivotToDegrees = new Lerp(0, 0.5, -90, 90);
+  private Mode mode = Mode.CLOSEDLOOP;
+  /** Configured with a 49:1*49:1*84:24 gear reduction over a full rotation */
+  private Lerp pivotToDegrees = new Lerp(
+     0, 0,     1.0*(49.0*7.0*7.0*84.0/24.0), 360.0
+     );
 
-  double kPivotGain = 0; /* SET VIA PREFERENCES, DO NOT USE */
-  double kPivotFF = 0; /* SET VIA PREFERENCES, DO NOT USE */
+  double kPivotGain = 0;  /* SET VIA CONSTRUCTOR/INIT, DO NOT USE */
+  double kPivotFF = 0; /* SET VIA CONSTRUCTOR/INIT, DO NOT USE */
+  double PIVOT_MIN= 15;
+  double PIVOT_MIN_HAB = -10;
+  double PIVOT_MAX = 110.0;
 
-  pivotTargetPosition = 90;
 
   public Intake() {
     //Enable maybe if required // motorPivot.setInverted(false);
-    //TODO Reset encoder somehow?
+    /* We do not have a safe on-boot homing process, and rely on
+     * power cycles being in our full up start position.
+     * As a result, must set targetPosition to the current postiion
+     * to avoid glitching and unexpected movement on code reboots.
+     */
+    pivotTargetPosition = getPosition();
 
-    double kPivotGain = SmartDashboard.getNumber("IntakePivotGain", 0.035);
-    double kPivotFF = SmartDashboard.getNumber("IntakePivotFFGain", 0.2445);
-    kPivotFF = 0.2445;
-    kPivotGain = 0.035;
-    }
+    //TODO: We may need to tune kPivot values on the smartdashboard
+    kPivotFF = 0.05; // Holds itself stable quite well due to gearing
+    kPivotGain = 0.004;
+
+    //TODO: Increase current restrictions after limit and motor checks
+    pivotMotor.setSmartCurrentLimit(2,4);
+
+    //Rollers
+    //TODO: Figure if this is needed: rollerMotorMotor.setInverted(false);
+    rollerMotor.set(ControlMode.PercentOutput, 0);
+
+    //Configure Passthrough belt motors
+    //TODO: Figure if this is needed: beltMotor.setInverted(false);
+    beltMotorB.follow(beltMotor);
+    beltMotorB.setInverted(InvertType.OpposeMaster);
+    beltMotor.set(ControlMode.PercentOutput, 0);
+
+  }
 
   
   @Override
@@ -91,42 +110,30 @@ public class Intake extends Subsystem {
       targetPosition = clamp(targetPosition,PIVOT_MIN_HAB,PIVOT_MAX);
     }
     else{
-      //TODO Re-enable targetPosition = clamp(targetPosition,PIVOT_MIN,PIVOT_MAX);
+      targetPosition = clamp(targetPosition,PIVOT_MIN,PIVOT_MAX);
     }
-
-
-    //State Machine things!
-    mode = Mode.CLOSEDLOOP;//TODO REMOVE ME WHEN WE FINISH THE SUBSYSTEM
 
     switch(mode){
       case MANUAL:
         //Do nothing, use power provided from setPower();
         break;
+      case HABLIFT: 
+        // No change from CLOSEDLOOP from positional and current limits
       case CLOSEDLOOP:
       
         //run feedback function
-        //powerPivot = FB.fb(targetPosition, currentPosition, kPivotGain);
         pivotPower = FB.fb(targetPosition, currentPosition, kPivotGain)
          + Math.cos(currentPosition*(Math.PI/180.0 ))*kPivotFF;
-        break;
-      case HABLIFT:
-      
         break;
       case DISABLE: 
         pivotPower = 0;
         break;
       }
    
-    //Check physical limits of motion
-    // if(powerPivot > 0 && isPivotLimitPressed() ) { powerPivot = 0;}
-    if(pivotPower < 0  && currentPosition < PIVOT_MIN) { pivotPower = 0;}
-      //normal mode
-      //power lift mode
-
+    //TODO Do we need to check check physical limits of motion?
+    //Position block should fix it unless we're oscillating wildly
+    //if(pivotPower < 0  && currentPosition < PIVOT_MIN) { pivotPower = 0;}
     
-
-    pivotPower = Clamp.clamp(pivotPower, -0.3, 0.3);
-
 
     System.out.println("TARGET: " + targetPosition);
     System.out.println("DEG: " + currentPosition);    
@@ -135,6 +142,7 @@ public class Intake extends Subsystem {
     //set output power
     pivotMotor.set(-pivotPower);
     rollerMotor.set(rollerPower);
+    beltMotor.set(beltPower);
   }
 
 
@@ -152,7 +160,7 @@ public class Intake extends Subsystem {
 
   /** Returns Degrees */
   public double getPosition(){
-    return pivotToDegrees.get(pivotEnc.getPosition());
+    return pivotToDegrees.get(-pivotEnc.getPosition());
   }
 
   public boolean isOnTarget(double tolerance){
@@ -161,11 +169,13 @@ public class Intake extends Subsystem {
 
   /** True if ball is in passthrough */
   public boolean hasBall() { 
-    return ballSensor.get() == true;
+    return  !bounded(beltMotor.getOutputCurrent(), -3, 3);
   }
 
-  public boolean isPivotLimitPressed() { 
-    return pivotLimit.get() == true;
+  public boolean isPivotLimitPressed() {
+    //TODO: Don't have limit switches, so we have to use some soft method
+    // May consider current check on the "up" position, if it's safe to do so.
+    return !bounded(getPosition(), PIVOT_MIN+1, PIVOT_MAX-1);
   }
 
   public void setRollerPower(double newPower){
@@ -177,7 +187,3 @@ public class Intake extends Subsystem {
   }
 
 }
-
-
-
-//rollers set on and set off
