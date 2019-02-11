@@ -10,12 +10,12 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.stormbots.Clamp;
-import com.stormbots.closedloop.FB;
 import com.stormbots.Lerp;
-import frc.robot.subsystems.ArmElevator.Mode;
+import com.stormbots.closedloop.FB;
 
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import frc.robot.subsystems.ArmElevator.Mode;
+import frc.robot.subsystems.ArmElevator.Pose;
 
 /**
  * Add your docs here.
@@ -24,38 +24,46 @@ public class Arm extends Subsystem {
       // Put methods for controlling this subsystem
       // here. Call these from Commands.
       public TalonSRX armMotor = new TalonSRX(12);
-      public TalonSRX wristMotor = new TalonSRX(13);
-      public DigitalInput armLimit = new DigitalInput(0); //Might not exist
-      public DigitalInput wristLimit = new DigitalInput(1); //Might not exist
 
       double targetArmPos = 0.0;
-      double targetWristPos = 0.0;
       double currentArmPos = 0.0;
-      double currentWristPos = 0.0;
-      double voltageRampRate;
       double armPower = 0.0;
-      double wristPower = 0.0;
       
-      //double armAngle = 0.0;
+      /** Saved from the update function to enable tracking based on the floor angle */
+      double armAngle = 0.0;
 
-      double fbGain;
-      double kf = 1;
+      double kArmGain = 0.004;
+      double kArmFF = 0;
 
-      double MAX_POS = 5000.0; //placeholder
-      double MIN_POS = 0.0;
+      public static final double MAX_ANGLE = 90.0;
+      public static final double MIN_ANGLE = -90.0;
 
       public Arm() {
+            // NOTE: We cannot reset the sensors, as we have no limit switches
+            // to reset them against. So, instead we need to ensure robot is in a known
+            // state on powerup, and not reset sensors upon code changes.
+            //NO GOOD. reset();
 
-            reset();
-            /*voltageRampRate = 0.0;
-            armMotor.configClosedloopRamp(voltageRampRate);
-            */
+            //as a test mode thing, we could potentially reset this using
+            //current limited motors to force it back into nominal position
+
+
+            armMotor.setSensorPhase(true);
+            armMotor.configOpenloopRamp(0.2); 
+
+            //Configure are current restrictions
+            //TODO: Set much higher. These limits are really low for bringup safety. 
+            //https://www.chiefdelphi.com/t/talon-srx-current-limiting-behaviour/164074
+            armMotor.configPeakCurrentLimit(5, 10); // 35 A 
+            armMotor.configPeakCurrentDuration(200, 10); // 200ms
+            armMotor.configContinuousCurrentLimit(4, 10); // 30A
+            armMotor.enableCurrentLimit(true); // turn it on
+
 
       }
 
-      public Lerp armAngle = new Lerp(0, 4096/4, 0, 90); //CHANGE!!!! BAD VALUES, VERY BAD 
-
-      private boolean aHomed = false;
+      /** Specified by 4096 ticks per rotation, with a 54:18 gear ratio */
+      public Lerp armToDegrees = new Lerp(0, 4096*(54.0/18.0), -90, -90+360);
 
       private Mode mode = Mode.CLOSEDLOOP;
       
@@ -67,73 +75,69 @@ public class Arm extends Subsystem {
             return mode;
       } 
 
-      public void setPos(double pos){
+      public void setAngle(double pos){
             targetArmPos = pos;
       }
 
-      public void reset() {
-            armMotor.setSelectedSensorPosition(0, 0, 20);
+      public double getArmAngle(){
+            return armToDegrees.get(armMotor.getSelectedSensorPosition());
+      }
+      public boolean isOnTarget(double tolerance){
+            return Clamp.bounded( getArmAngle(), targetArmPos-tolerance, targetArmPos+tolerance);
       }
 
-      public enum ArmPosition {
-            MAX(5_000), MIN(0);
-
-            double ticks = 0;
-		ArmPosition(double ticks){this.ticks = ticks;}
-		double ticks() {return this.ticks;};
+      public void set(Pose pose){
+            setAngle(pose.armAngle());
       }
 
-      /* public enum Mode{
-            MANUAL, CLOSEDLOOP, HOMING, DISABLED
-      }
-      */
-      
+    
 
-      public void updateArm(){
-
-            currentArmPos = armMotor.getSelectedSensorPosition(0);
-
+      public void update(){
+            currentArmPos = getArmAngle();
+            // Create a shadow variable in local scope to avoid incorrectly altering our target
+            // This is needed as we may have to constrain the target due to dynamic influences,
+            // which when changed should result in a change of our actual position
+            targetArmPos = this.targetArmPos; 
+            
             switch(mode){
                   case MANUAL:
-
-                        Clamp.clamp(targetArmPos, MIN_POS, MAX_POS);
-                        
+                        //TODO: This clamp is a closed loop affecting operation,
+                        //and doesn't impact anything
+                        //Clamp.clamp(targetArmPos, MIN_ANGLE, MAX_ANGLE);
                   break;
 
                   case CLOSEDLOOP:
 
-                        Clamp.clamp(targetArmPos, MIN_POS, MAX_POS);
-                        armPower = FB.fb(targetArmPos, currentArmPos, fbGain)+kf*Math.cos(Math.toRadians(armAngle.get(currentArmPos)));//find voltage needed to keep arm level (kf),
-                        //then add kf*cos(x) to output of PID loop, x=0 rad when arm is level
+                        targetArmPos = Clamp.clamp(targetArmPos, MIN_ANGLE, MAX_ANGLE);
+
+                        armPower = FB.fb(targetArmPos, currentArmPos, kArmGain)+
+                              kArmFF*Math.cos(Math.toRadians(armToDegrees.get(currentArmPos))
+                              );
+                        //TODO find voltage needed to keep arm level (kArmFF),
 
                   break;
 
                   case HOMING:
-                        if(!armLimit.get()) {
-                              armPower = 0;
-                        }
-                        else {
-                              armPower = -0.3;
-                        }
-
+                        //NOTE: We do not actually have limit switches for this.
+                        //Instead, we would need to trust gravity or initial boot-up position
+                        // if(!armLimit.get()) {
+                        //       armPower = 0;
+                        // }
+                        // else {
+                        //       armPower = -0.3;
+                        // }
                   break;
 
                   case DISABLED:
-
+                        //TODO: Disabled should set all power variables to zero
+                        armPower = 0;
                   break;
 
             }
 
-            //manipulate our velocity
-		if(!armLimit.get() && armPower <0) {
-			armPower = 0;
-		}
-		
-		//check for limit switch and reset if found
-		if(!armLimit.get()) {
-			aHomed = true;
-			reset();
-            }
+            //Check for soft limits
+            if(armPower > 0 && currentArmPos > MAX_ANGLE) armPower = 0;
+            if(armPower < 0 && currentArmPos < MIN_ANGLE) armPower = 0;
 
             armMotor.set(ControlMode.PercentOutput, armPower);
       }

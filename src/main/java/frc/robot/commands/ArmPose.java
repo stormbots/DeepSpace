@@ -12,13 +12,18 @@ import com.stormbots.Lerp;
 import edu.wpi.first.wpilibj.command.Command;
 
 import frc.robot.*;
+import frc.robot.subsystems.ArmElevator.Pose;
 
-public class ElevatorPosChange extends Command {
-  public ElevatorPosChange() {
+public class ArmPose extends Command {
+  Pose pose;
+  public ArmPose(Pose pose) {
+    this.pose = pose;
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
+    requires(Robot.armLift);
     requires(Robot.armLift.elevator);
-
+    requires(Robot.armLift.wrist);
+    requires(Robot.armLift.arm);
   }
 
   // Called just before this Command runs the first time
@@ -28,16 +33,15 @@ public class ElevatorPosChange extends Command {
 
   // Called repeatedly when this Command is scheduled to run
   @Override
-  protected void execute() {  
-    //Use OI to match slider values to elevator position
-    // Robot.elev.setPosition(Lerp.lerp(Robot.oi.getElevatorPos(),1,-1,Robot.elev.M));
-
+  protected void execute() {
+    Robot.armLift.setPose(pose);
+      
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return false;
+    return Robot.armLift.isOnTarget();
   }
 
   // Called once after isFinished returns true

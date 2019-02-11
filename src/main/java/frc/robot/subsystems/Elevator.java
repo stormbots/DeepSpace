@@ -16,6 +16,7 @@ import com.stormbots.closedloop.FB;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.subsystems.ArmElevator.Mode;
+import frc.robot.subsystems.ArmElevator.Pose;
 
 /**
  * Add your docs here.
@@ -24,35 +25,40 @@ public class Elevator extends Subsystem {
       // Put methods for controlling this subsystem
       // here. Call these from Commands.
       public TalonSRX elevMotor = new TalonSRX(10);
+      public TalonSRX elevMotorF = new TalonSRX(11);
      
       //ublic TalonSRX elevMotor2 = new TalonSRX(11);
       DigitalInput elevLimit = new DigitalInput(2);
 
       //Elevator has two positions that need to be programmed in supposedly
-      double maxPos = 10000; // placeholder
-      double minPos = 0;
-      double elevatorPos = 0;
+      public static final double MAX_HEIGHT = 50;
+      public static final double MIN_HEIGHT = 30;
+      double elevatorHeightRestriction = MAX_HEIGHT;
+      double elevatorTargetHeight = 0;
       double currentPos = 0;
       // add more positions for lvl 1,2,3 of cargo and hatches
-      double fbGain;
+      double kElevatorGain = 0.004;
       double elevatorVel = 0;
 
-      public Lerp elevLerp = new Lerp(-1, 1, minPos, maxPos);
-
-
+      /** Convert ticks to the positional height of the arm pivot, in inches */
+      public Lerp elevToInches = new Lerp(0, 10_000, MIN_HEIGHT, MAX_HEIGHT);
 
       public Elevator(){
-
             // bind elevator motors here
-            reset();
+            //NOTE: We don't want ro reset normally as much of the robot operation depends
+            // on initial powerup configuration
+            // TRY NOT TO. reset();
             double voltageRampRate = 0.2; //old values vvvvvv
-		elevMotor.configOpenloopRamp(voltageRampRate, 30);
+            elevMotor.configOpenloopRamp(voltageRampRate);
+            elevMotor.set(ControlMode.PercentOutput,0);
+            elevMotor.setSensorPhase(true);
 
+            elevMotorF.follow(elevMotor);
       }
 
 
       private Mode mode = Mode.MANUAL;
-      private boolean eHomed = false;
+      private boolean homed = false;
       
       public void setMode(Mode newMode) {
 		mode = newMode;
@@ -62,37 +68,46 @@ public class Elevator extends Subsystem {
             return mode;
       }
 
-      public void setPos(double pos){
-            elevatorPos = pos;
+      /** Convert ticks to the positional height of the arm pivot, in inches */
+      public void setPosition(double pos){
+            elevatorTargetHeight = pos;
+      }
+
+      /** Convert ticks to the positional height of the arm pivot, in inches */
+      public double getPosition(){
+            return elevToInches.get(elevMotor.getSelectedSensorPosition(0));
       }
 
       public void reset(){
             elevMotor.setSelectedSensorPosition(0, 0, 20);
       }
 
-      public enum ElevatorPosition {
-            MAX(10_000), MIN(0);
-
-            double ticks = 0;
-		ElevatorPosition(double ticks){this.ticks = ticks;}
-		double ticks() {return this.ticks;};
+      public void set(Pose pose){
+            setPosition(pose.eleHeight());
       }
 
-      public void updateElevator(){
+      public boolean isOnTarget(double tolerance){
+            return Clamp.bounded( getPosition(), elevatorTargetHeight-tolerance, elevatorTargetHeight+tolerance);
+      }
+
+      public void update(){
             
-            currentPos = elevMotor.getSelectedSensorPosition(0);
+            currentPos = getPosition();
+            //Use a local target copy to avoid modifying our long term target
+            double target = this.elevatorTargetHeight;
 
             switch(mode){
                   case MANUAL:
-                  /*
-                        Clamp.clamp(elevatorPos, minPos, maxPos);
-                        elevatorVel = FB.fb(elevatorPos, currentPos, fbGain);
-                        */
+                        //TODO : Manual mode not implemented
                   break;
 
                   case CLOSEDLOOP:
-                        Clamp.clamp(elevatorPos, minPos, maxPos);
-                        elevatorVel = FB.fb(elevatorPos, currentPos, fbGain);
+                        //Restrict our height based on physical limits
+                        target = Clamp.clamp(target, MIN_HEIGHT, MAX_HEIGHT);
+                        //Restrict our height based on current pose constraints
+                        target = Clamp.clamp(target, MIN_HEIGHT, elevatorHeightRestriction);
+
+                        elevatorVel = FB.fb(target, currentPos, kElevatorGain);
                   break;
 
                   case HOMING:
@@ -117,9 +132,10 @@ public class Elevator extends Subsystem {
 		
 		//check for limit switch and reset if found
 		if(!elevLimit.get()) {
-			eHomed = true;
+			homed = true;
 			reset();
             }
+
             elevMotor.set(ControlMode.PercentOutput, elevatorVel);
       }
 

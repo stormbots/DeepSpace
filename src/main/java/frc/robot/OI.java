@@ -7,8 +7,14 @@
 
 package frc.robot;
 
+import com.stormbots.Lerp;
+
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.buttons.Button;
+import edu.wpi.first.wpilibj.buttons.JoystickButton;
+import frc.robot.commands.ArmPose;
 import frc.robot.subsystems.ArmElevator;
+import frc.robot.subsystems.ArmElevator.Pose;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -17,6 +23,20 @@ import frc.robot.subsystems.ArmElevator;
 public class OI {
 
   public Joystick clyde = new Joystick(0);
+
+  // This should be a really nice way to set up buttons to quickly switch around to various poses
+  // Most notably, the old joysticks actually have 6 buttons on the left side, which is almost
+  // perfect for Cargo + Hatch levels 1-3, as well has having a few spare buttons that could be OK for hatches
+  // I suspect just holding the main trigger would serve well for quick pickup of the cargo,
+  // and another button would serve for loading
+  /*
+  public JoystickButton poseCargo1 = new JoystickButton(clyde,7);
+  public OI(){
+    poseCargo1.whenPressed(new ArmPose(Pose.CARGO_1));
+  }
+  //*/
+
+
   //// CREATING BUTTONS
   // One type of button is a joystick button which is any button on a
   //// joystick.
@@ -30,11 +50,11 @@ public class OI {
   // commands the same as any other Button.
 
   public double getElevatorPos(){
-    return clyde.getRawAxis(3);
+   return Lerp.lerp( clyde.getRawAxis(3) ,1,-1, Robot.armLift.elevator.MIN_HEIGHT, Robot.armLift.elevator.MAX_HEIGHT);
   }
 
   public double getArmPos(){
-    return clyde.getRawAxis(2);
+    return Lerp.lerp( clyde.getRawAxis(3) ,1,-1, Robot.armLift.arm.MIN_ANGLE, Robot.armLift.arm.MAX_ANGLE);
   }
   
 
@@ -53,4 +73,5 @@ public class OI {
   // Start the command when the button is released and let it run the command
   // until it is finished as determined by it's isFinished method.
   // button.whenReleased(new ExampleCommand());
+
 }
