@@ -8,35 +8,34 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
-import frc.robot.OI;
 import frc.robot.Robot;
+import frc.robot.subsystems.Chassis.Gear;
 
 /**
  * An example command.  You can replace me with your own command.
  */
-public class ChassisTeleopDrive extends Command {
-  public ChassisTeleopDrive() {
+public class ChassisShift extends Command {
+  Gear gear;
+  public ChassisShift(Gear gear) {
     // Use requires() here to declare subsystem dependencies
-    requires(Robot.drive);
+    // requires(Robot.m_subsystem);
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    //set mode back to manual
+    Robot.drive.shift(gear);
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    //Robot.drive.driver.tankDrive(OI.getDriveFwdL(), OI.getDriveFwdR());
-    Robot.drive.driver.tankDrive(OI.getDriveFwdR(), OI.getDriveFwdL());
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return false;
+    return true;
   }
 
   // Called once after isFinished returns true

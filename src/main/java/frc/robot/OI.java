@@ -10,6 +10,8 @@ package frc.robot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import frc.robot.commands.ChassisPixyDrive;
+import frc.robot.commands.ChassisShift;
+import frc.robot.subsystems.Chassis.Gear;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -46,10 +48,14 @@ public class OI {
 
   public static Joystick driveStick = new Joystick(0);
   JoystickButton pixyfollower = new JoystickButton(driveStick, 5);
+  JoystickButton shifter = new JoystickButton(driveStick, 6);
   
   public OI (){
 
     pixyfollower.whileHeld(new ChassisPixyDrive());
+    // Press+Release creates a "hold" behaviour without special isFinished() conditions
+    shifter.whenPressed(new ChassisShift(Gear.HIGH));
+    shifter.whenReleased(new ChassisShift(Gear.LOW));
 
   }
 
@@ -72,13 +78,4 @@ public class OI {
     //return driveStick.getRawAxis(3);
     return -driveStick.getRawAxis(3)*Math.abs(driveStick.getRawAxis(3));
   }
-
-  /**
-   * Shifts from high to low or from low to high when button 8 is pressed
-   * @return if shifted high
-   */
-  public static boolean getShiftHigh() {
-    return driveStick.getRawButton(6);
-  }
-
 }
