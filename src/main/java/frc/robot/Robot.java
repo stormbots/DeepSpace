@@ -9,16 +9,15 @@ package frc.robot;
 
 import com.stormbots.devices.pixy2.Pixy2;
 
-import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.SPI.Port;
+import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.subsystems.ChassisTalonSRX;
 import frc.robot.subsystems.ExampleSubsystem;
-
-import frc.robot.subsystems.Chassis;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -31,7 +30,7 @@ public class Robot extends TimedRobot {
   public static ExampleSubsystem m_subsystem = new ExampleSubsystem();
   public static Pixy2 pixy = new Pixy2(Port.kOnboardCS0);
 
-  public static Chassis drive = new Chassis();
+  public static ChassisTalonSRX drive = new ChassisTalonSRX();
   public static OI m_oi = new OI();
 
   Command m_autonomousCommand;

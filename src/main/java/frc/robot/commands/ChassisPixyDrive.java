@@ -63,6 +63,9 @@ public class ChassisPixyDrive extends Command {
     double midX;
     double midY;
 
+    // System.out.println("start (X,Y): (" + startX + " , " + startY + ")");
+    // System.out.println("end (X,Y): (" + endX + " , " + endY + ")");
+
     double farPoint;
     double closePoint;
     double offset = 0;
@@ -94,6 +97,7 @@ public class ChassisPixyDrive extends Command {
     }
 
     // figure out which points to use
+
     if(Math.abs(startY) == Math.max(Math.abs(startY), Math.abs(endY))) {
       farPoint = startY;
       closePoint = endY;
@@ -106,13 +110,16 @@ public class ChassisPixyDrive extends Command {
     midY = ((farPoint - closePoint) / 2) + closePoint;
 
 
+    System.out.println("Small One: " + -0.2*midY);
+    System.out.println("Large One: " + (-0.2*midY - 0.5*Math.abs(midX)));
+
     if(midX > 0) {
       //Robot.drive.driver.tankDrive(0.2*midY + 0.5*Math.abs(midX), 0.2*midY); // IS GOOD
-      Robot.drive.driver.tankDrive(-0.2*midY, -0.2*midY - 0.5*Math.abs(midX));
+      Robot.drive.driver.tankDrive(0.5*midY, 0.5*midY + 0.9*Math.abs(midX));
     }
     else {
       //Robot.drive.driver.tankDrive(0.2*midY, 0.2*midY + 0.5*Math.abs(midX)); // IS GOOD
-      Robot.drive.driver.tankDrive(-0.2*midY - 0.5*Math.abs(midX), -0.2*midY);
+      Robot.drive.driver.tankDrive(0.5*midY + 0.9*Math.abs(midX), 0.5*midY);
     }
     
   }

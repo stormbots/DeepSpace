@@ -1,9 +1,10 @@
 package com.stormbots.devices.pixy2;
 
+import static com.stormbots.Lerp.lerp;
+
 /**
- * Represent a Line from the getMainFeautures() call
- * When handling raw resolutions, note the camera resolution is 79 x 52
- * in mainFeautures mode.
+ * Represent a Line from the getMainFeautures() call When handling raw
+ * resolutions, note the camera resolution is 79 x 52 in mainFeautures mode.
  */
 public class Line{
     public double x0=0,y0=0,x1=0,y1=0;
@@ -23,25 +24,29 @@ public class Line{
         return String.format("Line (%.2f,%.2f)->(%.2f,%.2f)",x0,y0,x1,y1);
     }
 
-    /** Convert coordinates to [-0.1..0.1], with the bottom center of the screen as (0,0) */
+    /** Convert coordinates to [-1..1], with the bottom center of the screen as (0,0) */
     public Line normalizeBottom(){
         if(normalized)return this;
         normalized = true; 
-        x0 = 2*(x0/79.0-0.5);
-        y0 = 2*(1-y0/52.0);
-        x1 = 2*(x1/79.0-0.5);
-        y1 = 2*(1-y1/52.0);
+        x0 = lerp(x0, 0, 79, -1, 1);
+        y0 = lerp(y0, 0, 52, 0, 1);
+        x1 = lerp(x1, 0, 79, -1, 1);
+        y1 = lerp(y1, 0, 52, 0, 1);
         return this;
     }
     
-    /** Convert coordinates to [-0.1..0.1], with the center of the screen as (0,0)  */
+    /** Convert coordinates to [-1..1], with the center of the screen as (0,0)  */
     public Line normalizeCenter(){
         if(normalized)return this;
         normalized = true; 
-        x0 = 2*(x0/79.0-0.5);
-        y0 = 2*(0.5-y0/52.0);
-        x1 = 2*(x1/79.0-0.5);
-        y1 = 2*(0.5-y1/52.0);
+        x0 = lerp(x0, 0, 79, -1, 1);
+        y0 = lerp(y0, 0, 52, -1, 1);
+        x1 = lerp(x1, 0, 79, -1, 1);
+        y1 = lerp(y1, 0, 52, -1, 1);
+        // x0 = 2*(x0/79.0-0.5);
+        // y0 = 2*(0.5-y0/52.0);
+        // x1 = 2*(x1/79.0-0.5);
+        // y1 = 2*(0.5-y1/52.0);
         return this;
     }
 

@@ -9,7 +9,8 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
-import frc.robot.subsystems.Chassis.Gear;
+//import frc.robot.subsystems.Chassis.Gear;
+import frc.robot.subsystems.ChassisTalonSRX.Gear;
 
 /**
  * An example command.  You can replace me with your own command.
@@ -17,6 +18,7 @@ import frc.robot.subsystems.Chassis.Gear;
 public class ChassisShift extends Command {
   Gear gear;
   public ChassisShift(Gear gear) {
+    this.gear = gear;
     // Use requires() here to declare subsystem dependencies
     // requires(Robot.m_subsystem);
   }

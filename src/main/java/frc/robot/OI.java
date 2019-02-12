@@ -11,7 +11,8 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import frc.robot.commands.ChassisPixyDrive;
 import frc.robot.commands.ChassisShift;
-import frc.robot.subsystems.Chassis.Gear;
+// import frc.robot.subsystems.Chassis.Gear;
+import frc.robot.subsystems.ChassisTalonSRX.Gear;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -47,8 +48,8 @@ public class OI {
   // button.whenReleased(new ExampleCommand());
 
   public static Joystick driveStick = new Joystick(0);
-  JoystickButton pixyfollower = new JoystickButton(driveStick, 5);
-  JoystickButton shifter = new JoystickButton(driveStick, 6);
+  JoystickButton pixyfollower = new JoystickButton(driveStick, 6);
+  JoystickButton shifter = new JoystickButton(driveStick, 1);
   
   public OI (){
 
