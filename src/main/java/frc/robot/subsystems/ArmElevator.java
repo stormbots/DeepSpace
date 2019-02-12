@@ -8,9 +8,6 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
-import frc.robot.*;
-
-import static java.lang.Math.*;
 
 /**
  * Add your docs here.

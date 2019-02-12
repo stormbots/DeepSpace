@@ -22,15 +22,43 @@ import frc.robot.subsystems.ArmElevator.Pose;
  */
 public class OI {
 
-  public Joystick clyde = new Joystick(0);
+  public Joystick rightStick = new Joystick(0);
+  public Joystick leftStick = new Joystick(1);
 
   // This should be a really nice way to set up buttons to quickly switch around to various poses
   // Most notably, the old joysticks actually have 6 buttons on the left side, which is almost
   // perfect for Cargo + Hatch levels 1-3, as well has having a few spare buttons that could be OK for hatches
   // I suspect just holding the main trigger would serve well for quick pickup of the cargo,
   // and another button would serve for loading
+
+  //rightStick focuses on cargo, leftStick focuses on hatches
+
   /*
-  public JoystickButton poseCargo1 = new JoystickButton(clyde,7);
+  //Right
+  public JoystickButton poseCargo1 = new JoystickButton(rightStick,4);
+  public JoystickButton poseCargo2 = new JoystickButton(rightStick,2);
+  public JoystickButton poseCargo3 = new JoystickButton(rightStick,5);
+  public JoystickButton intakeCargo = new JoystickButton(rightStick,1);
+  public JoystickButton armDown = new JoystickButton(rightStick,6); //Pulls arm in to keep it safe
+  public JoystickButton climbSequence = new JoystickButton(rightStick,8);
+
+  //Might need this, but moving the arm to grab a ball from the intake may not be possible as a sequence
+  public JoystickButton grabCargo = new JoystickButton(rightStick,3); 
+
+  //Left
+  public JoystickButton poseHatch1 = new JoystickButton(leftStick,4);
+  public JoystickButton poseHatch2 = new JoystickButton(leftStick,2);
+  public JoystickButton poseHatch3 = new JoystickButton(leftStick,5);
+  public JoystickButton loadHatch = new JoystickButton(leftStick,3);
+  public JoystickButton handGrab = new JoystickButton(leftStick,1);
+  public JoystickButton handSuckIn = new JoystickButton(leftStick,6);
+  public JoystickButton handSpitOut = new JoystickButton(leftStick,7);
+  public JoystickButton autoLineup = new JoystickButton(leftStick,8);
+
+  //This switches functionality between a separate lineup, arm position, and drive forward delivery system
+  //vs. one that runs the whole sequence of events with one button (one for each position)
+  public JoystickButton switchDeliverMode = new JoystickButton(leftStick,11);
+
   public OI(){
     poseCargo1.whenPressed(new ArmPose(Pose.CARGO_1));
   }
@@ -50,11 +78,11 @@ public class OI {
   // commands the same as any other Button.
 
   public double getElevatorPos(){
-   return Lerp.lerp( clyde.getRawAxis(3) ,1,-1, Robot.armLift.elevator.MIN_HEIGHT, Robot.armLift.elevator.MAX_HEIGHT);
+   return Lerp.lerp( rightStick.getRawAxis(3) ,1,-1, Robot.armLift.elevator.MIN_HEIGHT, Robot.armLift.elevator.MAX_HEIGHT);
   }
 
   public double getArmPos(){
-    return Lerp.lerp( clyde.getRawAxis(3) ,1,-1, Robot.armLift.arm.MIN_ANGLE, Robot.armLift.arm.MAX_ANGLE);
+    return Lerp.lerp( rightStick.getRawAxis(3) ,1,-1, Robot.armLift.arm.MIN_ANGLE, Robot.armLift.arm.MAX_ANGLE);
   }
   
 
