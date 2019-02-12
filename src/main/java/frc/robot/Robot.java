@@ -30,8 +30,6 @@ public class Robot extends TimedRobot {
   public static OI oi = new OI();
 
   public static ArmElevator armLift = new ArmElevator();
-  public static Arm arm = new Arm();
-  public static Elevator elev = new Elevator();
 
   Command m_autonomousCommand;
   SendableChooser<Command> m_chooser = new SendableChooser<>();
