@@ -33,7 +33,6 @@ public class OI {
 
   //rightStick focuses on cargo, leftStick focuses on hatches
 
-  /*
   //Right
   public JoystickButton poseCargo1 = new JoystickButton(rightStick,4);
   public JoystickButton poseCargo2 = new JoystickButton(rightStick,2);
@@ -55,12 +54,40 @@ public class OI {
   public JoystickButton handSpitOut = new JoystickButton(leftStick,7);
   public JoystickButton autoLineup = new JoystickButton(leftStick,8);
 
+  
+
   //This switches functionality between a separate lineup, arm position, and drive forward delivery system
   //vs. one that runs the whole sequence of events with one button (one for each position)
   public JoystickButton switchDeliverMode = new JoystickButton(leftStick,11);
 
+
+
+  /*
+
   public OI(){
+
     poseCargo1.whenPressed(new ArmPose(Pose.CARGO_1));
+    poseCargo2.whenPressed(new ArmPose(Pose.CARGO_2));
+    poseCargo3.whenPressed(new ArmPose(Pose.CARGO_3));
+    loadCargo.whenPressed(new ArmPose(Pose.LOAD_CARGO));
+    armDown.whenPressed(new ArmPose(Pose.HIDE))
+
+    poseHatch1.whenPressed(new ArmPose(Pose.HATCH_1));
+    poseHatch2.whenPressed(new ArmPose(Pose.HATCH_2));
+    poseHatch3.whenPressed(new ArmPose(Pose.HATCH_3));
+    loadHatch.whenPressed(new ArmPose(Pose.LOAD_HATCH));
+
+    autoLineup.whileHeld(new ChassisPixyDrive());
+
+    handSuckIn.whileHeld(new HandPullIn());
+    handSpitOut.whileHeld(new HandPushOut());
+    handGrab.toggleWhenPressed(new HandGrab());
+
+    intakeCargo.whileHeld(new IntakeGrabBall());
+
+    climbSequence.whileHeld(new RobotGrabHab());
+
+
   }
   //*/
 
