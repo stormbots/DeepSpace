@@ -7,23 +7,13 @@
 
 package frc.robot.commands;
 
-import com.stormbots.Lerp;
-
 import edu.wpi.first.wpilibj.command.Command;
+import frc.robot.Robot;
 
-import frc.robot.*;
-import frc.robot.subsystems.ArmElevator.Pose;
-
-public class ArmPose extends Command {
-  Pose pose;
-  public ArmPose(Pose pose) {
-    this.pose = pose;
+public class HandPushOut extends Command {
+  public HandPushOut() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
-    requires(Robot.armLift);
-    requires(Robot.armLift.elevator);
-    requires(Robot.armLift.wrist);
-    requires(Robot.armLift.arm);
   }
 
   // Called just before this Command runs the first time
@@ -34,13 +24,13 @@ public class ArmPose extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.armLift.setPose(pose);    
+    Robot.hand.eject();
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return Robot.armLift.isOnTarget();
+    return false;
   }
 
   // Called once after isFinished returns true
