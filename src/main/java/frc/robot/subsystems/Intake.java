@@ -13,6 +13,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import static com.stormbots.Clamp.*;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.stormbots.Clamp;
@@ -24,6 +25,7 @@ import edu.wpi.first.wpilibj.PIDBase;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Robot;
 
 /**
  * An example subsystem.  You can replace me with your own Subsystem.
@@ -37,7 +39,7 @@ public class Intake extends Subsystem {
   private CANSparkMax pivotMotor = new CANSparkMax(5, MotorType.kBrushless); //origionally port 7
   private CANEncoder pivotEnc = new CANEncoder(pivotMotor);
   //Roller
-  private CANSparkMax rollerMotor = new CANSparkMax(8, MotorType.kBrushless);
+  private VictorSPX rollerMotor = new VictorSPX(8);
   //PassThrough
 
   //Belt passthru
@@ -54,15 +56,18 @@ public class Intake extends Subsystem {
   private Mode mode = Mode.CLOSEDLOOP;
   /** Configured with a 49:1*49:1*84:24 gear reduction over a full rotation */
   private Lerp pivotToDegrees = new Lerp(
-     0, 0,     1.0*(49.0*7.0*7.0*84.0/24.0), 360.0
+     0, 90,     1.0*(49.0*7.0*7.0*84.0/24.0), 90+360.0
      );
 
   double kPivotGain = 0;  /* SET VIA CONSTRUCTOR/INIT, DO NOT USE */
   double kPivotFF = 0; /* SET VIA CONSTRUCTOR/INIT, DO NOT USE */
-  double PIVOT_MIN= 15;
-  double PIVOT_MIN_HAB = -10;
-  double PIVOT_MAX = 110.0;
-
+  public static final double PIVOT_MIN = 15;
+  public static final double PIVOT_MIN_HAB = -10;
+  public static final double PIVOT_MAX = 110.0;
+  public static final double PIVOT_GRAB_HAB = 0;
+  public static final double PIVOT_REST = 90;
+  public static final double PIVOT_GRAB_CARGO = 10;
+  
 
   public Intake() {
     //Enable maybe if required // motorPivot.setInverted(false);
@@ -92,7 +97,6 @@ public class Intake extends Subsystem {
 
   }
 
-  
   @Override
   public void initDefaultCommand() {
     // Set the default command for a subsystem here.
@@ -140,9 +144,9 @@ public class Intake extends Subsystem {
     System.out.println("PWR: " + pivotPower);
 
     //set output power
-    pivotMotor.set(-pivotPower);
-    rollerMotor.set(rollerPower);
-    beltMotor.set(beltPower);
+    pivotMotor.set( -pivotPower);
+    rollerMotor.set(ControlMode.PercentOutput,rollerPower);
+    beltMotor.set(ControlMode.PercentOutput,beltPower);
   }
 
 
@@ -160,6 +164,7 @@ public class Intake extends Subsystem {
 
   /** Returns Degrees */
   public double getPosition(){
+    //TODO Should we invert pivot.toDegrees instead of the encoder position?
     return pivotToDegrees.get(-pivotEnc.getPosition());
   }
 
@@ -169,7 +174,10 @@ public class Intake extends Subsystem {
 
   /** True if ball is in passthrough */
   public boolean hasBall() { 
-    return  !bounded(beltMotor.getOutputCurrent(), -3, 3);
+    //TODO Get the current
+    // current = beltMotor.getOutputCurrent();// should work? TalonSRX Only?
+    double current = Robot.pdp.getCurrent(9);
+    return  !bounded(current, -3, 3);
   }
 
   public boolean isPivotLimitPressed() {

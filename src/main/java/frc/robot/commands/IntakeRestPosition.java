@@ -13,17 +13,19 @@ import frc.robot.Robot;
 /**
  * An example command.  You can replace me with your own command.
  */
-public class IntakeRollerPower extends Command {
-  double power = 0;
-  public IntakeRollerPower(double power) {
+public class IntakeRestPosition extends Command {
+  public IntakeRestPosition() {
     // Use requires() here to declare subsystem dependencies
-    this.power = power;
+    requires(Robot.intake);
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    Robot.intake.setRollerPower(power);
+    Robot.intake.setTargetPosition(Robot.intake.PIVOT_REST);
+    Robot.intake.setRollerPower(0);
+    Robot.intake.setBeltPower(0);
+    
   }
 
   // Called repeatedly when this Command is scheduled to run
@@ -34,7 +36,7 @@ public class IntakeRollerPower extends Command {
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return true;
+    return false;
   }
 
   // Called once after isFinished returns true
@@ -46,6 +48,5 @@ public class IntakeRollerPower extends Command {
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
-    Robot.intake.setRollerPower(0);
   }
 }
