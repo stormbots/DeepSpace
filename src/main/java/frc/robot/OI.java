@@ -49,7 +49,7 @@ public class OI {
 
   public static Joystick driveStick = new Joystick(0);
   JoystickButton pixyfollower = new JoystickButton(driveStick, 6);
-  JoystickButton shifter = new JoystickButton(driveStick, 1);
+  JoystickButton shifter = new JoystickButton(driveStick, 8);
   
   public OI (){
 

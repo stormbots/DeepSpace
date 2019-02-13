@@ -48,7 +48,7 @@ public class ChassisPixyDrive extends Command {
     }
     if(cyclesSinceLastLine > 10){
       //chassis speed  = 0
-      Robot.drive.driver.tankDrive(0, 0);
+      Robot.drive.driver.tankDrive(0.4, 0.4);
       return ; 
     }
 
@@ -60,6 +60,14 @@ public class ChassisPixyDrive extends Command {
     double startY = line.y0;
     double endX = line.x1;
     double endY = line.y1;
+
+    double absStartX = Math.abs(startX);
+    double absStartY = Math.abs(startY);
+    double absEndX = Math.abs(endX);
+    double absEndY = Math.abs(endY);
+
+    /*
+
     double midX;
     double midY;
 
@@ -109,18 +117,44 @@ public class ChassisPixyDrive extends Command {
     // use those points we figured out
     midY = ((farPoint - closePoint) / 2) + closePoint;
 
+    */
 
-    System.out.println("Small One: " + -0.2*midY);
-    System.out.println("Large One: " + (-0.2*midY - 0.5*Math.abs(midX)));
+    //System.out.println("Small One: " + -0.2*midY);
+    //System.out.println("Large One: " + (-0.2*midY - 0.5*Math.abs(midX)));
 
-    if(midX > 0) {
-      //Robot.drive.driver.tankDrive(0.2*midY + 0.5*Math.abs(midX), 0.2*midY); // IS GOOD
-      Robot.drive.driver.tankDrive(0.5*midY, 0.5*midY + 0.9*Math.abs(midX));
+    if(Math.sqrt(Math.pow(startX-endX, 2) + Math.pow(startY-endY, 2)) < 0.1) {
+      Robot.drive.driver.tankDrive(0.2, 0.2);
     }
-    else {
-      //Robot.drive.driver.tankDrive(0.2*midY, 0.2*midY + 0.5*Math.abs(midX)); // IS GOOD
-      Robot.drive.driver.tankDrive(0.5*midY + 0.9*Math.abs(midX), 0.5*midY);
+    else{
+
+      double shortSidePower = 0.5*startY;
+      double longSidePower = 0.5*startY + 2.0*Math.abs(startX);
+
+      if(startX > 0) {
+        //Robot.drive.driver.tankDrive(0.2*midY + 0.5*Math.abs(midX), 0.2*midY); // IS GOOD
+        Robot.drive.driver.tankDrive(shortSidePower, longSidePower);
+      }
+      else if(startX < 0) {
+        //Robot.drive.driver.tankDrive(0.2*midY, 0.2*midY + 0.5*Math.abs(midX)); // IS GOOD
+        Robot.drive.driver.tankDrive(longSidePower, shortSidePower);
+      }
+      else {
+        Robot.drive.driver.tankDrive(shortSidePower, shortSidePower);
+      }
     }
+
+    /*
+    else{
+      if(midX > 0) {
+        //Robot.drive.driver.tankDrive(0.2*midY + 0.5*Math.abs(midX), 0.2*midY); // IS GOOD
+        Robot.drive.driver.tankDrive(0.5*midY, 0.5*midY + 2.0*Math.abs(midX));
+      }
+      else {
+        //Robot.drive.driver.tankDrive(0.2*midY, 0.2*midY + 0.5*Math.abs(midX)); // IS GOOD
+        Robot.drive.driver.tankDrive(0.5*midY + 2.0*Math.abs(midX), 0.5*midY);
+      }
+    }
+    */
     
   }
 
