@@ -7,8 +7,10 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
@@ -19,6 +21,7 @@ public class Pogos extends Subsystem {
 
   public Solenoid leftPogo = new Solenoid(0);
   public Solenoid rightPogo = new Solenoid(1);
+  public DigitalInput onHabCenter = new DigitalInput(3);
 
   public VictorSPX pogoMotor = new VictorSPX(8);
 
@@ -47,6 +50,14 @@ public class Pogos extends Subsystem {
     deployed = false;
     leftPogo.set(deployed);
     rightPogo.set(deployed);
+  }
+
+  public void setPogoPower(double vel){
+    motorPower = vel;
+  }
+
+  public void runPogoMotor(){
+    pogoMotor.set(ControlMode.PercentOutput, motorPower);
   }
 
   

@@ -140,6 +140,8 @@ public class Arm extends Subsystem {
             if(armPower < 0 && currentArmPos < MIN_ANGLE) armPower = 0;
 
             armMotor.set(ControlMode.PercentOutput, armPower);
+
+            ArmElevator.armavatorTab.add("Arm Power", armPower);
       }
 
 

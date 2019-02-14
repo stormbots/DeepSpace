@@ -8,6 +8,9 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import frc.robot.Robot;
 
 /**
  * Add your docs here.
@@ -24,6 +27,7 @@ public class ArmElevator extends Subsystem {
       public Elevator elevator = new Elevator();
       public Wrist wrist = new Wrist();
       public Arm arm = new Arm();
+      public static ShuffleboardTab armavatorTab = Shuffleboard.getTab("Armavator");
 
       //TODO: Do we want to calculate anything with these constants?
       // public final double ARM_LENGTH = 20;
@@ -167,6 +171,16 @@ public class ArmElevator extends Subsystem {
             elevator.update();
             arm.update();
             wrist.update(arm.getArmAngle());
+            
+            armavatorTab.add("Elevator Current Height", elevator.getPosition());
+            armavatorTab.add("Arm Current Angle", arm.getArmAngle());
+            armavatorTab.add("Wrist Current Angle (Floor)", wrist.getWristAngleFromFloor());
+            armavatorTab.add("Wrist Current Angle (Arm)", wrist.getWristAngleFromFloor());
+            armavatorTab.add("Pose", this.getPose());
+            armavatorTab.add("Arm Pose Angle", pose.armAngle());
+            armavatorTab.add("Wrist Pose Angle", pose.wristAngle());
+            armavatorTab.add("Elevator Pose Height", pose.eleHeight());
+
       }
 
 

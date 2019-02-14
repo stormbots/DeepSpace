@@ -14,6 +14,7 @@ import com.stormbots.Lerp;
 import com.stormbots.closedloop.FB;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
+import frc.robot.subsystems.ArmElevator;
 import frc.robot.subsystems.ArmElevator.Mode;
 import frc.robot.subsystems.ArmElevator.Pose;
 
@@ -177,6 +178,8 @@ public class Wrist extends Subsystem {
             if(wristPower < 0 && angleFromArm < MIN_ANGLE_TO_ARM) wristPower = 0;
 
             wristMotor.set(ControlMode.PercentOutput, wristPower);
+
+            ArmElevator.armavatorTab.add("Wrist Power", wristPower);
       }
 
 

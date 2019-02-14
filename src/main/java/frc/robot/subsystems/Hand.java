@@ -12,6 +12,8 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 
 /**
  * Add your docs here.
@@ -23,6 +25,8 @@ public class Hand extends Subsystem {
 
     public static final boolean OPEN = false; 
     public static final boolean CLOSE = !OPEN;
+
+    //public static ShuffleboardTab handTab = Shuffleboard.getTab("Hand Data");
 
     public TalonSRX motor = new TalonSRX(14);
   
