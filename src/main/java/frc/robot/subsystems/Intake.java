@@ -7,49 +7,36 @@
 
 package frc.robot.subsystems;
 
+import static com.stormbots.Clamp.bounded;
+import static com.stormbots.Clamp.clamp;
+
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import static com.stormbots.Clamp.*;
-
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.InvertType;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.ctre.phoenix.motorcontrol.can.VictorSPX;
-import com.stormbots.Clamp;
 import com.stormbots.Lerp;
 import com.stormbots.closedloop.FB;
 
-import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.PIDBase;
 import edu.wpi.first.wpilibj.command.Subsystem;
-import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Robot;
 
 /**
- * An example subsystem.  You can replace me with your own Subsystem.
+ * An example subsystem. You can replace me with your own Subsystem.
  */
 public class Intake extends Subsystem {
   // Put methods for controlling this subsystem
   // here. Call these from Commands.
 
+  // Pivot
+  private CANSparkMax pivotMotor = new CANSparkMax(5, MotorType.kBrushless);
+  private CANEncoder pivotEnc = new CANEncoder(pivotMotor);
+  // Roller
+  private VictorSPX rollerMotor = new VictorSPX(8);
+  // PassThrough
 
   
-  // Pivot
-  private CANSparkMax pivotMotor = new CANSparkMax(5, MotorType.kBrushless); //origionally port 7
-  private CANEncoder pivotEnc = new CANEncoder(pivotMotor);
-  //Roller
-  private VictorSPX rollerMotor = new VictorSPX(8);
-  //PassThrough
-
-  //Belt passthru
-  private VictorSPX beltMotor = new VictorSPX(6);
-  private VictorSPX beltMotorB = new VictorSPX(6);
-
-  double beltPower = 0;
   double pivotPower = 0;
   double rollerPower = 0;
   double pivotTargetPosition = 0;
@@ -102,11 +89,6 @@ public class Intake extends Subsystem {
     //TODO: Figure if this is needed: rollerMotorMotor.setInverted(false);
     rollerMotor.set(ControlMode.PercentOutput, 0);
 
-    //Configure Passthrough belt motors
-    //TODO: Figure if this is needed: beltMotor.setInverted(false);
-    beltMotorB.follow(beltMotor);
-    beltMotorB.setInverted(InvertType.OpposeMaster);
-    beltMotor.set(ControlMode.PercentOutput, 0);
 
   }
 
@@ -149,15 +131,12 @@ public class Intake extends Subsystem {
     //Position block should fix it unless we're oscillating wildly
     //if(pivotPower < 0  && currentPosition < PIVOT_MIN) { pivotPower = 0;}
     
-
-    System.out.println("TARGET: " + targetPosition);
-    System.out.println("DEG: " + currentPosition);    
-    System.out.println("PWR: " + pivotPower);
-
+    tab.add("TargetPosition(mod)", targetPosition);
+    
     //set output power
     pivotMotor.set( -pivotPower);
     rollerMotor.set(ControlMode.PercentOutput,rollerPower);
-    beltMotor.set(ControlMode.PercentOutput,beltPower);
+    
   }
 
 
@@ -184,14 +163,6 @@ public class Intake extends Subsystem {
     return bounded(getPosition(),pivotTargetPosition-tolerance,pivotTargetPosition+tolerance);
   }
 
-  /** True if ball is in passthrough */
-  public boolean hasBall() { 
-    //TODO Get the current
-    // current = beltMotor.getOutputCurrent();// should work? TalonSRX Only?
-    double current = Robot.pdp.getCurrent(9);
-    return  !bounded(current, -3, 3);
-  }
-
   public boolean isPivotLimitPressed() {
     //TODO: Don't have limit switches, so we have to use some soft method
     // May consider current check on the "up" position, if it's safe to do so.
@@ -202,8 +173,6 @@ public class Intake extends Subsystem {
     rollerPower = newPower;
   }
 
-  public void setBeltPower(double newPower){
-    beltPower = newPower;
-  }
+  
 
 }

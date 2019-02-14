@@ -13,29 +13,30 @@ import frc.robot.Robot;
 /**
  * An example command.  You can replace me with your own command.
  */
-public class IntakeBeltPower extends Command {
-  double power = 0;
-  public IntakeBeltPower(double power) {
+public class PassThroughPower extends Command {
+  private double power;
+
+  public PassThroughPower(double power) {
     // Use requires() here to declare subsystem dependencies
-   // requires(Robot.m_subsystem);
-   this.power = power;
+    requires(Robot.passThrough);
+    this.power = power;
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    Robot.intake.setBeltPower(power);
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
+    Robot.passThrough.setPower(this.power);
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return true;
+    return false;
   }
 
   // Called once after isFinished returns true
@@ -47,6 +48,5 @@ public class IntakeBeltPower extends Command {
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
-    Robot.intake.setBeltPower(0);
   }
 }

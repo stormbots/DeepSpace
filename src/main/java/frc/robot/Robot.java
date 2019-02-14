@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.PassThrough;
 
 
 // IMPORT MOTORS BOTH NORMAL AND NEO 
@@ -34,6 +35,7 @@ public class Robot extends TimedRobot {
   public static ExampleSubsystem m_subsystem = new ExampleSubsystem();
   public static OI m_oi;
   public static Intake intake = new Intake();
+  public static PassThrough passThrough = new PassThrough();
 
   Command m_autonomousCommand;
   SendableChooser<Command> m_chooser = new SendableChooser<>();

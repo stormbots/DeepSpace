@@ -19,13 +19,13 @@ public class IntakeSetPosition extends Command {
   
   public IntakeSetPosition(double position) {
     // Use requires() here to declare subsystem dependencies
-    // requires(Robot.intake);
+    requires(Robot.intake);
     this.position = position;
   }
 
   public IntakeSetPosition(double position, double tolerance) {
     // Use requires() here to declare subsystem dependencies
-    // requires(Robot.intake);
+    requires(Robot.intake);
     this.position = position;
     this.tolerance = tolerance;
   }

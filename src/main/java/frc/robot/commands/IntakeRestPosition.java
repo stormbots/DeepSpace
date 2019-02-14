@@ -23,9 +23,7 @@ public class IntakeRestPosition extends Command {
   @Override
   protected void initialize() {
     Robot.intake.setTargetPosition(Robot.intake.PIVOT_REST);
-    Robot.intake.setRollerPower(0);
-    Robot.intake.setBeltPower(0);
-    
+    Robot.intake.setRollerPower(0);    
   }
 
   // Called repeatedly when this Command is scheduled to run
