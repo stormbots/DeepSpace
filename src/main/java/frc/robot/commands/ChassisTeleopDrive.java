@@ -29,8 +29,8 @@ public class ChassisTeleopDrive extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    //Robot.drive.driver.tankDrive(OI.getDriveFwdL(), OI.getDriveFwdR());
-    Robot.drive.driver.tankDrive(OI.getDriveFwdR(), OI.getDriveFwdL());
+    //Robot.drive.driver.tankDrive(OI.getDriveFwdR(), OI.getDriveFwdL()); // Use this one for TankDrive
+    Robot.drive.driver.arcadeDrive(OI.getDriveFwdL(), OI.getDriveSideR());  //Use this one for ArcadeDrive
   }
 
   // Make this return true when this Command no longer needs to run execute()

@@ -9,6 +9,7 @@ package frc.robot.commands;
 
 import com.stormbots.devices.pixy2.Line;
 
+import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
@@ -20,11 +21,22 @@ public class ChassisPixyDrive extends Command {
   boolean areWeBroken = false;
   Line line = new Line();
   int cyclesSinceLastLine = 100;
+  Ultrasonic sonarL = new Ultrasonic(0,1);
+  Ultrasonic sonarR = new Ultrasonic(2,3);
 
   public ChassisPixyDrive() {
     // Use requires() here to declare subsystem dependencies
     requires(Robot.drive);
-    System.out.println("PLEASE SEE ME!!!!");
+
+    // apparently needs to be done
+    sonarL.setEnabled(true);
+    sonarR.setEnabled(true);
+
+    // apparently needs to be done with every new ultrasonic
+    sonarL.setAutomaticMode(true);
+    sonarR.setAutomaticMode(true);
+
+    System.out.println("ChassisPixyDriveConstructor actually ran");
   }
 
   // Called just before this Command runs the first time
