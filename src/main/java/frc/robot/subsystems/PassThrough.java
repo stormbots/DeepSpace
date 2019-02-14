@@ -20,6 +20,10 @@ import static com.stormbots.Clamp.*;
  * An example subsystem.  You can replace me with your own Subsystem.
  */
 public class PassThrough extends Subsystem {
+
+public static final double GRAB_BALL_POWER = 0.3 ;
+public static final double CARGO_STALL_CURRENT = 3;
+
   private VictorSPX beltMotor = new VictorSPX(6);
   private VictorSPX beltMotorB = new VictorSPX(6);
 
@@ -35,6 +39,7 @@ public class PassThrough extends Subsystem {
     beltMotor.set(ControlMode.PercentOutput, 0);
 
   }
+  
   
 
   @Override
@@ -58,7 +63,7 @@ public class PassThrough extends Subsystem {
     //TODO Get the current
     // current = beltMotor.getOutputCurrent();// should work? TalonSRX Only?
     double current = Robot.pdp.getCurrent(9);
-    return  !bounded(current, -3, 3);
+    return  !bounded(current, -CARGO_STALL_CURRENT, CARGO_STALL_CURRENT);
   }
 
 }

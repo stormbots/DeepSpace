@@ -9,6 +9,8 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.PassThrough;
 
 /**
  * An example command.  You can replace me with your own command.
@@ -31,9 +33,9 @@ public class IntakeGrabBall extends Command {
   protected void execute() {
     // if(Robot.intake.hasBall())return; //TODO Do we need this?
 
-    Robot.intake.setTargetPosition(Robot.intake.PIVOT_GRAB_CARGO);
-    Robot.intake.setRollerPower(0.4);
-    Robot.passThrough.setPower(0.3);
+    Robot.intake.setTargetPosition(Intake.PIVOT_GRAB_CARGO);
+    Robot.intake.setRollerPower(Intake.ROLLER_POWER);
+    Robot.passThrough.setPower(PassThrough.GRAB_BALL_POWER);
   }
 
   // Make this return true when this Command no longer needs to run execute()

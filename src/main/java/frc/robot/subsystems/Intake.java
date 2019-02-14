@@ -67,6 +67,7 @@ public class Intake extends Subsystem {
   public static final double PIVOT_GRAB_HAB = 0;
   public static final double PIVOT_REST = 90;
   public static final double PIVOT_GRAB_CARGO = 10;
+  public static final double ROLLER_GRAB_CARGO = 0.4;
   
 
   public Intake() {
@@ -137,11 +138,6 @@ public class Intake extends Subsystem {
     pivotMotor.set( -pivotPower);
     rollerMotor.set(ControlMode.PercentOutput,rollerPower);
     
-  }
-
-
-  public void setPower(double power){
-    this.pivotPower = power;
   }
   
   public void setMode(Mode newMode){
