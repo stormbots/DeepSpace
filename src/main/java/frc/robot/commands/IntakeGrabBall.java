@@ -34,7 +34,7 @@ public class IntakeGrabBall extends Command {
     // if(Robot.intake.hasBall())return; //TODO Do we need this?
 
     Robot.intake.setTargetPosition(Intake.PIVOT_GRAB_CARGO);
-    Robot.intake.setRollerPower(Intake.ROLLER_POWER);
+    Robot.intake.setRollerPower(Intake.ROLLER_GRAB_CARGO);
     Robot.passThrough.setPower(PassThrough.GRAB_BALL_POWER);
   }
 
