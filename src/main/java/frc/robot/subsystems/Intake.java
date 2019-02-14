@@ -24,6 +24,8 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.PIDBase;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 
@@ -35,7 +37,8 @@ public class Intake extends Subsystem {
   // here. Call these from Commands.
 
 
-  //Pivot 
+  
+  // Pivot
   private CANSparkMax pivotMotor = new CANSparkMax(5, MotorType.kBrushless); //origionally port 7
   private CANEncoder pivotEnc = new CANEncoder(pivotMotor);
   //Roller
@@ -51,13 +54,23 @@ public class Intake extends Subsystem {
   double rollerPower = 0;
   double pivotTargetPosition = 0;
 
+  //TODO Create new named tab motor output position
+
+  // Example program
+  // ShuffleboardTab tab = Shuffleboard.getTab("Tab Title");
+
+  ShuffleboardTab tab = Shuffleboard.getTab("Intake");
+
+  
+  
+  
   
   public enum Mode {CLOSEDLOOP,MANUAL,HABLIFT,DISABLE};
   private Mode mode = Mode.CLOSEDLOOP;
   /** Configured with a 49:1*49:1*84:24 gear reduction over a full rotation */
   private Lerp pivotToDegrees = new Lerp(
-     0, 90,     1.0*(49.0*7.0*7.0*84.0/24.0), 90+360.0
-     );
+    0, 0,    1.0*(49.0*7.0*7.0*84.0/24.0), 360.0
+    );
 
   double kPivotGain = 0;  /* SET VIA CONSTRUCTOR/INIT, DO NOT USE */
   double kPivotFF = 0; /* SET VIA CONSTRUCTOR/INIT, DO NOT USE */
@@ -108,14 +121,12 @@ public class Intake extends Subsystem {
     //setup variables and defaults
     double targetPosition = this.pivotTargetPosition;
     double currentPosition = getPosition();  
+    tab.add("TargetPosition", targetPosition);
+    tab.add("CurrentPosition", currentPosition);
+
 
     //Check Soft Limits
-    if(mode == Mode.HABLIFT){
-      targetPosition = clamp(targetPosition,PIVOT_MIN_HAB,PIVOT_MAX);
-    }
-    else{
-      targetPosition = clamp(targetPosition,PIVOT_MIN,PIVOT_MAX);
-    }
+    targetPosition = clamp(targetPosition,PIVOT_MIN,PIVOT_MAX);
 
     switch(mode){
       case MANUAL:
@@ -165,7 +176,8 @@ public class Intake extends Subsystem {
   /** Returns Degrees */
   public double getPosition(){
     //TODO Should we invert pivot.toDegrees instead of the encoder position?
-    return pivotToDegrees.get(-pivotEnc.getPosition());
+    return -pivotToDegrees.get(pivotEnc.getPosition())-PIVOT_MAX;//- in front
+
   }
 
   public boolean isOnTarget(double tolerance){
