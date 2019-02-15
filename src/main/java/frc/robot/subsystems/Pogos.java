@@ -19,46 +19,42 @@ import edu.wpi.first.wpilibj.command.Subsystem;
  */
 public class Pogos extends Subsystem {
 
-  public Solenoid leftPogo = new Solenoid(0);
-  public Solenoid rightPogo = new Solenoid(1);
+  public Solenoid pogo = new Solenoid(2);
   public DigitalInput onHabCenter = new DigitalInput(3);
 
-  public VictorSPX pogoMotor = new VictorSPX(8);
+  public VictorSPX pogoMotor = new VictorSPX(15);
 
   // Put methods for controlling this subsystem
   // here. Call these from Commands.
 
-  boolean deployed = false;
-  double motorPower;
+  public static final boolean DEPLOYED = false;
+  public static final boolean RETRACTED = !DEPLOYED;
+  double motorPower = 0.3;
   double velocity = 0.0;
 
   public Pogos(){
 
-    deployed = false;
-    leftPogo.set(deployed);
-    rightPogo.set(deployed);
+    pogo.set(RETRACTED);
     
   }
 
   public void deployPogos(){
-    deployed = true;
-    leftPogo.set(deployed);
-    rightPogo.set(deployed);
+    
+    pogo.set(DEPLOYED);
   }
 
   public void retractPogos(){
-    deployed = false;
-    leftPogo.set(deployed);
-    rightPogo.set(deployed);
+    pogo.set(RETRACTED);
   }
 
-  public void setPogoPower(double vel){
-    motorPower = vel;
+  public void setPogoPower(double pwr){
+    motorPower = pwr;
   }
 
-  public void runPogoMotor(){
+  public void update(){
     pogoMotor.set(ControlMode.PercentOutput, motorPower);
   }
+    
 
   
   @Override

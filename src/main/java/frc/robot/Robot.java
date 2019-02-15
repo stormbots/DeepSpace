@@ -19,6 +19,7 @@ import frc.robot.commands.ExampleCommand;
 import frc.robot.subsystems.ArmElevator;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Hand;
+import frc.robot.subsystems.Pogos;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -35,6 +36,7 @@ public class Robot extends TimedRobot {
   public static ArmElevator armLift = new ArmElevator();
   public static Hand hand = new Hand();
   public static ShuffleboardTab driveTab = Shuffleboard.getTab("Match Dashboard");
+  public static Pogos pogos = new Pogos();
 
 
 
@@ -141,5 +143,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void testPeriodic() {
+    /*pogos.setPogoPower(0.3);
+    pogos.update();*/
   }
 }
