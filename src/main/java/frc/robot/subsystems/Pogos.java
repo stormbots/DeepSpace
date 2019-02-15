@@ -31,10 +31,13 @@ public class Pogos extends Subsystem {
   public static final boolean RETRACTED = !DEPLOYED;
   double motorPower = 0.3;
   double velocity = 0.0;
+  public static boolean help = false;
 
   public Pogos(){
 
     pogo.set(RETRACTED);
+    help = true;
+    System.out.println("Pogo is Initialized");
     
   }
 

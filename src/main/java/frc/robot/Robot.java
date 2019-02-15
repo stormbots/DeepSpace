@@ -8,6 +8,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.CameraServer;
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -29,6 +30,7 @@ import frc.robot.subsystems.Pogos;
  * project.
  */
 public class Robot extends TimedRobot {
+  public static Compressor compressor = new Compressor();
   public static ExampleSubsystem m_subsystem = new ExampleSubsystem();
   public static OI oi = new OI();
   
@@ -52,8 +54,8 @@ public class Robot extends TimedRobot {
     m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
     // chooser.addOption("My Auto", new MyAutoCommand());
     SmartDashboard.putData("Auto mode", m_chooser);
-    driveTab.add("Front Camera", CameraServer.getInstance().startAutomaticCapture()); //startAutomaticCapture(int)
-    driveTab.add("Back Camera", CameraServer.getInstance().startAutomaticCapture());
+    // driveTab.add("Front Camera", CameraServer.getInstance().startAutomaticCapture()); //startAutomaticCapture(int)
+    // driveTab.add("Back Camera", CameraServer.getInstance().startAutomaticCapture());
 
   }
 
@@ -143,6 +145,12 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void testPeriodic() {
+    pogos.retractPogos();
+  if(pogos.help==true){
+    System.out.println("SPAAAAMd");
+  }
+    
+
     /*pogos.setPogoPower(0.3);
     pogos.update();*/
   }
