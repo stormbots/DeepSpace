@@ -12,7 +12,9 @@ import com.stormbots.devices.pixy2.Line;
 import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
+
 import static com.stormbots.Lerp.lerp;
+import static com.stormbots.Clamp.clamp;
 
 /**
  * An example command.  You can replace me with your own command.
@@ -77,15 +79,16 @@ public class ChassisPixyDrive extends Command {
     //adjusts to the first quadrant
     double startXq1 = lerp(startX, -1, 1, 0, 1);
     double endXq1 = lerp(endX, -1, 1, 0, 1);
-    //keeps the ratios the same relative to the new Xq1's
-    double startYq1 = lerp(startY, 0, 1, 0, 2);
-    double endYq1 = lerp(endY, 0, 1, 0, 2);
 
-    double slope = (endYq1 - startYq1) / (endXq1 - startXq1);
+    double k = 10.0; // needs some fixing
 
-    //TODO: DO ALOT BELOW... THIS IS NOT DONE
-    //double newX = slope * <make sure you move the startX val in propotion to the length of the line>
+    double newX = -(endXq1 - startXq1) * k + startXq1;
+    double newY = -(endY - startY) * k + startY;
 
+    newX = lerp(newX, 0, 1, -1, 1);
+
+    newX = clamp(newX, -1, 1);
+    newY = clamp(newY, 0, 1);
 
     /*
 
@@ -148,8 +151,8 @@ public class ChassisPixyDrive extends Command {
     }
     else{
 
-      double shortSidePower = 0.5*startY;
-      double longSidePower = 0.5*startY + 2.0*Math.abs(startX);
+      double shortSidePower = 0.5*newY;
+      double longSidePower = 0.5*newY + 2.0*Math.abs(newX);
 
       if(startX > 0) {
         //Robot.drive.driver.tankDrive(0.2*midY + 0.5*Math.abs(midX), 0.2*midY); // IS GOOD

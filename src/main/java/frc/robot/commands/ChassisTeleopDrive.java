@@ -30,7 +30,8 @@ public class ChassisTeleopDrive extends Command {
   @Override
   protected void execute() {
     //Robot.drive.driver.tankDrive(OI.getDriveFwdL(), OI.getDriveFwdR()); //OI.getDriveFwdL()); // Use this one for TankDrive
-    Robot.drive.driver.arcadeDrive(Math.min(0.05, OI.getDriveFwdR()), 0); //OI.getDriveSideR());  //Use this one for ArcadeDrive
+    //Robot.drive.driver.arcadeDrive(OI.getDriveFwdL(), OI.getDriveSideR());// Caden's Arcade
+    Robot.drive.driver.arcadeDrive(OI.getDriveFwdR(), OI.getDriveSideL());// Normal Arcade
   }
 
   // Make this return true when this Command no longer needs to run execute()
