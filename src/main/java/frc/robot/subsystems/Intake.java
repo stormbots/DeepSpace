@@ -15,12 +15,14 @@ import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.stormbots.Clamp;
 import com.stormbots.Lerp;
 import com.stormbots.closedloop.FB;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * An example subsystem. You can replace me with your own Subsystem.
@@ -30,12 +32,12 @@ public class Intake extends Subsystem {
   // here. Call these from Commands.
 
   // Pivot
-  private CANSparkMax pivotMotor = new CANSparkMax(5, MotorType.kBrushless);
+  private CANSparkMax pivotMotor = new CANSparkMax(7, MotorType.kBrushless);
   private CANEncoder pivotEnc = new CANEncoder(pivotMotor);
   // Roller
   private VictorSPX rollerMotor = new VictorSPX(8);
   // PassThrough
-
+// comments that are extremely important jeez help
   
   double pivotPower = 0;
   double rollerPower = 0;
@@ -44,19 +46,14 @@ public class Intake extends Subsystem {
   //TODO Create new named tab motor output position
 
   // Example program
-  // ShuffleboardTab tab = Shuffleboard.getTab("Tab Title");
-
-  ShuffleboardTab tab = Shuffleboard.getTab("Intake");
-
-  
-  
-  
+  // ShuffleboardTab tab = Shuffleboard.getTab("Intake"); 
   
   public enum Mode {CLOSEDLOOP,MANUAL,HABLIFT,DISABLE};
   private Mode mode = Mode.CLOSEDLOOP;
   /** Configured with a 49:1*49:1*84:24 gear reduction over a full rotation */
+
   private Lerp pivotToDegrees = new Lerp(
-    0, 0,    1.0*(49.0*7.0*7.0*84.0/24.0), 360.0
+    0, 1.0*(49.0*7.0*7.0*84.0/24.0),  0, 360.0
     );
 
   double kPivotGain = 0;  /* SET VIA CONSTRUCTOR/INIT, DO NOT USE */
@@ -104,8 +101,8 @@ public class Intake extends Subsystem {
     //setup variables and defaults
     double targetPosition = this.pivotTargetPosition;
     double currentPosition = getPosition();  
-    tab.add("TargetPosition", targetPosition);
-    tab.add("CurrentPosition", currentPosition);
+    // tab.add("TargetPosition", targetPosition);
+    // tab.add("CurrentPosition", currentPosition);
 
 
     //Check Soft Limits
@@ -127,17 +124,20 @@ public class Intake extends Subsystem {
         pivotPower = 0;
         break;
       }
-   
+         
     //TODO Do we need to check check physical limits of motion?
     //Position block should fix it unless we're oscillating wildly
     //if(pivotPower < 0  && currentPosition < PIVOT_MIN) { pivotPower = 0;}
     
-    tab.add("TargetPosition(mod)", targetPosition);
-    
+    // tab.add("TargetPosition(mod)", targetPosition);
+    SmartDashboard.putNumber("Position",getPosition());
+
+        pivotMotor.set(0.05);//TODO REMOVE ME
     //set output power
-    pivotMotor.set( -pivotPower);
+    pivotPower = Clamp.clamp(pivotPower, -0.05, 0.05);
+    // pivotMotor.set( -pivotPower);
+
     rollerMotor.set(ControlMode.PercentOutput,rollerPower);
-    
   }
   
   public void setMode(Mode newMode){
@@ -149,9 +149,15 @@ public class Intake extends Subsystem {
   }
 
   /** Returns Degrees */
-  public double getPosition(){
+  public double getPosition() {
     //TODO Should we invert pivot.toDegrees instead of the encoder position?
-    return -pivotToDegrees.get(pivotEnc.getPosition())-PIVOT_MAX;//- in front
+    System.out.println("pivotEnc "+pivotEnc.getPosition());
+    Lerp.lerp(pivotEnc.getPosition(),0.0, 0.0,    8403.5, 360.0);
+    return -pivotToDegrees.get(pivotEnc.getPosition())-PIVOT_MAX; //TODO this should work
+
+    // double tickToDegrees =  1.0*(49.0*7.0*7.0*84.0/24.0);
+    // return -tickToDegrees*pivotEnc.getPosition()-PIVOT_MAX;//- in front
+    
 
   }
 
