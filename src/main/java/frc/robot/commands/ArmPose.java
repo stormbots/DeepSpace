@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.command.Command;
 
 import frc.robot.*;
 import frc.robot.subsystems.ArmElevator.Pose;
+import frc.robot.subsystems.ArmElevator.*;
 
 public class ArmPose extends Command {
   Pose pose;
@@ -20,10 +21,12 @@ public class ArmPose extends Command {
     this.pose = pose;
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
-    requires(Robot.armLift);
-    requires(Robot.armLift.elevator);
-    requires(Robot.armLift.wrist);
-    requires(Robot.armLift.arm);
+    // These line can't be instantiated by robot, doesn't like nested subsystems?
+    // requires(Robot.armLift);
+    // requires(Robot.armLift.elevator);
+    // requires(Robot.armLift.wrist);
+    // requires(Robot.armLift.arm);
+    
   }
 
   // Called just before this Command runs the first time

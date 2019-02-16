@@ -7,7 +7,6 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
@@ -21,6 +20,7 @@ import frc.robot.subsystems.ArmElevator;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Hand;
 import frc.robot.subsystems.Pogos;
+import frc.robot.subsystems.Wrist;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -37,7 +37,7 @@ public class Robot extends TimedRobot {
 
   public static ArmElevator armLift = new ArmElevator();
   public static Hand hand = new Hand();
-  public static ShuffleboardTab driveTab = Shuffleboard.getTab("Match Dashboard");
+  //public static ShuffleboardTab driveTab = Shuffleboard.getTab("Match Dashboard");
   public static Pogos pogos = new Pogos();
 
 
@@ -51,6 +51,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+    compressor.clearAllPCMStickyFaults();
     m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
     // chooser.addOption("My Auto", new MyAutoCommand());
     SmartDashboard.putData("Auto mode", m_chooser);
@@ -127,6 +128,7 @@ public class Robot extends TimedRobot {
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
+    
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
@@ -138,6 +140,8 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     Scheduler.getInstance().run();
+    armLift.update();
+    
   }
 
   /**
@@ -145,13 +149,12 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void testPeriodic() {
-    pogos.retractPogos();
-  if(pogos.help==true){
-    System.out.println("SPAAAAMd");
-  }
+    
+    //pogos.update();
     
 
     /*pogos.setPogoPower(0.3);
     pogos.update();*/
   }
+
 }

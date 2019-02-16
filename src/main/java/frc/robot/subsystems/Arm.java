@@ -63,7 +63,7 @@ public class Arm extends Subsystem {
       }
 
       /** Specified by 4096 ticks per rotation, with a 54:18 gear ratio */
-      public Lerp armToDegrees = new Lerp(0, 4096*(54.0/18.0), -90, -90+360);
+      public Lerp armToDegrees = new Lerp(0, 3112.0, -90, 0);
 
       private Mode mode = Mode.CLOSEDLOOP;
       
@@ -139,9 +139,9 @@ public class Arm extends Subsystem {
             if(armPower > 0 && currentArmPos > MAX_ANGLE) armPower = 0;
             if(armPower < 0 && currentArmPos < MIN_ANGLE) armPower = 0;
 
-            armMotor.set(ControlMode.PercentOutput, armPower);
+            //armMotor.set(ControlMode.PercentOutput, armPower);
 
-            ArmElevator.armavatorTab.add("Arm Power", armPower);
+            //ArmElevator.armavatorTab.add("Arm Power", armPower);
       }
 
 

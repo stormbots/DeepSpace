@@ -10,7 +10,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import frc.robot.Robot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * Add your docs here.
@@ -106,7 +106,7 @@ public class ArmElevator extends Subsystem {
             return mode;
       }
 
-      void update(){
+      public void update(){
 
             switch(mode){
                   case MANUAL:
@@ -168,18 +168,27 @@ public class ArmElevator extends Subsystem {
             
       
             //Run all the updates
-            elevator.update();
+            //elevator.update();
             arm.update();
             wrist.update(arm.getArmAngle());
             
-            armavatorTab.add("Elevator Current Height", elevator.getPosition());
-            armavatorTab.add("Arm Current Angle", arm.getArmAngle());
-            armavatorTab.add("Wrist Current Angle (Floor)", wrist.getWristAngleFromFloor());
-            armavatorTab.add("Wrist Current Angle (Arm)", wrist.getWristAngleFromFloor());
-            armavatorTab.add("Pose", this.getPose());
-            armavatorTab.add("Arm Pose Angle", pose.armAngle());
-            armavatorTab.add("Wrist Pose Angle", pose.wristAngle());
-            armavatorTab.add("Elevator Pose Height", pose.eleHeight());
+            //armavatorTab.add("Elevator Current Height", elevator.getPosition());
+            //armavatorTab.add("Arm Current Angle", arm.getArmAngle());
+            /*armavatorTab.add("Wrist Current Angle (Floor)", wrist.getWristAngleFromFloor());
+            armavatorTab.add("Wrist Current Angle (Arm)", wrist.getWristAngleFromArm());
+            armavatorTab.add("Wrist Position", wrist.wristMotor.getSelectedSensorPosition());
+            */
+            SmartDashboard.putNumber("Wrist Current Angle (Floor)", wrist.getWristAngleFromFloor());
+            SmartDashboard.putNumber("Wrist Current Angle (Arm)", wrist.getWristAngleFromArm());
+            SmartDashboard.putNumber("Wrist Position", wrist.wristMotor.getSelectedSensorPosition());
+            SmartDashboard.putNumber("Arm Angle", arm.getArmAngle());
+            SmartDashboard.putNumber("Arm Position", arm.armMotor.getSelectedSensorPosition());
+            SmartDashboard.putNumber("Wrist Target Angle (Pose)", pose.wristAngle);
+            
+            // armavatorTab.add("Pose", this.getPose()); //causes robots don't quit
+            //armavatorTab.add("Arm Pose Angle", pose.armAngle());
+            //armavatorTab.add("Wrist Pose Angle", pose.wristAngle());
+            //armavatorTab.add("Elevator Pose Height", pose.eleHeight());
 
       }
 

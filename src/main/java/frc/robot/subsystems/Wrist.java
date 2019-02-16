@@ -14,6 +14,9 @@ import com.stormbots.Lerp;
 import com.stormbots.closedloop.FB;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
+import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.ArmElevator;
 import frc.robot.subsystems.ArmElevator.Mode;
 import frc.robot.subsystems.ArmElevator.Pose;
@@ -29,11 +32,11 @@ public class Wrist extends Subsystem {
       //NOTE: Curremt implementation uses only floor-relative angles
       double targetWristToFloorAngle = 0.0;
 
-      double wristPower = 0.0;
+      public double wristPower = 0.0;
       double armPosition = 0.0; // Used for floor-relative calculations
 
-      double kWristGain = 0.004;
-      double kWristFF = 0;
+      double kWristGain = 0.01;
+      double kWristFF = 0.1;
 
       // Physical limits that apply to the wrist at all times
       public static final double MAX_ANGLE_TO_ARM = 90.0;
@@ -51,7 +54,7 @@ public class Wrist extends Subsystem {
 
             //as a test mode thing, we could potentially reset this using
             //current limited motors to force it back into nominal position
-
+            //reset();
             wristMotor.configOpenloopRamp(0.2);
             wristMotor.setSensorPhase(true);
             
@@ -68,7 +71,8 @@ public class Wrist extends Subsystem {
       }
 
       /** Specified by 4096 ticks per rotation, with a 42:24 gear ratio */
-      public Lerp wristToDegrees = new Lerp(0, 4096*(42.0/24.0), 0, 360);
+      // public Lerp wristToDegrees = new Lerp(0, 4096*(42.0/24.0), 0, 360);
+      public Lerp wristToDegrees = new Lerp(0, 2395.0, 0, 90);
 
       private Mode mode = Mode.CLOSEDLOOP;
       
@@ -110,6 +114,14 @@ public class Wrist extends Subsystem {
             setTargetAngleFromFloor(pose.wristAngle());
       }
 
+      public void setPower(double pwr){
+            wristMotor.set(ControlMode.PercentOutput, pwr);
+      }
+
+      public void reset(){
+            wristMotor.setSelectedSensorPosition(0, 0, 20);
+      }
+
 
       //Would we even need state enums like this? 
       /* public enum Track{
@@ -142,15 +154,14 @@ public class Wrist extends Subsystem {
                         // Figure out the angle needed to be at our target floor angle
                         targetWristToArmAngle = targetWristToFloorAngle - currentActualArmPosition;
 
+
                         //Bar attempts to move past static limits of the wrist itself
                         targetWristToArmAngle = Clamp.clamp(targetWristToArmAngle, MIN_ANGLE_TO_ARM, MAX_ANGLE_TO_ARM);
                         //Bar attempts to move past dynamic limits set by outside functions
                         targetWristToArmAngle = Clamp.clamp(targetWristToArmAngle, minAngleToArm, maxAngleToArm);
-            
-
+                        //targetWristToArmAngle = 0;
                         wristPower = FB.fb(targetWristToArmAngle, angleFromArm, kWristGain)
-                              +kWristFF*Math.cos(Math.toRadians(wristToDegrees.get(angleFromFloor))
-                              );
+                               +kWristFF*Math.cos(Math.toRadians(wristToDegrees.get(angleFromFloor)));
                         //TODO We may not need to deal with the kWristFF
 
                   break;
@@ -177,9 +188,11 @@ public class Wrist extends Subsystem {
             if(wristPower > 0 && angleFromArm > MAX_ANGLE_TO_ARM) wristPower = 0;
             if(wristPower < 0 && angleFromArm < MIN_ANGLE_TO_ARM) wristPower = 0;
 
-            wristMotor.set(ControlMode.PercentOutput, wristPower);
+            //wristMotor.set(ControlMode.PercentOutput, -wristPower);
 
-            ArmElevator.armavatorTab.add("Wrist Power", wristPower);
+            //SimpleWidget wp = ArmElevator.armavatorTab.add("Wrist Power", wristPower);
+            SmartDashboard.putNumber("Wrist Power", wristPower);
+            SmartDashboard.putNumber("Wrist Target Angle", targetWristToArmAngle);
       }
 
 

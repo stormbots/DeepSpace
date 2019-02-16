@@ -20,7 +20,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
  */
 public class Hand extends Subsystem {
 
-    public Solenoid hand = new Solenoid(1);
+    public Solenoid hand = new Solenoid(0);
 
     public static final boolean OPEN = false; 
     public static final boolean CLOSE = !OPEN;

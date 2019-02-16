@@ -138,8 +138,8 @@ public class Elevator extends Subsystem {
 
             elevMotor.set(ControlMode.PercentOutput, elevatorVel);
 
-            ArmElevator.armavatorTab.add("Elevator Power", elevatorVel);
-            ArmElevator.armavatorTab.add("Limit Touched", elevLimit.get());
+            //ArmElevator.armavatorTab.add("Elevator Power", elevatorVel);
+            //ArmElevator.armavatorTab.add("Limit Touched", elevLimit.get());
       }
 
       @Override
