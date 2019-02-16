@@ -9,8 +9,8 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
-//import frc.robot.subsystems.Chassis.Gear;
-import frc.robot.subsystems.ChassisTalonSRX.Gear;
+import frc.robot.subsystems.Chassis.Gear;
+//import frc.robot.subsystems.ChassisTalonSRX.Gear;
 
 /**
  * An example command.  You can replace me with your own command.

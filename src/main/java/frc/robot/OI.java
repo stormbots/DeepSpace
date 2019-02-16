@@ -11,8 +11,8 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import frc.robot.commands.ChassisPixyDrive;
 import frc.robot.commands.ChassisShift;
-// import frc.robot.subsystems.Chassis.Gear;
-import frc.robot.subsystems.ChassisTalonSRX.Gear;
+import frc.robot.subsystems.Chassis.Gear;
+//import frc.robot.subsystems.ChassisTalonSRX.Gear;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -48,8 +48,8 @@ public class OI {
   // button.whenReleased(new ExampleCommand());
 
   public static Joystick driveStick = new Joystick(0);
-  JoystickButton pixyfollower = new JoystickButton(driveStick, 6);
-  JoystickButton shifter = new JoystickButton(driveStick, 5);
+  JoystickButton pixyfollower = new JoystickButton(driveStick, 5);
+  JoystickButton shifter = new JoystickButton(driveStick, 6);
   
   public OI (){
 
@@ -62,27 +62,26 @@ public class OI {
 
   // ------- CHASSIS VARS ------- //
 
-  /**
-   *     
-   * @return
-   */
+
   public static double getDriveFwdL() {
     //return driveStick.getRawAxis(1);
-    //return -driveStick.getRawAxis(1)*Math.abs(driveStick.getRawAxis(1)); // CADEN's drive
-    return -driveStick.getRawAxis(3)*Math.abs(driveStick.getRawAxis(3)); // NORMAL PEOPLE's drive
+    return driveStick.getRawAxis(1)*Math.abs(driveStick.getRawAxis(1)); // CADEN's drive
+    // make the output "-" for Zeus
+  }
+
+  public static double getDriveFwdR() {
+    //return driveStick.getRawAxis(3);
+    return driveStick.getRawAxis(3)*Math.abs(driveStick.getRawAxis(3));  // NORMAL PEOPLE's drive
+    // make the output "-" for Zeus
+  }
+
+  public static double getDriveSideL() {
+    return driveStick.getRawAxis(0)*Math.abs(driveStick.getRawAxis(0)); // NORMAL PEOPLE's drive
+    // make the output "-" for Zeus
   }
 
   public static double getDriveSideR() {
-    //return -driveStick.getRawAxis(2)*Math.abs(driveStick.getRawAxis(2)); // CADEN's drive
-    return -driveStick.getRawAxis(0)*Math.abs(driveStick.getRawAxis(0)); // NORMAL PEOPLE's drive
-  }
-
-  /**
-   * 
-   * @return
-   */
-  public static double getDriveFwdR() {
-    //return driveStick.getRawAxis(3);
-    return -driveStick.getRawAxis(3)*Math.abs(driveStick.getRawAxis(3));
+    return driveStick.getRawAxis(2)*Math.abs(driveStick.getRawAxis(2)); // CADEN's drive
+    // make the output "-" for Zeus
   }
 }

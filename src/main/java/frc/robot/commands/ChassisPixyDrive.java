@@ -12,6 +12,7 @@ import com.stormbots.devices.pixy2.Line;
 import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
+import static com.stormbots.Lerp.lerp;
 
 /**
  * An example command.  You can replace me with your own command.
@@ -73,10 +74,18 @@ public class ChassisPixyDrive extends Command {
     double endX = line.x1;
     double endY = line.y1;
 
-    double absStartX = Math.abs(startX);
-    double absStartY = Math.abs(startY);
-    double absEndX = Math.abs(endX);
-    double absEndY = Math.abs(endY);
+    //adjusts to the first quadrant
+    double startXq1 = lerp(startX, -1, 1, 0, 1);
+    double endXq1 = lerp(endX, -1, 1, 0, 1);
+    //keeps the ratios the same relative to the new Xq1's
+    double startYq1 = lerp(startY, 0, 1, 0, 2);
+    double endYq1 = lerp(endY, 0, 1, 0, 2);
+
+    double slope = (endYq1 - startYq1) / (endXq1 - startXq1);
+
+    //TODO: DO ALOT BELOW... THIS IS NOT DONE
+    //double newX = slope * <make sure you move the startX val in propotion to the length of the line>
+
 
     /*
 
