@@ -32,7 +32,6 @@ public class LimeLight extends Subsystem {
   public void update(){
     NetworkTable.getTable("limelight").getNumberArray("camtran", new double[6]);
     double[] camtran = NetworkTable.getTable("limelight").getNumberArray("camtran", new double[6]);
-    //System.out.println(camtran[1]);
 
     double x = camtran[0]; // (x)
     double y = camtran[1]; // (y)

@@ -10,32 +10,28 @@ package frc.robot.commands;
 import static com.stormbots.Lerp.lerp;
 
 import edu.wpi.first.wpilibj.command.Command;
+import frc.robot.Robot;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
-import frc.robot.Robot; 
-
 
 /**
  * An example command.  You can replace me with your own command.
  */
-public class LimelightTurning extends Command {
-  
-  public LimelightTurning() {
+public class LimelightTurningRight extends Command {
+  public LimelightTurningRight() {
     // Use requires() here to declare subsystem dependencies
     requires(Robot.m_subsystem);
-
-
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
+    NetworkTable.getTable("limelight").putNumber("pipeline", 1); //right target targeting pipeline
 
     double[] txArray = NetworkTable.getTable("limelight").getNumberArray("tx", new double[0]);
     double tx = txArray[0];
     double p = .5;
     double turnAdjust = lerp(tx, -27, 27, -1, 1) * p;
 
-    
   }
 
   // Called repeatedly when this Command is scheduled to run
