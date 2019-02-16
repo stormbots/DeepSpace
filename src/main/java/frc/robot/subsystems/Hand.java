@@ -35,6 +35,7 @@ public class Hand extends Subsystem {
     boolean deployed = false;
   
     public Hand(){
+      close();
       deployed = false;
       /*leftHand.set(deployed);
       rightHand.set(deployed);
@@ -61,6 +62,10 @@ public class Hand extends Subsystem {
     }
     public void eject(){
       motor.set(ControlMode.PercentOutput, -0.5);
+    }
+
+    public void update(){
+      
     }
 
     @Override

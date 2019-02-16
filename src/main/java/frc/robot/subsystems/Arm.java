@@ -14,6 +14,7 @@ import com.stormbots.Lerp;
 import com.stormbots.closedloop.FB;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.ArmElevator.Mode;
 import frc.robot.subsystems.ArmElevator.Pose;
 
@@ -32,8 +33,8 @@ public class Arm extends Subsystem {
       /** Saved from the update function to enable tracking based on the floor angle */
       double armAngle = 0.0;
 
-      double kArmGain = 0.004;
-      double kArmFF = 0;
+      double kArmGain = 0.027;
+      double kArmFF = 0.3;
 
       public static final double MAX_ANGLE = 90.0;
       public static final double MIN_ANGLE = -90.0;
@@ -54,9 +55,9 @@ public class Arm extends Subsystem {
             //Configure are current restrictions
             //TODO: Set much higher. These limits are really low for bringup safety. 
             //https://www.chiefdelphi.com/t/talon-srx-current-limiting-behaviour/164074
-            armMotor.configPeakCurrentLimit(5, 10); // 35 A 
+            armMotor.configPeakCurrentLimit(10, 10); // 35 A 
             armMotor.configPeakCurrentDuration(200, 10); // 200ms
-            armMotor.configContinuousCurrentLimit(4, 10); // 30A
+            armMotor.configContinuousCurrentLimit(8, 10); // 30A
             armMotor.enableCurrentLimit(true); // turn it on
 
 
@@ -111,8 +112,11 @@ public class Arm extends Subsystem {
                         targetArmPos = Clamp.clamp(targetArmPos, MIN_ANGLE, MAX_ANGLE);
 
                         armPower = FB.fb(targetArmPos, currentArmPos, kArmGain)+
-                              kArmFF*Math.cos(Math.toRadians(armToDegrees.get(currentArmPos))
+                              kArmFF*Math.cos(Math.toRadians(currentArmPos)
                               );
+
+                        SmartDashboard.putNumber("FB Output without FF", FB.fb(targetArmPos, currentArmPos, kArmGain));
+                        SmartDashboard.putNumber("Feed Forward",  kArmFF*Math.cos(Math.toRadians(currentArmPos)));
                         //TODO find voltage needed to keep arm level (kArmFF),
 
                   break;
@@ -139,8 +143,8 @@ public class Arm extends Subsystem {
             if(armPower > 0 && currentArmPos > MAX_ANGLE) armPower = 0;
             if(armPower < 0 && currentArmPos < MIN_ANGLE) armPower = 0;
 
-            //armMotor.set(ControlMode.PercentOutput, armPower);
-
+            armMotor.set(ControlMode.PercentOutput, armPower);
+            SmartDashboard.putNumber("Arm Power", armPower);
             //ArmElevator.armavatorTab.add("Arm Power", armPower);
       }
 

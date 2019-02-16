@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.commands.ArmPosChange;
 import frc.robot.subsystems.ArmElevator;
 import frc.robot.subsystems.ArmElevator.Mode;
 import frc.robot.subsystems.ArmElevator.Pose;
@@ -35,7 +36,7 @@ public class Wrist extends Subsystem {
       public double wristPower = 0.0;
       double armPosition = 0.0; // Used for floor-relative calculations
 
-      double kWristGain = 0.01;
+      double kWristGain = 0.02;
       double kWristFF = 0.1;
 
       // Physical limits that apply to the wrist at all times
@@ -94,11 +95,11 @@ public class Wrist extends Subsystem {
       }
 
       public double getWristAngleFromFloor(){
-            return wristToDegrees.get(wristMotor.getSelectedSensorPosition()) + armPosition;
+            return wristToDegrees.get(wristMotor.getSelectedSensorPosition());
       }
 
       public double getWristAngleFromArm(){
-            return wristToDegrees.get(wristMotor.getSelectedSensorPosition());
+            return wristToDegrees.get(wristMotor.getSelectedSensorPosition())-armPosition;
       }
 
       public boolean isOutOfBounds(){
@@ -152,7 +153,7 @@ public class Wrist extends Subsystem {
                   // May not know until we track through various loading processes.
                   case CLOSEDLOOP:
                         // Figure out the angle needed to be at our target floor angle
-                        targetWristToArmAngle = targetWristToFloorAngle - currentActualArmPosition;
+                        //targetWristToArmAngle = targetWristToFloorAngle - currentActualArmPosition;
 
 
                         //Bar attempts to move past static limits of the wrist itself
@@ -160,9 +161,8 @@ public class Wrist extends Subsystem {
                         //Bar attempts to move past dynamic limits set by outside functions
                         targetWristToArmAngle = Clamp.clamp(targetWristToArmAngle, minAngleToArm, maxAngleToArm);
                         //targetWristToArmAngle = 0;
-                        wristPower = FB.fb(targetWristToArmAngle, angleFromArm, kWristGain)
-                               +kWristFF*Math.cos(Math.toRadians(wristToDegrees.get(angleFromFloor)));
-                        //TODO We may not need to deal with the kWristFF
+                        wristPower = FB.fb(targetWristToFloorAngle, angleFromFloor, kWristGain)
+                               +kWristFF*Math.cos(Math.toRadians(angleFromFloor));
 
                   break;
 
@@ -188,7 +188,7 @@ public class Wrist extends Subsystem {
             if(wristPower > 0 && angleFromArm > MAX_ANGLE_TO_ARM) wristPower = 0;
             if(wristPower < 0 && angleFromArm < MIN_ANGLE_TO_ARM) wristPower = 0;
 
-            //wristMotor.set(ControlMode.PercentOutput, -wristPower);
+            wristMotor.set(ControlMode.PercentOutput, -wristPower);
 
             //SimpleWidget wp = ArmElevator.armavatorTab.add("Wrist Power", wristPower);
             SmartDashboard.putNumber("Wrist Power", wristPower);

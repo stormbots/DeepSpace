@@ -7,6 +7,8 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
@@ -149,7 +151,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void testPeriodic() {
-    
     //pogos.update();
     
 

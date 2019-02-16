@@ -60,6 +60,8 @@ public class ArmElevator extends Subsystem {
             // E  A  W 
             HIDE(20,-90,-90),
 
+            DEBUG(20, 0, 0),
+
             CARGO_1(20,-90,0),
             CARGO_2(30,-90,0),
             CARGO_3(40,+90,0),
@@ -83,7 +85,7 @@ public class ArmElevator extends Subsystem {
             double armAngle() {return this.armAngle;};
             double wristAngle() {return this.wristAngle;};
       }
-      public Pose pose = Pose.HIDE;
+      public Pose pose = Pose.DEBUG;
       public void setPose(Pose pose){
             this.pose = pose;
             elevator.set(pose);
@@ -169,7 +171,7 @@ public class ArmElevator extends Subsystem {
       
             //Run all the updates
             //elevator.update();
-            arm.update();
+            //arm.update();
             wrist.update(arm.getArmAngle());
             
             //armavatorTab.add("Elevator Current Height", elevator.getPosition());
@@ -184,6 +186,7 @@ public class ArmElevator extends Subsystem {
             SmartDashboard.putNumber("Arm Angle", arm.getArmAngle());
             SmartDashboard.putNumber("Arm Position", arm.armMotor.getSelectedSensorPosition());
             SmartDashboard.putNumber("Wrist Target Angle (Pose)", pose.wristAngle);
+            SmartDashboard.putNumber("Arm Target Position", pose.armAngle);
             
             // armavatorTab.add("Pose", this.getPose()); //causes robots don't quit
             //armavatorTab.add("Arm Pose Angle", pose.armAngle());
