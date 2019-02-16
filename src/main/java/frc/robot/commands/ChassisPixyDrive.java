@@ -91,7 +91,6 @@ public class ChassisPixyDrive extends Command {
     newY = clamp(newY, 0, 1);
 
     /*
-
     double midX;
     double midY;
 
@@ -140,16 +139,19 @@ public class ChassisPixyDrive extends Command {
     }
     // use those points we figured out
     midY = ((farPoint - closePoint) / 2) + closePoint;
-
     */
 
-    //System.out.println("Small One: " + -0.2*midY);
-    //System.out.println("Large One: " + (-0.2*midY - 0.5*Math.abs(midX)));
-
-    if(Math.sqrt(Math.pow(startX-endX, 2) + Math.pow(startY-endY, 2)) < 0.1) {
+    if((sonarL.getRangeInches() + sonarR.getRangeInches()) / 2 < 6) {
       Robot.drive.driver.tankDrive(0.2, 0.2);
     }
-    else{
+    else if(Math.sqrt(Math.pow(startX-endX, 2) + Math.pow(startY-endY, 2)) < 0.1) {
+      Robot.drive.driver.tankDrive(0.2, 0.2);
+    }
+    else {
+
+      // known... can be set to this instead.
+      //double shortSidePower = 0.5*startY;
+      //double longSidePower = 0.5*startY + 2.0*Math.abs(startX);
 
       double shortSidePower = 0.5*newY;
       double longSidePower = 0.5*newY + 2.0*Math.abs(newX);
