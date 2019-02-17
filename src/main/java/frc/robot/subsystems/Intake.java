@@ -11,6 +11,7 @@ import static com.stormbots.Clamp.bounded;
 import static com.stormbots.Clamp.clamp;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
@@ -35,9 +36,9 @@ public class Intake extends Subsystem {
   private CANSparkMax pivotMotor = new CANSparkMax(7, MotorType.kBrushless);
   private CANEncoder pivotEnc = new CANEncoder(pivotMotor);
   // Roller
-  private VictorSPX rollerMotor = new VictorSPX(8);
+  private TalonSRX rollerMotor = new TalonSRX(8);
   // PassThrough
-// comments that are extremely important jeez help
+
   
   double pivotPower = 0;
   double rollerPower = 0;
@@ -52,9 +53,10 @@ public class Intake extends Subsystem {
   private Mode mode = Mode.CLOSEDLOOP;
   /** Configured with a 49:1*49:1*84:24 gear reduction over a full rotation */
 
+  //hope for gearbox  private Lerp pivotToDegrees = new Lerp(0, 1.0*(49.0*7.0*7.0*84.0/24.0),  0, 360.0);
   private Lerp pivotToDegrees = new Lerp(
-    0, 1.0*(49.0*7.0*7.0*84.0/24.0),  0, 360.0
-    );
+    0, 42,
+    0, 90);
 
   double kPivotGain = 0;  /* SET VIA CONSTRUCTOR/INIT, DO NOT USE */
   double kPivotFF = 0; /* SET VIA CONSTRUCTOR/INIT, DO NOT USE */
@@ -65,7 +67,7 @@ public class Intake extends Subsystem {
   public static final double PIVOT_REST = 90;
   public static final double PIVOT_GRAB_CARGO = 10;
   public static final double ROLLER_GRAB_CARGO = 0.4;
-  
+  public static final double ROLLER_GRAB_POWER = 0;
 
   public Intake() {
     //Enable maybe if required // motorPivot.setInverted(false);
@@ -82,12 +84,13 @@ public class Intake extends Subsystem {
 
     //TODO: Increase current restrictions after limit and motor checks
     pivotMotor.setSmartCurrentLimit(2,4);
+    pivotMotor.set(0);
 
     //Rollers
     //TODO: Figure if this is needed: rollerMotorMotor.setInverted(false);
     rollerMotor.set(ControlMode.PercentOutput, 0);
 
-
+     System.out.println("Pivot Firmware: " + pivotMotor.getFirmwareString());
   }
 
   @Override
@@ -102,8 +105,8 @@ public class Intake extends Subsystem {
     double targetPosition = this.pivotTargetPosition;
     double currentPosition = getPosition();  
     // tab.add("TargetPosition", targetPosition);
-    // tab.add("CurrentPosition", currentPosition);
-
+    SmartDashboard.putNumber("Intake Current Pos", currentPosition);
+    SmartDashboard.putNumber("Intake Target Pos",targetPosition);
 
     //Check Soft Limits
     targetPosition = clamp(targetPosition,PIVOT_MIN,PIVOT_MAX);
@@ -132,11 +135,12 @@ public class Intake extends Subsystem {
     // tab.add("TargetPosition(mod)", targetPosition);
     SmartDashboard.putNumber("Position",getPosition());
 
-        pivotMotor.set(0.05);//TODO REMOVE ME
+        
     //set output power
     pivotPower = Clamp.clamp(pivotPower, -0.05, 0.05);
     // pivotMotor.set( -pivotPower);
-
+    
+    setRollerPower(ROLLER_GRAB_POWER);
     rollerMotor.set(ControlMode.PercentOutput,rollerPower);
   }
   
@@ -150,15 +154,8 @@ public class Intake extends Subsystem {
 
   /** Returns Degrees */
   public double getPosition() {
-    //TODO Should we invert pivot.toDegrees instead of the encoder position?
-    System.out.println("pivotEnc "+pivotEnc.getPosition());
-    Lerp.lerp(pivotEnc.getPosition(),0.0, 0.0,    8403.5, 360.0);
-    return -pivotToDegrees.get(pivotEnc.getPosition())-PIVOT_MAX; //TODO this should work
-
-    // double tickToDegrees =  1.0*(49.0*7.0*7.0*84.0/24.0);
-    // return -tickToDegrees*pivotEnc.getPosition()-PIVOT_MAX;//- in front
-    
-
+    SmartDashboard.putNumber("Intake position tau", pivotEnc.getPosition());
+    return PIVOT_MAX-pivotToDegrees.get(pivotEnc.getPosition()); 
   }
 
   public boolean isOnTarget(double tolerance){

@@ -7,6 +7,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 import frc.robot.subsystems.Intake;
@@ -16,6 +17,8 @@ import frc.robot.subsystems.PassThrough;
  * An example command.  You can replace me with your own command.
  */
 public class IntakeGrabBall extends Command {
+  public boolean hasBall = false;
+  public double hasBallTime = 0;
   public IntakeGrabBall() {
     // Use requires() here to declare subsystem dependencies
     requires(Robot.intake);
@@ -41,7 +44,18 @@ public class IntakeGrabBall extends Command {
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return Robot.passThrough.hasBall();
+    if(hasBall == false && Robot.passThrough.hasBall()){
+      hasBall = true; 
+      hasBallTime = Timer.getFPGATimestamp();
+      Robot.intake.setTargetPosition(Intake.PIVOT_REST);
+    }
+    if(Timer.getFPGATimestamp() >= hasBallTime + 1.0){
+      Robot.passThrough.setPower(0);
+    }
+    // return Timer.getFPGATimestamp() >= hasBallTime + 1.0;
+    //TODO: Can't exit properly because if you do annika can't 
+    /// let go of the button
+    return false; 
   }
 
   // Called once after isFinished returns true
