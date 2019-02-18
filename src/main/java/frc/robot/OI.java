@@ -12,9 +12,10 @@ import com.stormbots.Lerp;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
-import frc.robot.commands.ArmPose;
-import frc.robot.subsystems.ArmElevator;
-import frc.robot.subsystems.ArmElevator.Pose;
+// import frc.robot.commands.ArmPose;
+// import frc.robot.subsystems.ArmElevator;
+// import frc.robot.subsystems.ArmElevator.Pose;
+import frc.robot.commands.*;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -22,8 +23,8 @@ import frc.robot.subsystems.ArmElevator.Pose;
  */
 public class OI {
 
-  public Joystick rightStick = new Joystick(0);
-  public Joystick leftStick = new Joystick(1);
+  public Joystick rightStick = new Joystick(1);
+  public Joystick leftStick = new Joystick(2);
 
   // This should be a really nice way to set up buttons to quickly switch around to various poses
   // Most notably, the old joysticks actually have 6 buttons on the left side, which is almost
@@ -62,30 +63,30 @@ public class OI {
 
 
 
-  /*
+  // /*
 
   public OI(){
 
-    poseCargo1.whenPressed(new ArmPose(Pose.CARGO_1));
-    poseCargo2.whenPressed(new ArmPose(Pose.CARGO_2));
-    poseCargo3.whenPressed(new ArmPose(Pose.CARGO_3));
-    loadCargo.whenPressed(new ArmPose(Pose.LOAD_CARGO));
-    armDown.whenPressed(new ArmPose(Pose.HIDE))
+    // poseCargo1.whenPressed(new ArmPose(Pose.CARGO_1));
+    // poseCargo2.whenPressed(new ArmPose(Pose.CARGO_2));
+    // poseCargo3.whenPressed(new ArmPose(Pose.CARGO_3));
+    // loadCargo.whenPressed(new ArmPose(Pose.LOAD_CARGO));
+    // armDown.whenPressed(new ArmPose(Pose.HIDE))
 
-    poseHatch1.whenPressed(new ArmPose(Pose.HATCH_1));
-    poseHatch2.whenPressed(new ArmPose(Pose.HATCH_2));
-    poseHatch3.whenPressed(new ArmPose(Pose.HATCH_3));
-    loadHatch.whenPressed(new ArmPose(Pose.LOAD_HATCH));
+    // poseHatch1.whenPressed(new ArmPose(Pose.HATCH_1));
+    // poseHatch2.whenPressed(new ArmPose(Pose.HATCH_2));
+    // poseHatch3.whenPressed(new ArmPose(Pose.HATCH_3));
+    // loadHatch.whenPressed(new ArmPose(Pose.LOAD_HATCH));
 
-    autoLineup.whileHeld(new ChassisPixyDrive());
+    // autoLineup.whileHeld(new ChassisPixyDrive());
 
-    handSuckIn.whileHeld(new HandPullIn());
-    handSpitOut.whileHeld(new HandPushOut());
-    handGrab.toggleWhenPressed(new HandGrab());
+    // handSuckIn.whileHeld(new HandPullIn());
+    // handSpitOut.whileHeld(new HandPushOut());
+    // handGrab.toggleWhenPressed(new HandGrab());
 
     intakeCargo.whileHeld(new IntakeGrabBall());
 
-    climbSequence.whileHeld(new RobotGrabHab());
+    climbSequence.whileHeld(new RobotGrabHab(5));
 
 
   }
@@ -104,13 +105,13 @@ public class OI {
   // by subclassing Button you can create custom triggers and bind those to
   // commands the same as any other Button.
 
-  public double getElevatorPos(){
-   return Lerp.lerp( rightStick.getRawAxis(3) ,1,-1, Robot.armLift.elevator.MIN_HEIGHT, Robot.armLift.elevator.MAX_HEIGHT);
-  }
+  // public double getElevatorPos(){
+  //  return Lerp.lerp( rightStick.getRawAxis(3) ,1,-1, Robot.armLift.elevator.MIN_HEIGHT, Robot.armLift.elevator.MAX_HEIGHT);
+  // }
 
-  public double getArmPos(){
-    return Lerp.lerp( rightStick.getRawAxis(3) ,1,-1, Robot.armLift.arm.MIN_ANGLE, Robot.armLift.arm.MAX_ANGLE);
-  }
+  // public double getArmPos(){
+  //   return Lerp.lerp( rightStick.getRawAxis(3) ,1,-1, Robot.armLift.arm.MIN_ANGLE, Robot.armLift.arm.MAX_ANGLE);
+  // }
   
 
   //// TRIGGERING COMMANDS WITH BUTTONS
