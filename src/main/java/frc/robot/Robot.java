@@ -7,22 +7,21 @@
 
 package frc.robot;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+import com.ctre.phoenix.motorcontrol.ControlMode;
+
+import edu.wpi.first.wpilibj.CameraServer;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.subsystems.ArmElevator;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Hand;
 import frc.robot.subsystems.Pogos;
-import frc.robot.subsystems.Wrist;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -54,8 +53,10 @@ public class Robot extends TimedRobot {
     m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
     // chooser.addOption("My Auto", new MyAutoCommand());
     SmartDashboard.putData("Auto mode", m_chooser);
-    // driveTab.add("Front Camera", CameraServer.getInstance().startAutomaticCapture()); //startAutomaticCapture(int)
+    //driveTab.add("Front Camera", CameraServer.getInstance().startAutomaticCapture()); //startAutomaticCapture(int)
     // driveTab.add("Back Camera", CameraServer.getInstance().startAutomaticCapture());
+    CameraServer.getInstance().startAutomaticCapture(0);
+    CameraServer.getInstance().startAutomaticCapture(1);
 
   }
 
@@ -144,8 +145,8 @@ public class Robot extends TimedRobot {
     //armLift.elevator.elevMotor.set(ControlMode.PercentOutput, 0.25);
     //hand.open();
     //hand.intake();
-    //hand.update();
-    armLift.wrist.wristMotor.set(ControlMode.PercentOutput, 0.16);
+    hand.update();
+    //armLift.arm.armMotor.set(ControlMode.PercentOutput, 0.3);
     
   }
 

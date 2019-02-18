@@ -38,7 +38,7 @@ public class Arm extends Subsystem {
       double kArmGain = 0.035;
       
       // double kArmFF = 0.3;
-      double kArmFF = 0.5;
+      double kArmFF = 0.3; //0.5 Practice Bot
 
       public static final double MAX_ANGLE = 90.0;
       public static final double MIN_ANGLE = -90.0;
@@ -56,7 +56,7 @@ public class Arm extends Subsystem {
                   armMotor.setInverted(true);
             }
             else{
-                 armMotor.setInverted(true);
+                 armMotor.setInverted(false);
             }
             armMotor.setSensorPhase(true);
             armMotor.configOpenloopRamp(0.2); 
@@ -151,7 +151,7 @@ public class Arm extends Subsystem {
             //Check for soft limits
             if(armPower > 0 && currentArmPos > MAX_ANGLE) armPower = 0;
             if(armPower < 0 && currentArmPos < MIN_ANGLE) armPower = 0;
-            armPower = Clamp.clamp(armPower, -0.1, 0.1);
+            //armPower = Clamp.clamp(armPower, -0.1, 0.1);
             armMotor.set(ControlMode.PercentOutput, armPower);
             SmartDashboard.putNumber("Arm Power", armPower);
             SmartDashboard.putNumber("Arm Current", armMotor.getOutputCurrent());

@@ -107,7 +107,7 @@ public class ArmElevator extends Subsystem {
                   && wrist.isOnTarget(wristTolerance)
                   && arm.isOnTarget(armTolerance);
       }
-      public boolean isOnTarget(){ return isOnTarget(2,10,10); }
+      public boolean isOnTarget(){ return isOnTarget(2,10,10); } 
 
 
       public Mode getMode(){
@@ -152,20 +152,20 @@ public class ArmElevator extends Subsystem {
             // When the arm is pointing straight down, we 
             // When the hand is in side the robot for ball pickup, we can't
 
-            if(arm.getArmAngle() < -85){
-                  //our goal is to prevent snagging in the elevator
-                  if( elevator.getPosition() > 30 ){
-                        wrist.setLimits(0,90);
-                  }else{
-                        wrist.setLimits(-45,90);
-                  }
-            }
-            else if(arm.getArmAngle() >80 ){
-                  wrist.setLimits(-90,0);
-            }
-            else{
-                  wrist.setLimits(-180,180);
-            }
+            // if(arm.getArmAngle() < -85){
+            //       //our goal is to prevent snagging in the elevator
+            //       if( elevator.getPosition() > 30 ){
+            //             wrist.setLimits(0,90);
+            //       }else{
+            //             wrist.setLimits(-45,90);
+            //       }
+            // }
+            // else if(arm.getArmAngle() >80 ){
+            //       wrist.setLimits(-90,0);
+            // }
+            // else{
+            //       wrist.setLimits(-180,180);
+            // }
 
             // if( wrist.isOutOfBounds() ){
             //       //TODO: Attempt to block motion that would result in damage?
@@ -176,14 +176,15 @@ public class ArmElevator extends Subsystem {
             
       
             //Run all the updates
-            //elevator.update();
-            //arm.update();
+            elevator.update();
+            arm.update();
             wrist.update(arm.getArmAngle());
             
             //armavatorTab.add("Elevator Current Height", elevator.getPosition());
             //armavatorTab.add("Arm Current Angle", arm.getArmAngle());
             /*armavatorTab.add("Wrist Current Angle (Floor)", wrist.getWristAngleFromFloor());
-            armavatorTab.add("Wrist Current Angle (Arm)", wrist.getWristAngleFromArm());
+            armavatorTab.add("Wrist Current Ang
+            le (Arm)", wrist.getWristAngleFromArm());
             armavatorTab.add("Wrist Position", wrist.wristMotor.getSelectedSensorPosition());
             */
             SmartDashboard.putNumber("Wrist Current Angle (Floor)", wrist.getWristAngleFromFloor());

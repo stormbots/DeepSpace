@@ -40,7 +40,7 @@ public class Elevator extends Subsystem {
       // add more positions for lvl 1,2,3 of cargo and hatches
       double kElevatorGain = 0.1;
       double elevatorPwr = 0;
-      double elevatorFF = 0.2;
+      double elevatorFF = 0.084;
 
       /** Convert ticks to the positional height of the arm pivot, in inches */
       public Lerp elevToInches = new Lerp(0, -25_000, MIN_HEIGHT, MAX_HEIGHT); //maxElevator  -28450, minElevator -3170 
@@ -109,7 +109,7 @@ public class Elevator extends Subsystem {
                         //Restrict our height based on current pose constraints
                         target = Clamp.clamp(target, MIN_HEIGHT, elevatorHeightRestriction);
 
-                        //elevatorPwr = FB.fb(target, currentPos, kElevatorGain);
+                        elevatorPwr = FB.fb(target, currentPos, kElevatorGain);
                         if(elevatorPwr > 0) elevatorPwr += elevatorFF;
                         else elevatorPwr += elevatorFF/3.0;
                   break;
@@ -139,7 +139,8 @@ public class Elevator extends Subsystem {
 		// 	homed = true;
 		// 	reset();
             // }
-
+            //elevatorPwr = Clamp.clamp(elevatorPwr, -0.2, 0.2);
+            
             elevMotor.set(ControlMode.PercentOutput, elevatorPwr);
 
             //ArmElevator.armavatorTab.add("Elevator Power", elevatorPwr);

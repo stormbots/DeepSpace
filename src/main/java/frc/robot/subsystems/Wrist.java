@@ -26,7 +26,8 @@ public class Wrist extends Subsystem {
       // Put methods for controlling this subsystem
       // here. Call these from Commands.
       public TalonSRX wristMotor = new TalonSRX(13);
-      public MiniPID pidWrist = new MiniPID(1.0/1350.0*6, 1.0/4000.0*0.0, 1.0/100000.0); //these values are pretty good
+      public MiniPID pidWrist = new MiniPID(0.012, 0.001*0.0, 0.0);
+      //public MiniPID pidWrist = new MiniPID(1.0/1350.0*6, 1.0/4000.0*0.0, 1.0/100000.0); //these values are pretty good
       //public MiniPID pidWrist = new MiniPID(1.0/35.0, 0.0, 0.0004/2.0*0.0);
       //NOTE: Curremt implementation uses only floor-relative angles
       double targetWristToFloorAngle = 0.0;
@@ -39,7 +40,7 @@ public class Wrist extends Subsystem {
       //double kWristGain = 0.0065;
       //double kWristGain = 0.007;
       //double kWristGain = 0.01;
-      double kWristFF = 0.16;
+      double kWristFF = 0.13; //0.16 Practice bot
 
       // Physical limits that apply to the wrist at all times
       public static final double MAX_ANGLE_TO_ARM = 90.0;
@@ -63,7 +64,7 @@ public class Wrist extends Subsystem {
                   wristMotor.setInverted(true);
             }
             else{
-                 wristMotor.setInverted(true);
+                 wristMotor.setInverted(false);
             }
             wristMotor.configOpenloopRamp(0.2);
             wristMotor.setSensorPhase(true);
@@ -80,7 +81,7 @@ public class Wrist extends Subsystem {
             targetWristToFloorAngle = getWristAngleFromFloor();
             pidWrist.setOutputLimits(-1+kWristFF,1-kWristFF);
             pidWrist.setMaxIOutput(0.2);
-            pidWrist.setOutputRampRate(0.005);
+            // pidWrist.setOutputRampRate(0.01); //0.005
             //pidWrist.setSetpointRange(35.0);
       }
 
@@ -170,9 +171,9 @@ public class Wrist extends Subsystem {
 
 
                         //Bar attempts to move past static limits of the wrist itself
-                        targetWristToArmAngle = Clamp.clamp(targetWristToArmAngle, MIN_ANGLE_TO_ARM, MAX_ANGLE_TO_ARM);
+                        //targetWristToArmAngle = Clamp.clamp(targetWristToArmAngle, MIN_ANGLE_TO_ARM, MAX_ANGLE_TO_ARM);
                         //Bar attempts to move past dynamic limits set by outside functions
-                        targetWristToArmAngle = Clamp.clamp(targetWristToArmAngle, minAngleToArm, maxAngleToArm);
+                        //targetWristToArmAngle = Clamp.clamp(targetWristToArmAngle, minAngleToArm, maxAngleToArm);
                         //targetWristToArmAngle = 0;
 
                         // wristPower = FB.fb(targetWristToFloorAngle, angleFromFloor, kWristGain)
@@ -206,12 +207,12 @@ public class Wrist extends Subsystem {
             }
 
             //Check for physical limits based on arm angles
-            if(wristPower > 0 && angleFromArm > MAX_ANGLE_TO_ARM) wristPower = 0;
-            if(wristPower < 0 && angleFromArm < MIN_ANGLE_TO_ARM) wristPower = 0;
+            //if(wristPower > 0 && angleFromArm > MAX_ANGLE_TO_ARM) wristPower = 0;
+            //if(wristPower < 0 && angleFromArm < MIN_ANGLE_TO_ARM) wristPower = 0;
 
             //wristPower = Clamp.clamp(wristPower, -0.1, 0.1);
 
-            //wristMotor.set(ControlMode.PercentOutput, -wristPower);
+            wristMotor.set(ControlMode.PercentOutput, wristPower);
 
             //SimpleWidget wp = ArmElevator.armavatorTab.add("Wrist Power", wristPower);
             SmartDashboard.putNumber("Wrist Power", wristPower);
