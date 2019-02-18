@@ -12,18 +12,15 @@ import static com.stormbots.Clamp.clamp;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import com.stormbots.Clamp;
 import com.stormbots.Lerp;
 import com.stormbots.closedloop.FB;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.commands.IntakeRestPosition;
 
 /**
  * An example subsystem. You can replace me with your own Subsystem.
@@ -60,13 +57,14 @@ public class Intake extends Subsystem {
 
   double kPivotGain = 0;  /* SET VIA CONSTRUCTOR/INIT, DO NOT USE */
   double kPivotFF = 0; /* SET VIA CONSTRUCTOR/INIT, DO NOT USE */
+  //intake on ground is 19.439
   public static final double PIVOT_MIN = 15;
   public static final double PIVOT_MIN_HAB = -10;
   public static final double PIVOT_MAX = 110.0;
   public static final double PIVOT_GRAB_HAB = 0;
-  public static final double PIVOT_REST = 90;
-  public static final double PIVOT_GRAB_CARGO = 10;
-  public static final double ROLLER_GRAB_CARGO = 0.4;
+  public static final double PIVOT_REST = PIVOT_MAX-5;
+  public static final double PIVOT_GRAB_CARGO = 61.5;
+  public static final double ROLLER_GRAB_CARGO = 1.0;
   public static final double ROLLER_GRAB_POWER = 0;
 
   public Intake() {
@@ -80,7 +78,9 @@ public class Intake extends Subsystem {
 
     //TODO: We may need to tune kPivot values on the smartdashboard
     kPivotFF = 0.05; // Holds itself stable quite well due to gearing
-    kPivotGain = 0.004;
+    // kPivotGain = 0.004;
+     kPivotGain = 0.08;
+
 
     //TODO: Increase current restrictions after limit and motor checks
     pivotMotor.setSmartCurrentLimit(2,4);
@@ -96,11 +96,12 @@ public class Intake extends Subsystem {
   @Override
   public void initDefaultCommand() {
     // Set the default command for a subsystem here.
-    // setDefaultCommand(new MySpecialCommand());
+    setDefaultCommand(new IntakeRestPosition());
   }
 
   
   public void update(){
+    SmartDashboard.putString("Intake Command", getCurrentCommandName());
     //setup variables and defaults
     double targetPosition = this.pivotTargetPosition;
     double currentPosition = getPosition();  
@@ -137,10 +138,8 @@ public class Intake extends Subsystem {
 
         
     //set output power
-    pivotPower = Clamp.clamp(pivotPower, -0.05, 0.05);
-    // pivotMotor.set( -pivotPower);
-    
-    setRollerPower(ROLLER_GRAB_POWER);
+    //pivotPower = Clamp.clamp(pivotPower, -0.1, 0.1);
+    pivotMotor.set( -pivotPower);
     rollerMotor.set(ControlMode.PercentOutput,rollerPower);
   }
   

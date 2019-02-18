@@ -7,26 +7,23 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.InvertType;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.ctre.phoenix.motorcontrol.can.VictorSPX;
+import static com.stormbots.Clamp.bounded;
 
-import edu.wpi.first.wpilibj.Talon;
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Robot;
 import frc.robot.commands.PassThroughPower;
-import static com.stormbots.Clamp.*;
 
 /**
- * An example subsystem.  You can replace me with your own Subsystem.
+ * An example subsystem. You can replace me with your own Subsystem.
  */
 public class PassThrough extends Subsystem {
 
-public static final double GRAB_BALL_POWER = 0.3 ;
-public static final double CARGO_STALL_CURRENT = 3;
-public static final double BELT_POWER = 0.35;
+  public static final double GRAB_BALL_POWER = 0.3 ;
+  public static final double LOAD_BALL_POWER = 0.35 ;
+  public static final double CARGO_STALL_CURRENT = 3;
 
   private TalonSRX beltMotor = new TalonSRX(9);
 
@@ -51,7 +48,7 @@ public static final double BELT_POWER = 0.35;
     setDefaultCommand(new PassThroughPower(0));
   }
   public void update() {
-    beltPower = BELT_POWER;
+    SmartDashboard.putString("PassthroughCommand", getCurrentCommandName());
     beltMotor.set(ControlMode.PercentOutput,-beltPower);
 
     SmartDashboard.putNumber("PT Current", beltMotor.getOutputCurrent());
