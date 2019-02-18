@@ -21,6 +21,8 @@ public class Pogos extends Subsystem {
 
   //public Solenoid leftPogo = new Solenoid(5);
   public Solenoid pogo = new Solenoid(1);
+  public Solenoid pogoB = new Solenoid(5);
+
   //public DigitalInput onHabCenter = new DigitalInput(3);
 
   public VictorSPX pogoMotor = new VictorSPX(15);
@@ -38,6 +40,7 @@ public class Pogos extends Subsystem {
 
     //leftPogo.set(DEPLOYED);
     pogo.set(RETRACTED);
+    pogoB.set(DEPLOYED);
     help = true;
     System.out.println("Pogo is Initialized");
     
@@ -46,12 +49,14 @@ public class Pogos extends Subsystem {
   public void deployPogos(){
     
     //leftPogo.set(RETRACTED);
+    pogoB.set(RETRACTED);
     pogo.set(DEPLOYED);
   }
 
   public void retractPogos(){
     //leftPogo.set(DEPLOYED);
     pogo.set(RETRACTED);
+    pogoB.set(DEPLOYED);
   }
 
   public void setPogoPower(double pwr){

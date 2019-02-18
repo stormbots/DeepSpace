@@ -12,6 +12,7 @@ import com.stormbots.Lerp;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
+import frc.robot.commandgroups.LoadCargoNew;
 import frc.robot.commands.*;
 import frc.robot.subsystems.ArmElevator;
 import frc.robot.subsystems.ArmElevator.Pose;
@@ -69,7 +70,7 @@ public class OI {
     poseCargo1.whenPressed(new ArmPose(Pose.CARGO_1));
     poseCargo2.whenPressed(new ArmPose(Pose.CARGO_2));
     poseCargo3.whenPressed(new ArmPose(Pose.CARGO_3));
-    //loadCargo.whenPressed(new ArmPose(Pose.LOAD_CARGO));
+    intakeCargo.whenPressed(new ArmPose(Pose.LOAD_CARGO));
     //armDown.whenPressed(new ArmPose(Pose.HIDE));
 
     poseHatch1.whenPressed(new ArmPose(Pose.HATCH_1));
@@ -77,16 +78,16 @@ public class OI {
     poseHatch3.whenPressed(new ArmPose(Pose.HATCH_3));
     loadHatch.whenPressed(new ArmPose(Pose.LOAD_HATCH));
 
-    /*autoLineup.whileHeld(new ChassisPixyDrive());
+    //autoLineup.whileHeld(new ChassisPixyDrive());
 
-    handSuckIn.whileHeld(new HandPullIn());
-    handSpitOut.whileHeld(new HandPushOut());
+    handSuckIn.whileHeld(new HandPower(Robot.hand.GRAB_POWER,Robot.hand.HOLD_POWER));
+    handSpitOut.whileHeld(new HandPower(Robot.hand.EJECT_POWER));
     handGrab.toggleWhenPressed(new HandGrab());
 
-    intakeCargo.whileHeld(new IntakeGrabBall());
+    intakeCargo.whenPressed(new LoadCargoNew());
 
-    climbSequence.whileHeld(new RobotGrabHab());
-*/
+    //climbSequence.whileHeld(new RobotGrabHab());
+
 
   }
   

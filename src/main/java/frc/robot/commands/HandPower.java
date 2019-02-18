@@ -10,10 +10,22 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
-public class HandPushOut extends Command {
-  public HandPushOut() {
+public class HandPower extends Command {
+  double power = 0;
+  double exitpower = 0;
+  public HandPower(double power) {
+    this.power = power;
+    this.exitpower = 0;
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
+    requires(Robot.hand);
+  }
+  public HandPower(double power,double exitpower) {
+    this.power = power;
+    this.exitpower = exitpower;
+    // Use requires() here to declare subsystem dependencies
+    // eg. requires(chassis);
+    requires(Robot.hand);
   }
 
   // Called just before this Command runs the first time
@@ -24,7 +36,7 @@ public class HandPushOut extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.hand.eject();
+    Robot.hand.setPower(power);
   }
 
   // Make this return true when this Command no longer needs to run execute()
@@ -36,11 +48,13 @@ public class HandPushOut extends Command {
   // Called once after isFinished returns true
   @Override
   protected void end() {
+    Robot.hand.setPower(exitpower);    
   }
 
   // Called when another command which requires one or more of the same
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
+    Robot.hand.setPower(exitpower);    
   }
 }

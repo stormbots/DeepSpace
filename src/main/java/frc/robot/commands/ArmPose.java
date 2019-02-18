@@ -22,10 +22,10 @@ public class ArmPose extends Command {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
     // These line can't be instantiated by robot, doesn't like nested subsystems?
-    // requires(Robot.armLift);
-    // requires(Robot.armLift.elevator);
-    // requires(Robot.armLift.wrist);
-    // requires(Robot.armLift.arm);
+    requires(Robot.armLift);
+    requires(Robot.armLift.elevator);
+    requires(Robot.armLift.wrist);
+    requires(Robot.armLift.arm);
     
   }
 

@@ -34,15 +34,12 @@ import frc.robot.subsystems.Wrist;
 public class Robot extends TimedRobot {
   public static Compressor compressor = new Compressor();
   public static ExampleSubsystem m_subsystem = new ExampleSubsystem();
-  public static OI oi = new OI();
-  
-
   public static ArmElevator armLift = new ArmElevator();
   public static Hand hand = new Hand();
   //public static ShuffleboardTab driveTab = Shuffleboard.getTab("Match Dashboard");
   public static Pogos pogos = new Pogos();
-
-
+  public static OI oi = new OI();
+  
 
   Command m_autonomousCommand;
   SendableChooser<Command> m_chooser = new SendableChooser<>();
@@ -142,7 +139,13 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     Scheduler.getInstance().run();
+
     armLift.update();
+    //armLift.elevator.elevMotor.set(ControlMode.PercentOutput, 0.25);
+    //hand.open();
+    //hand.intake();
+    //hand.update();
+    armLift.wrist.wristMotor.set(ControlMode.PercentOutput, 0.16);
     
   }
 
@@ -152,6 +155,8 @@ public class Robot extends TimedRobot {
   @Override
   public void testPeriodic() {
     //pogos.update();
+    //armLift..wristMotor.set(ControlMode.PercentOutput, 0.25); //-0.1, -0.12
+    
     
 
     /*pogos.setPogoPower(0.3);

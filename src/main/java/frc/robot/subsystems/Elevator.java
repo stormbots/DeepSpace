@@ -15,6 +15,7 @@ import com.stormbots.closedloop.FB;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.ArmElevator.Mode;
 import frc.robot.subsystems.ArmElevator.Pose;
 
@@ -31,17 +32,18 @@ public class Elevator extends Subsystem {
       DigitalInput elevLimit = new DigitalInput(2);
 
       //Elevator has two positions that need to be programmed in supposedly
-      public static final double MAX_HEIGHT = 50;
-      public static final double MIN_HEIGHT = 30;
+      public static final double MAX_HEIGHT = 69;
+      public static final double MIN_HEIGHT = 42;
       double elevatorHeightRestriction = MAX_HEIGHT;
       double elevatorTargetHeight = 0;
       double currentPos = 0;
       // add more positions for lvl 1,2,3 of cargo and hatches
-      double kElevatorGain = 0.004;
-      double elevatorVel = 0;
+      double kElevatorGain = 0.1;
+      double elevatorPwr = 0;
+      double elevatorFF = 0.2;
 
       /** Convert ticks to the positional height of the arm pivot, in inches */
-      public Lerp elevToInches = new Lerp(0, 10_000, MIN_HEIGHT, MAX_HEIGHT);
+      public Lerp elevToInches = new Lerp(0, -25_000, MIN_HEIGHT, MAX_HEIGHT); //maxElevator  -28450, minElevator -3170 
 
       public Elevator(){
             // bind elevator motors here
@@ -57,7 +59,7 @@ public class Elevator extends Subsystem {
       }
 
 
-      private Mode mode = Mode.MANUAL;
+      private Mode mode = Mode.CLOSEDLOOP;
       private boolean homed = false;
       
       public void setMode(Mode newMode) {
@@ -107,16 +109,18 @@ public class Elevator extends Subsystem {
                         //Restrict our height based on current pose constraints
                         target = Clamp.clamp(target, MIN_HEIGHT, elevatorHeightRestriction);
 
-                        elevatorVel = FB.fb(target, currentPos, kElevatorGain);
+                        //elevatorPwr = FB.fb(target, currentPos, kElevatorGain);
+                        if(elevatorPwr > 0) elevatorPwr += elevatorFF;
+                        else elevatorPwr += elevatorFF/3.0;
                   break;
 
                   case HOMING:
 
                         if(!elevLimit.get()) {
-                              elevatorVel = 0;
+                              elevatorPwr = 0;
                         }
                         else {
-                              elevatorVel = -0.3;
+                              elevatorPwr = -0.3;
                         }
                   break;
 
@@ -125,21 +129,25 @@ public class Elevator extends Subsystem {
                   break;
             }
 
-            //manipulate our velocity
-		if(!elevLimit.get() && elevatorVel <0) {
-			elevatorVel = 0;
-		}
+            // //manipulate our velocity
+		// if(!elevLimit.get() && elevatorPwr <0) {
+		// 	elevatorPwr = 0;
+		// }
 		
-		//check for limit switch and reset if found
-		if(!elevLimit.get()) {
-			homed = true;
-			reset();
-            }
+		// //check for limit switch and reset if found
+		// if(!elevLimit.get()) {
+		// 	homed = true;
+		// 	reset();
+            // }
 
-            elevMotor.set(ControlMode.PercentOutput, elevatorVel);
+            elevMotor.set(ControlMode.PercentOutput, elevatorPwr);
 
-            //ArmElevator.armavatorTab.add("Elevator Power", elevatorVel);
+            //ArmElevator.armavatorTab.add("Elevator Power", elevatorPwr);
             //ArmElevator.armavatorTab.add("Limit Touched", elevLimit.get());
+            SmartDashboard.putNumber("ELevator Height (in)", currentPos);
+            SmartDashboard.putNumber("Elevator Power", elevatorPwr);
+            SmartDashboard.putNumber("Elevator Feed Fwd", elevatorFF);
+            SmartDashboard.putNumber("Elevator FB", FB.fb(target, currentPos, kElevatorGain));
       }
 
       @Override

@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import frc.robot.commands.HandPower;
 
 /**
  * Add your docs here.
@@ -22,7 +23,7 @@ public class Hand extends Subsystem {
 
     public Solenoid hand = new Solenoid(0);
 
-    public static final boolean OPEN = false; 
+    public static final boolean OPEN = true; 
     public static final boolean CLOSE = !OPEN;
 
     //public static ShuffleboardTab handTab = Shuffleboard.getTab("Hand Data");
@@ -31,7 +32,14 @@ public class Hand extends Subsystem {
   
     // Put methods for controlling this subsystem
     // here. Call these from Commands.
+
+    public double handPwr = 0.0;
   
+    public static final double GRAB_POWER = .5;
+    public static final double HOLD_POWER = .1;
+    public static final double EJECT_POWER = -0.5;
+    public static final double OFF = .0;
+    
     boolean deployed = false;
   
     public Hand(){
@@ -40,12 +48,13 @@ public class Hand extends Subsystem {
       /*leftHand.set(deployed);
       rightHand.set(deployed);
       */
+      handPwr = 0.0;
 
       //We probably want a very low continuous current, to avoid causing harm to the cargo. 
       //this lets us keep it running without much concern, as we have no sensors
       motor.configPeakCurrentLimit(5, 10); // 35 A 
       motor.configPeakCurrentDuration(200, 10); // 200ms
-      motor.configContinuousCurrentLimit(2, 10); // 30A
+      motor.configContinuousCurrentLimit(3, 10); // 30A
       motor.enableCurrentLimit(true); // turn it on
 }
 
@@ -58,19 +67,24 @@ public class Hand extends Subsystem {
     }
 
     public void intake(){
-      motor.set(ControlMode.PercentOutput, 0.5);
+      //motor.set(ControlMode.PercentOutput, 0.5);
+      handPwr = 0.5;
     }
     public void eject(){
-      motor.set(ControlMode.PercentOutput, -0.5);
+      //motor.set(ControlMode.PercentOutput, -0.5);
+      handPwr = -0.5;
     }
 
     public void update(){
-      
+      motor.set(ControlMode.PercentOutput, handPwr);
+    }
+
+    public void setPower(double power){
+      this.handPwr = power;
     }
 
     @Override
     public void initDefaultCommand() {
       // Set the default command for a subsystem here.
-      // setDefaultCommand(new MySpecialCommand());
     }
 }

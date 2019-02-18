@@ -14,6 +14,7 @@ public class HandGrab extends Command {
   public HandGrab() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
+    requires(Robot.hand);
   }
 
   // Called just before this Command runs the first time
@@ -44,5 +45,6 @@ public class HandGrab extends Command {
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
+    Robot.hand.close();
   }
 }

@@ -13,6 +13,7 @@ import com.stormbots.Clamp;
 import com.stormbots.Lerp;
 import com.stormbots.closedloop.FB;
 
+import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.ArmElevator.Mode;
@@ -33,8 +34,11 @@ public class Arm extends Subsystem {
       /** Saved from the update function to enable tracking based on the floor angle */
       double armAngle = 0.0;
 
-      double kArmGain = 0.027;
-      double kArmFF = 0.3;
+      // double kArmGain = 0.027;
+      double kArmGain = 0.035;
+      
+      // double kArmFF = 0.3;
+      double kArmFF = 0.5;
 
       public static final double MAX_ANGLE = 90.0;
       public static final double MIN_ANGLE = -90.0;
@@ -48,7 +52,12 @@ public class Arm extends Subsystem {
             //as a test mode thing, we could potentially reset this using
             //current limited motors to force it back into nominal position
 
-
+            if(Preferences.getInstance().getBoolean("compbot", true)){
+                  armMotor.setInverted(true);
+            }
+            else{
+                 armMotor.setInverted(true);
+            }
             armMotor.setSensorPhase(true);
             armMotor.configOpenloopRamp(0.2); 
 
@@ -115,8 +124,8 @@ public class Arm extends Subsystem {
                               kArmFF*Math.cos(Math.toRadians(currentArmPos)
                               );
 
-                        SmartDashboard.putNumber("FB Output without FF", FB.fb(targetArmPos, currentArmPos, kArmGain));
-                        SmartDashboard.putNumber("Feed Forward",  kArmFF*Math.cos(Math.toRadians(currentArmPos)));
+                        SmartDashboard.putNumber("FB Output without FF Arm", FB.fb(targetArmPos, currentArmPos, kArmGain));
+                        SmartDashboard.putNumber("Feed Forward Arm",  kArmFF*Math.cos(Math.toRadians(currentArmPos)));
                         //TODO find voltage needed to keep arm level (kArmFF),
 
                   break;
@@ -142,9 +151,10 @@ public class Arm extends Subsystem {
             //Check for soft limits
             if(armPower > 0 && currentArmPos > MAX_ANGLE) armPower = 0;
             if(armPower < 0 && currentArmPos < MIN_ANGLE) armPower = 0;
-
+            armPower = Clamp.clamp(armPower, -0.1, 0.1);
             armMotor.set(ControlMode.PercentOutput, armPower);
             SmartDashboard.putNumber("Arm Power", armPower);
+            SmartDashboard.putNumber("Arm Current", armMotor.getOutputCurrent());
             //ArmElevator.armavatorTab.add("Arm Power", armPower);
       }
 
