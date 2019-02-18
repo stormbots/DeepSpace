@@ -18,6 +18,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.stormbots.Lerp;
 import com.stormbots.closedloop.FB;
 
+import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.IntakeRestPosition;
@@ -28,7 +29,6 @@ import frc.robot.commands.IntakeRestPosition;
 public class Intake extends Subsystem {
   // Put methods for controlling this subsystem
   // here. Call these from Commands.
-
   // Pivot
   private CANSparkMax pivotMotor = new CANSparkMax(7, MotorType.kBrushless);
   private CANEncoder pivotEnc = new CANEncoder(pivotMotor);
@@ -87,7 +87,13 @@ public class Intake extends Subsystem {
     pivotMotor.set(0);
 
     //Rollers
-    //TODO: Figure if this is needed: rollerMotorMotor.setInverted(false);
+    if(Preferences.getInstance().getBoolean("compbot", true)){
+      rollerMotor.setInverted(true);
+    }
+    else{
+      rollerMotor.setInverted(false);
+    }
+
     rollerMotor.set(ControlMode.PercentOutput, 0);
 
      System.out.println("Pivot Firmware: " + pivotMotor.getFirmwareString());
