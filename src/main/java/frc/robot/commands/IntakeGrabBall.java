@@ -28,12 +28,13 @@ public class IntakeGrabBall extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
+    hasBall = false;
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    // if(Robot.intake.hasBall())return; //TODO Do we need this?
+    // if(hasBall)return; //TODO this should work eventually
 
     Robot.intake.setTargetPosition(Intake.PIVOT_GRAB_CARGO);
     Robot.intake.setRollerPower(Intake.ROLLER_GRAB_CARGO);
@@ -48,7 +49,7 @@ public class IntakeGrabBall extends Command {
       hasBallTime = Timer.getFPGATimestamp();
       Robot.intake.setTargetPosition(Intake.PIVOT_REST);
     }
-    if(Timer.getFPGATimestamp() >= hasBallTime + 1.0){
+    if(hasBall && (Timer.getFPGATimestamp() >= hasBallTime + 1.0)){
       Robot.passThrough.setPower(0);
     }
     // return Timer.getFPGATimestamp() >= hasBallTime + 1.0;

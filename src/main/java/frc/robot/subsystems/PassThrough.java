@@ -34,7 +34,7 @@ public class PassThrough extends Subsystem {
   public PassThrough() {
         //Configure Passthrough belt motors
     //TODO: Figure if this is needed: beltMotor.setInverted(false);
-    beltMotor.configOpenloopRamp(0.3);
+    beltMotor.configOpenloopRamp(0.1);
     beltMotor.set(ControlMode.PercentOutput, 0);
   }
   
@@ -42,11 +42,10 @@ public class PassThrough extends Subsystem {
 
   @Override
   public void initDefaultCommand() {
-    
-    
     // Set the default command for a subsystem here.
     setDefaultCommand(new PassThroughPower(0));
   }
+
   public void update() {
     SmartDashboard.putString("PassthroughCommand", getCurrentCommandName());
     beltMotor.set(ControlMode.PercentOutput,-beltPower);
