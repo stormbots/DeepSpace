@@ -60,7 +60,8 @@ public class Intake extends Subsystem {
   //intake on ground is 19.439
   public static final double PIVOT_MIN = 15;
   public static final double PIVOT_MIN_HAB = -10;
-  public static final double PIVOT_MAX = 110.0;
+  // public static final double PIVOT_MAX = 110.0; //practice bot
+  public static final double PIVOT_MAX = 135.0;
   public static final double PIVOT_GRAB_HAB = 0;
   public static final double PIVOT_REST = PIVOT_MAX-5;
   public static final double PIVOT_GRAB_CARGO = 61.5;
@@ -83,7 +84,7 @@ public class Intake extends Subsystem {
 
 
     //TODO: Increase current restrictions after limit and motor checks
-    pivotMotor.setSmartCurrentLimit(2,4);
+    pivotMotor.setSmartCurrentLimit(5, 10, 6700/3);
     pivotMotor.set(0);
 
     //Rollers

@@ -15,6 +15,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.PassThroughPower;
+import edu.wpi.first.wpilibj.Preferences;
 
 /**
  * An example subsystem. You can replace me with your own Subsystem.
@@ -32,6 +33,13 @@ public class PassThrough extends Subsystem {
   // here. Call these from Commands.
 
   public PassThrough() {
+
+    if(Preferences.getInstance().getBoolean("compbot", true)){
+      beltMotor.setInverted(true);
+    }
+    else{
+      beltMotor.setInverted(false);
+    }
         //Configure Passthrough belt motors
     //TODO: Figure if this is needed: beltMotor.setInverted(false);
     beltMotor.configOpenloopRamp(0.1);
