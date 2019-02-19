@@ -39,7 +39,7 @@ public class ChassisPixyDrive extends Command {
     sonarL.setAutomaticMode(true);
     sonarR.setAutomaticMode(true);
 
-    System.out.println("ChassisPixyDriveConstructor actually ran");
+    System.out.println("ChassisPixyDrive Constructor ran");
   }
 
   // Called just before this Command runs the first time

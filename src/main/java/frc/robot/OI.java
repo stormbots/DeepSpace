@@ -148,23 +148,23 @@ public class OI {
 
   public static double getDriveFwdL() {
     //return driveStick.getRawAxis(1);
-    return driveStick.getRawAxis(1)*Math.abs(driveStick.getRawAxis(1)); // CADEN's drive
+    return driveStick.getRawAxis(1);//*Math.abs(driveStick.getRawAxis(1)); // CADEN's drive
     // make the output "-" for Zeus
   }
 
   public static double getDriveFwdR() {
     //return driveStick.getRawAxis(3);
-    return driveStick.getRawAxis(3)*Math.abs(driveStick.getRawAxis(3));  // NORMAL PEOPLE's drive
+    return driveStick.getRawAxis(3);//*Math.abs(driveStick.getRawAxis(3));  // NORMAL PEOPLE's drive
     // make the output "-" for Zeus
   }
 
   public static double getDriveSideL() {
-    return driveStick.getRawAxis(0)*Math.abs(driveStick.getRawAxis(0)); // NORMAL PEOPLE's drive
+    return driveStick.getRawAxis(0);//*Math.abs(driveStick.getRawAxis(0)); // NORMAL PEOPLE's drive
     // make the output "-" for Zeus
   }
 
   public static double getDriveSideR() {
-    return driveStick.getRawAxis(2)*Math.abs(driveStick.getRawAxis(2)); // CADEN's drive
+    return driveStick.getRawAxis(2);//*Math.abs(driveStick.getRawAxis(2)); // CADEN's drive
     // make the output "-" for Zeus
   }
 }
