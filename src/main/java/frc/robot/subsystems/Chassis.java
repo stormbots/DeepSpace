@@ -12,6 +12,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
@@ -28,26 +29,17 @@ public class Chassis extends Subsystem {
   public CANSparkMax motorL = new CANSparkMax(1, MotorType.kBrushless);
   public CANSparkMax slaveL1 = new CANSparkMax(2, MotorType.kBrushless);
   public CANSparkMax slaveL2 = new CANSparkMax(3, MotorType.kBrushless);
-  public CANSparkMax motorR = new CANSparkMax(4, MotorType.kBrushless);
-  public CANSparkMax slaveR1 = new CANSparkMax(5, MotorType.kBrushless);
+  public CANSparkMax motorR = new CANSparkMax(4, MotorType.kBrushless); // 4
+  public CANSparkMax slaveR1 = new CANSparkMax(5, MotorType.kBrushless); // 5
   public CANSparkMax slaveR2 = new CANSparkMax(6, MotorType.kBrushless);
   // */
-
-  // public WPI_TalonSRX motorL = new WPI_TalonSRX(0);
-  // public TalonSRX slaveL1 = new TalonSRX(1);
-  // public TalonSRX slaveL2 = new TalonSRX(2);
-  // public WPI_TalonSRX motorR = new WPI_TalonSRX(3);
-  // public TalonSRX slaveR1 = new TalonSRX(4);
-  // public TalonSRX slaveR2 = new TalonSRX(5);
-
-
 
   //Motor 1 and 4 are the leaders of their sides. 1 for left and 4 for right.
   public DifferentialDrive driver = new DifferentialDrive(motorL, motorR);
 
   //Gearbox Shifters
-  public Solenoid shifterL = new Solenoid(2);
-  public Solenoid shifterR = new Solenoid(3);
+  public Solenoid shifter = new Solenoid(2);
+  public Solenoid shifterInverse = new Solenoid(5);
 
   // Use an Enum to define pnuematic truth values, so that you get good named values 
   // backed by type checking everywhere.
@@ -78,7 +70,7 @@ public class Chassis extends Subsystem {
     slaveR1.setRampRate(5.0);
     slaveR2.setRampRate(5.0);
 */
-    double voltageRampRate = 0.075;
+    //double voltageRampRate = 0.075;
     // motorL.configOpenloopRamp(voltageRampRate, 30);
     // slaveL1.configOpenloopRamp(voltageRampRate, 30);
     // slaveL2.configOpenloopRamp(voltageRampRate, 30);
@@ -95,9 +87,9 @@ public class Chassis extends Subsystem {
 
     //In an attempt to budget power across all motors, this is a safe start point that should
     // minimize brownouts
-    int stallLimit = 180/6;
-    int freeLimit = 220/6;
-    int limitRPM = 5700/3;
+    int stallLimit = 180/4;  // /6;  
+    int freeLimit = 220/4;  // /6;
+    int limitRPM = 6700/3;
     motorL.setSmartCurrentLimit(stallLimit, freeLimit, limitRPM);
     slaveL1.setSmartCurrentLimit(stallLimit, freeLimit, limitRPM);
     slaveL2.setSmartCurrentLimit(stallLimit, freeLimit, limitRPM);
@@ -111,10 +103,17 @@ public class Chassis extends Subsystem {
     slaveR2.follow(motorR);
 
     shift(Gear.LOW);
+    if(Preferences.getInstance().getBoolean("compbot", true)){
+      //motorL.setInverted(true);
+      //motorR.setInverted(true);
+    }
+    else{
+      
+    }
   }
 
   public void shift(Gear gear){
-    shifterL.set(gear.bool());
-    shifterR.set(gear.bool());
+    shifter.set(gear.bool());
+    shifterInverse.set(!gear.bool());
   }
 }

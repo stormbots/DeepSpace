@@ -63,7 +63,7 @@ public class ChassisPixyDrive extends Command {
     }
     if(cyclesSinceLastLine > 10){
       //chassis speed  = 0
-      Robot.drive.driver.tankDrive(0.4, 0.4);
+      //Robot.drive.driver.tankDrive(0.4, 0.4);
       return ; 
     }
 
@@ -142,10 +142,10 @@ public class ChassisPixyDrive extends Command {
     */
 
     if((sonarL.getRangeInches() + sonarR.getRangeInches()) / 2 < 6) {
-      Robot.drive.driver.tankDrive(0.2, 0.2);
+      //Robot.drive.driver.tankDrive(0.2, 0.2);
     }
     else if(Math.sqrt(Math.pow(startX-endX, 2) + Math.pow(startY-endY, 2)) < 0.1) {
-      Robot.drive.driver.tankDrive(0.2, 0.2);
+      //Robot.drive.driver.tankDrive(0.2, 0.2);
     }
     else {
 
@@ -158,14 +158,14 @@ public class ChassisPixyDrive extends Command {
 
       if(startX > 0) {
         //Robot.drive.driver.tankDrive(0.2*midY + 0.5*Math.abs(midX), 0.2*midY); // IS GOOD
-        Robot.drive.driver.tankDrive(shortSidePower, longSidePower);
+        //Robot.drive.driver.tankDrive(shortSidePower, longSidePower);
       }
       else if(startX < 0) {
         //Robot.drive.driver.tankDrive(0.2*midY, 0.2*midY + 0.5*Math.abs(midX)); // IS GOOD
-        Robot.drive.driver.tankDrive(longSidePower, shortSidePower);
+        //Robot.drive.driver.tankDrive(longSidePower, shortSidePower);
       }
       else {
-        Robot.drive.driver.tankDrive(shortSidePower, shortSidePower);
+        //Robot.drive.driver.tankDrive(shortSidePower, shortSidePower);
       }
     }
 
