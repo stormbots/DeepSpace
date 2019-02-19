@@ -6,11 +6,11 @@
 /*----------------------------------------------------------------------------*/
 
 package frc.robot;
-
 import com.stormbots.devices.pixy2.Pixy2;
 
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
@@ -22,7 +22,10 @@ import frc.robot.subsystems.ArmElevator;
 import frc.robot.subsystems.Chassis;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Hand;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.PassThrough;
 import frc.robot.subsystems.Pogos;
+
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -44,6 +47,11 @@ public class Robot extends TimedRobot {
   public static Pixy2 pixy = new Pixy2(Port.kOnboardCS0);
 
   public static Chassis drive = new Chassis(); //new ChassisTalonSRX();
+  public static PowerDistributionPanel pdp = new PowerDistributionPanel();
+  
+  
+  public static Intake intake = new Intake();
+  public static PassThrough passThrough = new PassThrough();
   public static OI m_oi = new OI();
 
   Command m_autonomousCommand;
@@ -144,6 +152,7 @@ public class Robot extends TimedRobot {
     // System.out.println(pixy.setLamp(true,false));
   }
 
+  
   /**
    * This function is called periodically during operator control.
    */
@@ -152,12 +161,9 @@ public class Robot extends TimedRobot {
     Scheduler.getInstance().run();
 
     armLift.update();
-    //armLift.elevator.elevMotor.set(ControlMode.PercentOutput, 0.25);
-    //hand.open();
-    //hand.intake();
     hand.update();
-    //armLift.arm.armMotor.set(ControlMode.PercentOutput, 0.3);
-    
+    intake.update();
+    passThrough.update();
   }
 
   /**
