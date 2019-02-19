@@ -8,13 +8,14 @@
 package frc.robot.commandgroups;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
-import edu.wpi.first.wpilibj.command.WaitCommand;
+import edu.wpi.first.wpilibj.command.WaitForChildren;
 import frc.robot.Robot;
 import frc.robot.commands.ArmPose;
-import frc.robot.commands.HandGrab;
+import frc.robot.commands.HandPose;
 import frc.robot.commands.IntakeSetPosition;
 import frc.robot.commands.PassThroughPower;
 import frc.robot.subsystems.ArmElevator.Pose;
+import frc.robot.subsystems.Hand;
 
 public class LoadCargoNew extends CommandGroup {
   /**
@@ -37,25 +38,29 @@ public class LoadCargoNew extends CommandGroup {
     // e.g. if Command1 requires chassis, and Command2 requires arm,
     // a CommandGroup containing them would require both the chassis and the
     // arm.
-    addSequential(new HandGrab(true));
-    addSequential(new PassThroughPower(0.2));
-    addSequential(new IntakeSetPosition(100));
-    addSequential(new ArmPose(Pose.LOAD_CARGO_PREP));
-    addParallel(new PassThroughPower(Robot.passThrough.LOAD_BALL_POWER));
+    addSequential(new HandPose(Hand.Position.CLOSE,0));
+    //Start up the passthrough slowly
+    addParallel(new IntakeSetPosition(100));
+    addParallel(new ArmPose(Pose.LOAD_CARGO_PREP));
+    //wait for both poses to be where they need to
+    addSequential(new WaitForChildren());
+    //start up the passthrough
 
     //   //if on target ()
     addSequential(new ArmPose(Pose.LOAD_CARGO));
-    //   //if on target
-    addSequential(new WaitCommand(7.0));
+    //Open the hand now, with a fallback to close and hold the ball if interrupted 
+    addParallel(new HandPose(Hand.Position.OPEN,Hand.GRAB_POWER,  Hand.Position.CLOSE,Hand.HOLD_POWER));
 
-    // addSequential(new HandGrab(false));
-    // addParallel(new HandPower(Robot.hand.GRAB_POWER));
-    // addSequential(new WaitCommand(1.5));
+    //use the TimeOut argument of addSequential to hijack the passthrough command with a max time
+    addSequential(new PassThroughPower(Robot.passThrough.LOAD_BALL_POWER),1.5);
 
-    // addSequential(new HandGrab(true));
+    // addSequential(new WaitCommand(7.0));
 
-    // addSequential(new ArmPose(Pose.LOAD_CARGO_PREP));
-    // addSequential(new ArmPose(Pose.HATCH_1));
+    //Exit the loading pose safely
+    addSequential(new HandPose(Hand.Position.CLOSE,Hand.HOLD_POWER));
+    addSequential(new ArmPose(Pose.LOAD_CARGO_PREP));
+    addSequential(new ArmPose(Pose.HATCH_1));
+
 
     
     //Robot.passThru.setPower(passThru.LOAD_POWER);

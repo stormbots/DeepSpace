@@ -23,8 +23,17 @@ public class Hand extends Subsystem {
     public Solenoid hand = new Solenoid(0);
     public Solenoid handB = new Solenoid(7);
 
-    public static final boolean OPEN = false; //practice bot true
-    public static final boolean CLOSE = !OPEN;
+    public enum Position{
+      OPEN(false),
+      CLOSE(true);
+      private boolean bool;
+      Position(boolean solenoid){this.bool = solenoid;}
+      public boolean bool(){return bool;};
+    }
+    Position position = Position.CLOSE;
+    
+    // public static final boolean OPEN = false; //practice bot true
+    // public static final boolean CLOSE = !OPEN;
 
     //public static ShuffleboardTab handTab = Shuffleboard.getTab("Hand Data");
 
@@ -33,22 +42,16 @@ public class Hand extends Subsystem {
     // Put methods for controlling this subsystem
     // here. Call these from Commands.
 
-    public double handPwr = 0.0;
+    public double rollerPower = 0.0;
   
     public static final double GRAB_POWER = .5;
     public static final double HOLD_POWER = .1;
     public static final double EJECT_POWER = -0.5;
     public static final double OFF = .0;
     
-    boolean open = false;
   
     public Hand(){
-      close();
-      open = false;
-      /*leftHand.set(deployed);
-      rightHand.set(deployed);
-      */
-      handPwr = 0.0;
+      setPosition(Position.CLOSE);
 
       //We probably want a very low continuous current, to avoid causing harm to the cargo. 
       //this lets us keep it running without much concern, as we have no sensors
@@ -62,42 +65,33 @@ public class Hand extends Subsystem {
       else{
           motor.setInverted(false);
       }
-}
-
-    public void open(){
-      open = true;
-      hand.set(OPEN);
-      handB.set(CLOSE);
     }
 
-    public void close(){
-      open = false;
-      hand.set(CLOSE);
-      handB.set(OPEN);
+    public void setPosition(Position position){
+      this.position = position;
+      hand.set(position.bool());
+      handB.set(!position.bool());
     }
 
-    public boolean isOpen(){
-      return open;
+    public Position getPosition(){
+      return this.position;
+    }
+    
+    public void togglePosition(){
+      if(position == Position.CLOSE){
+        setPosition(Hand.Position.OPEN);
+      }else{
+        setPosition(Hand.Position.CLOSE);
+      }
     }
 
-
-
-    public void intake(){
-      //motor.set(ControlMode.PercentOutput, 0.5);
-      handPwr = 0.5;
-    }
-    public void eject(){
-      //motor.set(ControlMode.PercentOutput, -0.5);
-      handPwr = -0.5;
+    public void setRollers(double power){
+      rollerPower = power;
     }
 
     public void update(){
       SmartDashboard.putString("Hand Command",getCurrentCommandName());
-      motor.set(ControlMode.PercentOutput, handPwr);
-    }
-
-    public void setPower(double power){
-      this.handPwr = power;
+      motor.set(ControlMode.PercentOutput, rollerPower);
     }
 
     @Override

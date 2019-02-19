@@ -12,6 +12,8 @@ import com.stormbots.Lerp;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import frc.robot.commandgroups.LoadCargoNew;
+import frc.robot.subsystems.Hand;
+import frc.robot.subsystems.Hand.*;
 import frc.robot.subsystems.ArmElevator.Pose;
 import frc.robot.subsystems.Chassis.Gear;
 // import frc.robot.commands.ArmPose;
@@ -87,9 +89,10 @@ public class OI {
 
     //autoLineup.whileHeld(new ChassisPixyDrive());
 
-    handSuckIn.whileHeld(new HandPower(Robot.hand.GRAB_POWER,Robot.hand.HOLD_POWER));
-    handSpitOut.whileHeld(new HandPower(Robot.hand.EJECT_POWER));
-    handGrab.toggleWhenPressed(new HandGrab());
+    // handSuckIn.whileHeld(new HandPower(Robot.hand.GRAB_POWER,Robot.hand.HOLD_POWER));
+    handSuckIn.whileHeld(new HandPose(Position.OPEN, Hand.GRAB_POWER, Hand.Position.CLOSE, Hand.HOLD_POWER));
+    handSpitOut.whileHeld(new HandPose(Position.CLOSE, Hand.EJECT_POWER));
+    handGrab.toggleWhenPressed(new HandPose());
 
     grabCargo.whileHeld(new IntakeGrabBall());
 
