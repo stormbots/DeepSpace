@@ -12,11 +12,6 @@ import com.stormbots.Lerp;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import frc.robot.commandgroups.LoadCargoNew;
-import frc.robot.commands.ArmPose;
-import frc.robot.commands.ChassisPixyDrive;
-import frc.robot.commands.ChassisShift;
-import frc.robot.commands.HandGrab;
-import frc.robot.commands.HandPower;
 import frc.robot.subsystems.ArmElevator.Pose;
 import frc.robot.subsystems.Chassis.Gear;
 // import frc.robot.commands.ArmPose;
@@ -95,7 +90,7 @@ public class OI {
     handSpitOut.whileHeld(new HandPower(Robot.hand.EJECT_POWER));
     handGrab.toggleWhenPressed(new HandGrab());
 
-    intakeCargo.whenPressed(new LoadCargoNew());
+    grabCargo.whileHeld(new IntakeGrabBall());
 
     //climbSequence.whileHeld(new RobotGrabHab());
 
