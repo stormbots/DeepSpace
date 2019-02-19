@@ -7,18 +7,19 @@
 
 package frc.robot;
 
+import com.stormbots.devices.pixy2.Pixy2;
+
+import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
-import com.ctre.phoenix.motorcontrol.ControlMode;
-
-import edu.wpi.first.wpilibj.CameraServer;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.subsystems.ArmElevator;
+import frc.robot.subsystems.Chassis;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Hand;
 import frc.robot.subsystems.Pogos;
@@ -37,8 +38,13 @@ public class Robot extends TimedRobot {
   public static Hand hand = new Hand();
   //public static ShuffleboardTab driveTab = Shuffleboard.getTab("Match Dashboard");
   public static Pogos pogos = new Pogos();
-  public static OI oi = new OI();
   
+
+
+  public static Pixy2 pixy = new Pixy2(Port.kOnboardCS0);
+
+  public static Chassis drive = new Chassis(); //new ChassisTalonSRX();
+  public static OI m_oi = new OI();
 
   Command m_autonomousCommand;
   SendableChooser<Command> m_chooser = new SendableChooser<>();
@@ -50,6 +56,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     compressor.clearAllPCMStickyFaults();
+
     m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
     // chooser.addOption("My Auto", new MyAutoCommand());
     SmartDashboard.putData("Auto mode", m_chooser);
@@ -79,6 +86,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void disabledInit() {
+    // System.out.println(pixy.setLamp(false,false));
   }
 
   @Override
@@ -132,6 +140,8 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+
+    // System.out.println(pixy.setLamp(true,false));
   }
 
   /**
@@ -155,13 +165,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void testPeriodic() {
-    //pogos.update();
-    //armLift..wristMotor.set(ControlMode.PercentOutput, 0.25); //-0.1, -0.12
-    
-    
 
-    /*pogos.setPogoPower(0.3);
-    pogos.update();*/
   }
 
 }

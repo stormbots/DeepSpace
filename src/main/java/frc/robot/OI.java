@@ -10,12 +10,15 @@ package frc.robot;
 import com.stormbots.Lerp;
 
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import frc.robot.commandgroups.LoadCargoNew;
-import frc.robot.commands.*;
-import frc.robot.subsystems.ArmElevator;
+import frc.robot.commands.ArmPose;
+import frc.robot.commands.ChassisPixyDrive;
+import frc.robot.commands.ChassisShift;
+import frc.robot.commands.HandGrab;
+import frc.robot.commands.HandPower;
 import frc.robot.subsystems.ArmElevator.Pose;
+import frc.robot.subsystems.Chassis.Gear;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -23,8 +26,9 @@ import frc.robot.subsystems.ArmElevator.Pose;
  */
 public class OI {
 
-  public Joystick rightStick = new Joystick(0);
-  public Joystick leftStick = new Joystick(1);
+  public static Joystick driveStick = new Joystick(0);
+  public Joystick rightStick = new Joystick(1);
+  public Joystick leftStick = new Joystick(2);
 
   // This should be a really nice way to set up buttons to quickly switch around to various poses
   // Most notably, the old joysticks actually have 6 buttons on the left side, which is almost
@@ -55,7 +59,10 @@ public class OI {
   public JoystickButton handSpitOut = new JoystickButton(leftStick,7);
   public JoystickButton autoLineup = new JoystickButton(leftStick,8);
 
-  
+  //NOT PROPERLY ASSIGNED
+  public JoystickButton pixyfollower = new JoystickButton(driveStick, 5);
+  public JoystickButton shifter = new JoystickButton(driveStick, 6);
+
 
   //This switches functionality between a separate lineup, arm position, and drive forward delivery system
   //vs. one that runs the whole sequence of events with one button (one for each position)
@@ -87,6 +94,12 @@ public class OI {
     intakeCargo.whenPressed(new LoadCargoNew());
 
     //climbSequence.whileHeld(new RobotGrabHab());
+
+    pixyfollower.whileHeld(new ChassisPixyDrive());
+    
+    // Press+Release creates a "hold" behaviour without special isFinished() conditions
+    shifter.whenPressed(new ChassisShift(Gear.HIGH));
+    shifter.whenReleased(new ChassisShift(Gear.LOW));
 
 
   }
@@ -130,4 +143,28 @@ public class OI {
   // until it is finished as determined by it's isFinished method.
   // button.whenReleased(new ExampleCommand());
 
+  
+
+
+  public static double getDriveFwdL() {
+    //return driveStick.getRawAxis(1);
+    return driveStick.getRawAxis(1)*Math.abs(driveStick.getRawAxis(1)); // CADEN's drive
+    // make the output "-" for Zeus
+  }
+
+  public static double getDriveFwdR() {
+    //return driveStick.getRawAxis(3);
+    return driveStick.getRawAxis(3)*Math.abs(driveStick.getRawAxis(3));  // NORMAL PEOPLE's drive
+    // make the output "-" for Zeus
+  }
+
+  public static double getDriveSideL() {
+    return driveStick.getRawAxis(0)*Math.abs(driveStick.getRawAxis(0)); // NORMAL PEOPLE's drive
+    // make the output "-" for Zeus
+  }
+
+  public static double getDriveSideR() {
+    return driveStick.getRawAxis(2)*Math.abs(driveStick.getRawAxis(2)); // CADEN's drive
+    // make the output "-" for Zeus
+  }
 }
