@@ -37,7 +37,7 @@ public class ChassisTeleopDrive extends Command {
     //Robot.drive.driver.tankDrive(OI.getDriveFwdL(), OI.getDriveFwdR()); //OI.getDriveFwdL()); // Use this one for TankDrive
     //Robot.drive.driver.arcadeDrive(OI.getDriveFwdL(), OI.getDriveSideR());// Caden's Arcade
     //Robot.drive.driver.arcadeDrive(clamp(OI.getDriveFwdR(), -0.5, 0.5), clamp(OI.getDriveSideL(), -0.5, 0.5));// Normal Arcade
-    Robot.drive.driver.arcadeDrive(OI.getDriveFwdR(), -OI.getDriveSideL());// Normal Arcade
+    Robot.drive.driver.arcadeDrive(OI.getDriveFwdR(), -OI.getDriveSideL(),true);// Normal Arcade
     //Robot.drive.driver.arcadeDrive(0.4, 0);
     //Robot.drive.motorL.set(0.3);
     

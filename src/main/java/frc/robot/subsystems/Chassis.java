@@ -14,6 +14,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import frc.robot.commands.ChassisTeleopDrive;
@@ -26,16 +27,19 @@ public class Chassis extends Subsystem {
 
   // /*
   //Motors must be burshless or the robot will explode
-  public CANSparkMax motorL = new CANSparkMax(1, MotorType.kBrushless);
-  public CANSparkMax slaveL1 = new CANSparkMax(2, MotorType.kBrushless);
-  public CANSparkMax slaveL2 = new CANSparkMax(3, MotorType.kBrushless);
-  public CANSparkMax motorR = new CANSparkMax(4, MotorType.kBrushless); // 4
-  public CANSparkMax slaveR1 = new CANSparkMax(5, MotorType.kBrushless); // 5
-  public CANSparkMax slaveR2 = new CANSparkMax(6, MotorType.kBrushless);
+  public CANSparkMax motorL0 = new CANSparkMax(1, MotorType.kBrushless);
+  public CANSparkMax motorL1 = new CANSparkMax(2, MotorType.kBrushless);
+  public CANSparkMax motorL2 = new CANSparkMax(3, MotorType.kBrushless);
+  public CANSparkMax motorR0 = new CANSparkMax(4, MotorType.kBrushless); // 4
+  public CANSparkMax motorR1 = new CANSparkMax(5, MotorType.kBrushless); // 5
+  public CANSparkMax motorR2 = new CANSparkMax(6, MotorType.kBrushless);
   // */
 
+  public SpeedControllerGroup motorsLeft = new SpeedControllerGroup(motorL0, motorL1, motorL2);
+  public SpeedControllerGroup motorsRight = new SpeedControllerGroup(motorR0, motorR1, motorR2);
+
   //Motor 1 and 4 are the leaders of their sides. 1 for left and 4 for right.
-  public DifferentialDrive driver = new DifferentialDrive(motorL, motorR);
+  public DifferentialDrive driver = new DifferentialDrive(motorsLeft, motorsRight);
 
   //Gearbox Shifters
   public Solenoid shifter = new Solenoid(2);
@@ -62,6 +66,7 @@ public class Chassis extends Subsystem {
    * initializes the ramprates and sets the slave motors
    */
   public Chassis(){
+
     /*
     motorL.setRampRate(5.0);
     slaveL1.setRampRate(5.0);
@@ -90,22 +95,16 @@ public class Chassis extends Subsystem {
     int stallLimit = 180/4;  // /6;  
     int freeLimit = 220/4;  // /6;
     int limitRPM = 6700/3;
-    motorL.setSmartCurrentLimit(stallLimit, freeLimit, limitRPM);
-    slaveL1.setSmartCurrentLimit(stallLimit, freeLimit, limitRPM);
-    slaveL2.setSmartCurrentLimit(stallLimit, freeLimit, limitRPM);
-    motorR.setSmartCurrentLimit(stallLimit, freeLimit, limitRPM);
-    slaveR1.setSmartCurrentLimit(stallLimit, freeLimit, limitRPM);
-    slaveR2.setSmartCurrentLimit(stallLimit, freeLimit, limitRPM);
-
-    slaveL1.follow(motorL);
-    slaveL2.follow(motorL);
-    slaveR1.follow(motorR);
-    slaveR2.follow(motorR);
+    motorL0.setSmartCurrentLimit(stallLimit, freeLimit, limitRPM);
+    motorL1.setSmartCurrentLimit(stallLimit, freeLimit, limitRPM);
+    motorL2.setSmartCurrentLimit(stallLimit, freeLimit, limitRPM);
+    motorR0.setSmartCurrentLimit(stallLimit, freeLimit, limitRPM);
+    motorR1.setSmartCurrentLimit(stallLimit, freeLimit, limitRPM);
+    motorR2.setSmartCurrentLimit(stallLimit, freeLimit, limitRPM);
 
     shift(Gear.LOW);
     if(Preferences.getInstance().getBoolean("compbot", true)){
-      //motorL.setInverted(true);
-      //motorR.setInverted(true);
+      
     }
     else{
       
