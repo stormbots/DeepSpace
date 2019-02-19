@@ -10,9 +10,10 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
+import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.command.Subsystem;
-import edu.wpi.first.wpilibj.Preferences;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * Add your docs here.
@@ -39,11 +40,11 @@ public class Hand extends Subsystem {
     public static final double EJECT_POWER = -0.5;
     public static final double OFF = .0;
     
-    boolean deployed = false;
+    boolean open = false;
   
     public Hand(){
       close();
-      deployed = false;
+      open = false;
       /*leftHand.set(deployed);
       rightHand.set(deployed);
       */
@@ -64,14 +65,22 @@ public class Hand extends Subsystem {
 }
 
     public void open(){
+      open = true;
       hand.set(OPEN);
       handB.set(CLOSE);
     }
 
     public void close(){
+      open = false;
       hand.set(CLOSE);
       handB.set(OPEN);
     }
+
+    public boolean isOpen(){
+      return open;
+    }
+
+
 
     public void intake(){
       //motor.set(ControlMode.PercentOutput, 0.5);
@@ -83,6 +92,7 @@ public class Hand extends Subsystem {
     }
 
     public void update(){
+      SmartDashboard.putString("Hand Command",getCurrentCommandName());
       motor.set(ControlMode.PercentOutput, handPwr);
     }
 

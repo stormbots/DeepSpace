@@ -72,8 +72,8 @@ public class ArmElevator extends Subsystem {
             HATCH_3(57,+90,0),
 
             LOAD_HATCH(42,-90,0),
-            LOAD_CARGO_PREP(42,-70,0),
-            LOAD_CARGO(42,-70,-135);
+            LOAD_CARGO_PREP(42,-59,0), 
+            LOAD_CARGO(42,-59,-150); //arm used to be -70, wrist angle was -135
 
             private double eleHeight;
             private double armAngle;

@@ -76,13 +76,14 @@ public class OI {
     poseCargo1.whenPressed(new ArmPose(Pose.CARGO_1));
     poseCargo2.whenPressed(new ArmPose(Pose.CARGO_2));
     poseCargo3.whenPressed(new ArmPose(Pose.CARGO_3));
-    intakeCargo.whenPressed(new ArmPose(Pose.LOAD_CARGO));
+    //intakeCargo.whenPressed(new ArmPose(Pose.LOAD_CARGO));
+    intakeCargo.whenPressed(new LoadCargoNew());
     //armDown.whenPressed(new ArmPose(Pose.HIDE));
 
-    // poseHatch1.whenPressed(new ArmPose(Pose.HATCH_1));
-    // poseHatch2.whenPressed(new ArmPose(Pose.HATCH_2));
-    // poseHatch3.whenPressed(new ArmPose(Pose.HATCH_3));
-    // loadHatch.whenPressed(new ArmPose(Pose.LOAD_HATCH));
+    poseHatch1.whenPressed(new ArmPose(Pose.HATCH_1));
+    poseHatch2.whenPressed(new ArmPose(Pose.HATCH_2));
+    poseHatch3.whenPressed(new ArmPose(Pose.HATCH_3));
+    //loadHatch.whenPressed(new ArmPose(Pose.LOAD_HATCH));
 
     //autoLineup.whileHeld(new ChassisPixyDrive());
 
@@ -165,6 +166,6 @@ public class OI {
 
   public static double getDriveSideR() {
     return driveStick.getRawAxis(2);//*Math.abs(driveStick.getRawAxis(2)); // CADEN's drive
-    // make the output "-" for Zeus
+  // make the output "-" for Zeus
   }
 }

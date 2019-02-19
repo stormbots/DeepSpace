@@ -12,7 +12,8 @@ import edu.wpi.first.wpilibj.command.WaitCommand;
 import frc.robot.Robot;
 import frc.robot.commands.ArmPose;
 import frc.robot.commands.HandGrab;
-import frc.robot.commands.HandPower;
+import frc.robot.commands.IntakeSetPosition;
+import frc.robot.commands.PassThroughPower;
 import frc.robot.subsystems.ArmElevator.Pose;
 
 public class LoadCargoNew extends CommandGroup {
@@ -36,20 +37,25 @@ public class LoadCargoNew extends CommandGroup {
     // e.g. if Command1 requires chassis, and Command2 requires arm,
     // a CommandGroup containing them would require both the chassis and the
     // arm.
-
+    addSequential(new HandGrab(true));
+    addSequential(new PassThroughPower(0.2));
+    addSequential(new IntakeSetPosition(100));
     addSequential(new ArmPose(Pose.LOAD_CARGO_PREP));
+    addParallel(new PassThroughPower(Robot.passThrough.LOAD_BALL_POWER));
+
     //   //if on target ()
     addSequential(new ArmPose(Pose.LOAD_CARGO));
     //   //if on target
-    addParallel(new HandGrab());
-    addParallel(new HandPower(Robot.hand.GRAB_POWER));
-    // addSequential(Robot.passThru.setPower(passThru.LOAD_POWER));
+    addSequential(new WaitCommand(7.0));
 
-    addSequential(new WaitCommand(1.5));
+    // addSequential(new HandGrab(false));
+    // addParallel(new HandPower(Robot.hand.GRAB_POWER));
+    // addSequential(new WaitCommand(1.5));
 
-   // addSequential(new Robot.hand.close());
-    addSequential(new ArmPose(Pose.LOAD_CARGO_PREP));
-    addSequential(new ArmPose(Pose.HATCH_1));
+    // addSequential(new HandGrab(true));
+
+    // addSequential(new ArmPose(Pose.LOAD_CARGO_PREP));
+    // addSequential(new ArmPose(Pose.HATCH_1));
 
     
     //Robot.passThru.setPower(passThru.LOAD_POWER);

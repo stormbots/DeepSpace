@@ -23,7 +23,7 @@ import edu.wpi.first.wpilibj.Preferences;
 public class PassThrough extends Subsystem {
 
   public static final double GRAB_BALL_POWER = 0.3 ;
-  public static final double LOAD_BALL_POWER = 0.35 ;
+  public static final double LOAD_BALL_POWER = 1 ;
   public static final double CARGO_STALL_CURRENT = 3;
 
   private TalonSRX beltMotor = new TalonSRX(9);
