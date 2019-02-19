@@ -32,12 +32,14 @@ public class ArmPose extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
+    //Avoid catastrophic pose changes if we're in the robot
+    if(Robot.armLift.pose==Pose.LOAD_CARGO) pose = Pose.LOAD_CARGO_PREP;
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.armLift.setPose(pose);    
+    Robot.armLift.setPose(pose); 
   }
 
   // Make this return true when this Command no longer needs to run execute()
