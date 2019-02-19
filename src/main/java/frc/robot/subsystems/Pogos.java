@@ -21,7 +21,7 @@ public class Pogos extends Subsystem {
 
   //public Solenoid leftPogo = new Solenoid(5);
   public Solenoid pogo = new Solenoid(1);
-  public Solenoid pogoB = new Solenoid(5);
+  public Solenoid pogoB = new Solenoid(6); //5
 
   //public DigitalInput onHabCenter = new DigitalInput(3);
 
@@ -30,7 +30,7 @@ public class Pogos extends Subsystem {
   // Put methods for controlling this subsystem
   // here. Call these from Commands.
 
-  public static final boolean DEPLOYED = true;
+  public static final boolean DEPLOYED = false; //true practice bot
   public static final boolean RETRACTED = !DEPLOYED;
   double motorPower = 0.3;
   double velocity = 0.0;

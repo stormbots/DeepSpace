@@ -12,9 +12,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.command.Subsystem;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import frc.robot.commands.HandPower;
+import edu.wpi.first.wpilibj.Preferences;
 
 /**
  * Add your docs here.
@@ -22,8 +20,9 @@ import frc.robot.commands.HandPower;
 public class Hand extends Subsystem {
 
     public Solenoid hand = new Solenoid(0);
+    public Solenoid handB = new Solenoid(7);
 
-    public static final boolean OPEN = true; 
+    public static final boolean OPEN = false; //practice bot true
     public static final boolean CLOSE = !OPEN;
 
     //public static ShuffleboardTab handTab = Shuffleboard.getTab("Hand Data");
@@ -56,14 +55,22 @@ public class Hand extends Subsystem {
       motor.configPeakCurrentDuration(200, 10); // 200ms
       motor.configContinuousCurrentLimit(3, 10); // 30A
       motor.enableCurrentLimit(true); // turn it on
+      if(Preferences.getInstance().getBoolean("compbot", true)){
+          motor.setInverted(true);
+      }
+      else{
+          motor.setInverted(false);
+      }
 }
 
     public void open(){
       hand.set(OPEN);
+      handB.set(CLOSE);
     }
 
     public void close(){
       hand.set(CLOSE);
+      handB.set(OPEN);
     }
 
     public void intake(){

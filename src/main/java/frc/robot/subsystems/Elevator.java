@@ -29,7 +29,7 @@ public class Elevator extends Subsystem {
       public TalonSRX elevMotorF = new TalonSRX(11);
      
       //ublic TalonSRX elevMotor2 = new TalonSRX(11);
-      DigitalInput elevLimit = new DigitalInput(2);
+      //DigitalInput elevLimit = new DigitalInput(2);
 
       //Elevator has two positions that need to be programmed in supposedly
       public static final double MAX_HEIGHT = 69;
@@ -116,12 +116,12 @@ public class Elevator extends Subsystem {
 
                   case HOMING:
 
-                        if(!elevLimit.get()) {
-                              elevatorPwr = 0;
-                        }
-                        else {
-                              elevatorPwr = -0.3;
-                        }
+                        // if(!elevLimit.get()) {
+                        //       elevatorPwr = 0;
+                        // }
+                        // else {
+                        //       elevatorPwr = -0.3;
+                        // }
                   break;
 
                   case DISABLED:
