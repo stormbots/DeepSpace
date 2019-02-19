@@ -19,6 +19,10 @@ import frc.robot.commands.HandGrab;
 import frc.robot.commands.HandPower;
 import frc.robot.subsystems.ArmElevator.Pose;
 import frc.robot.subsystems.Chassis.Gear;
+// import frc.robot.commands.ArmPose;
+// import frc.robot.subsystems.ArmElevator;
+// import frc.robot.subsystems.ArmElevator.Pose;
+import frc.robot.commands.*;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -80,10 +84,10 @@ public class OI {
     intakeCargo.whenPressed(new ArmPose(Pose.LOAD_CARGO));
     //armDown.whenPressed(new ArmPose(Pose.HIDE));
 
-    poseHatch1.whenPressed(new ArmPose(Pose.HATCH_1));
-    poseHatch2.whenPressed(new ArmPose(Pose.HATCH_2));
-    poseHatch3.whenPressed(new ArmPose(Pose.HATCH_3));
-    loadHatch.whenPressed(new ArmPose(Pose.LOAD_HATCH));
+    // poseHatch1.whenPressed(new ArmPose(Pose.HATCH_1));
+    // poseHatch2.whenPressed(new ArmPose(Pose.HATCH_2));
+    // poseHatch3.whenPressed(new ArmPose(Pose.HATCH_3));
+    // loadHatch.whenPressed(new ArmPose(Pose.LOAD_HATCH));
 
     //autoLineup.whileHeld(new ChassisPixyDrive());
 
@@ -100,6 +104,7 @@ public class OI {
     // Press+Release creates a "hold" behaviour without special isFinished() conditions
     shifter.whenPressed(new ChassisShift(Gear.HIGH));
     shifter.whenReleased(new ChassisShift(Gear.LOW));
+    climbSequence.whileHeld(new RobotGrabHab(5));
 
 
   }
@@ -118,13 +123,13 @@ public class OI {
   // by subclassing Button you can create custom triggers and bind those to
   // commands the same as any other Button.
 
-  public double getElevatorPos(){
-   return Lerp.lerp( rightStick.getRawAxis(3) ,1,-1, Robot.armLift.elevator.MIN_HEIGHT, Robot.armLift.elevator.MAX_HEIGHT);
-  }
+  // public double getElevatorPos(){
+  //  return Lerp.lerp( rightStick.getRawAxis(3) ,1,-1, Robot.armLift.elevator.MIN_HEIGHT, Robot.armLift.elevator.MAX_HEIGHT);
+  // }
 
-  public double getArmPos(){
-    return Lerp.lerp( rightStick.getRawAxis(3) ,1,-1, Robot.armLift.arm.MIN_ANGLE, Robot.armLift.arm.MAX_ANGLE);
-  }
+  // public double getArmPos(){
+  //   return Lerp.lerp( rightStick.getRawAxis(3) ,1,-1, Robot.armLift.arm.MIN_ANGLE, Robot.armLift.arm.MAX_ANGLE);
+  // }
   
 
   //// TRIGGERING COMMANDS WITH BUTTONS
