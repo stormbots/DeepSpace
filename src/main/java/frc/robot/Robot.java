@@ -146,6 +146,8 @@ public class Robot extends TimedRobot {
     // continue until interrupted by another command, remove
     // this line or comment it out.
     
+    pogos.retractPogos();
+
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
@@ -161,7 +163,7 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
     Scheduler.getInstance().run();
 
-    armLift.update();
+    //armLift.update();
     hand.update();
     intake.update();
     passThrough.update();

@@ -103,7 +103,7 @@ public class OI {
     // Press+Release creates a "hold" behaviour without special isFinished() conditions
     shifter.whenPressed(new ChassisShift(Gear.HIGH));
     shifter.whenReleased(new ChassisShift(Gear.LOW));
-    climbSequence.whileHeld(new RobotGrabHab(5));
+    climbSequence.whileHeld(new RobotGrabHab(10));
 
 
   }

@@ -78,13 +78,13 @@ public class Intake extends Subsystem {
     pivotTargetPosition = getPosition();
 
     //TODO: We may need to tune kPivot values on the smartdashboard
-    kPivotFF = 0.05; // Holds itself stable quite well due to gearing
+    kPivotFF = 0.09; //5// Holds itself stable quite well due to gearing
     // kPivotGain = 0.004;
      kPivotGain = 0.08;
 
 
     //TODO: Increase current restrictions after limit and motor checks
-    pivotMotor.setSmartCurrentLimit(5, 10, 6700/3);
+    //pivotMotor.setSmartCurrentLimit(5, 10, 6700/3);
     pivotMotor.set(0);
 
     //Rollers
