@@ -63,7 +63,7 @@ public class Intake extends Subsystem {
   // public static final double PIVOT_MAX = 110.0; //practice bot
   public static final double PIVOT_MAX = 135.0;
   public static final double PIVOT_GRAB_HAB = 0;
-  public static final double PIVOT_REST = PIVOT_MAX-5;
+  public static final double PIVOT_REST = PIVOT_MAX -5;
   public static final double PIVOT_GRAB_CARGO = 61.5;
   public static final double ROLLER_GRAB_CARGO = 1.0;
   public static final double ROLLER_GRAB_POWER = 0;
