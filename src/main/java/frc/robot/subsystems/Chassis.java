@@ -102,6 +102,14 @@ public class Chassis extends Subsystem {
     motorR1.setSmartCurrentLimit(stallLimit, freeLimit, limitRPM);
     motorR2.setSmartCurrentLimit(stallLimit, freeLimit, limitRPM);
 
+    double rampRate = 260;
+    motorL0.setRampRate(rampRate);
+    motorL1.setRampRate(rampRate);
+    motorL2.setRampRate(rampRate);
+    motorR0.setRampRate(rampRate);
+    motorR1.setRampRate(rampRate);
+    motorR2.setRampRate(rampRate);
+
     shift(Gear.LOW);
     if(Preferences.getInstance().getBoolean("compbot", true)){
       
