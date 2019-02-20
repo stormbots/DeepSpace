@@ -10,6 +10,7 @@ import com.stormbots.devices.pixy2.Pixy2;
 
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -41,18 +42,17 @@ public class Robot extends TimedRobot {
   public static Hand hand = new Hand();
   //public static ShuffleboardTab driveTab = Shuffleboard.getTab("Match Dashboard");
   public static Pogos pogos = new Pogos();
-  
-
 
   public static Pixy2 pixy = new Pixy2(Port.kOnboardCS0);
 
   public static Chassis drive = new Chassis(); //new ChassisTalonSRX();
   public static PowerDistributionPanel pdp = new PowerDistributionPanel();
   
-  
   public static Intake intake = new Intake();
   public static PassThrough passThrough = new PassThrough();
   public static OI m_oi = new OI();
+
+  public static DigitalInput bellySensor = new DigitalInput(9);
 
   Command m_autonomousCommand;
   SendableChooser<Command> m_chooser = new SendableChooser<>();
