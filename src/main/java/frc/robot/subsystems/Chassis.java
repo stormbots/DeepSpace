@@ -102,7 +102,7 @@ public class Chassis extends Subsystem {
     motorR1.setSmartCurrentLimit(stallLimit, freeLimit, limitRPM);
     motorR2.setSmartCurrentLimit(stallLimit, freeLimit, limitRPM);
 
-    double rampRate = 160;
+    double rampRate = 260;
     motorL0.setRampRate(rampRate);
     motorL1.setRampRate(rampRate);
     motorL2.setRampRate(rampRate);
