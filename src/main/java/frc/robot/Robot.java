@@ -1,4 +1,4 @@
-/*----------------------------------------------------------------------------*/
+/*---3692+-------------------------------------------------------------------------*/
 /* Copyright (c) 2017-2018 FIRST. All Rights Reserved.                        */
 /* Open Source Software - may be modified and shared by FRC teams. The code   */
 /* must be accompanied by the FIRST BSD license file in the root directory of */
@@ -7,14 +7,16 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
+import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.subsystems.ExampleSubsystem;
-import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import frc.robot.subsystems.LimeLight;
 
 
@@ -29,6 +31,17 @@ public class Robot extends TimedRobot {
   public static ExampleSubsystem m_subsystem = new ExampleSubsystem();
   public static OI m_oi;
   public LimeLight limelight = new LimeLight();
+
+  DigitalInput armHome = new DigitalInput(8);
+  DigitalInput wristHome = new DigitalInput(6);
+  DigitalInput elevatorHome = new DigitalInput(7);
+
+  DigitalInput belly = new DigitalInput(9);
+
+  Ultrasonic sonarL = new Ultrasonic(1, 2);
+  Ultrasonic sonarR = new Ultrasonic(3, 4);
+
+
 
   Command m_autonomousCommand;
   SendableChooser<Command> m_chooser = new SendableChooser<>();
@@ -47,7 +60,7 @@ public class Robot extends TimedRobot {
 
   /**
    * This function is called every robot packet, no matter the mode. Use
-   * this for items like diagnostics that you want ran during disabled,
+   ** this for items like diagnostics that you want ran during disabled,
    * autonomous, teleoperated and test.
    *
    * <p>This runs after the mode specific periodic functions, but before
@@ -55,6 +68,18 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
+    //debugging for robot when recieving comp bot
+    /*
+    System.out.println("------------------------------------------------");
+    System.out.println("armHome: " +  armHome.get());
+    System.out.println("elevatorHome: " + elevatorHome.get());
+    System.out.println("wristHome: " + wristHome.get());
+    System.out.println("belly: " + belly.get());
+    System.out.println("sonarL: " + sonarL.getRangeInches());
+    System.out.println("sonarR: " + sonarR.getRangeInches());
+    System.out.println("------------------------------------------------");
+    */
+
   }
 
   /**
@@ -69,6 +94,7 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledPeriodic() {
     Scheduler.getInstance().run();
+    
   }
 
   /**
@@ -133,5 +159,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void testPeriodic() {
+
   }
 }

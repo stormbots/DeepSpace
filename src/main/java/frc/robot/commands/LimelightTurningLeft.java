@@ -29,8 +29,11 @@ public class LimelightTurningLeft extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    NetworkTable.getTable("limelight").putNumber("pipeline", 2); //left target targeting pipeline
+        // sets the pipeline to the leftbrow targetting 
+    NetworkTable.getTable("limelight").putNumber("pipeline", 2);
 
+    // grabs tx (horizontal offset from the target to the middle of the limelight's vision)
+    // lerps tx and multiplies it by a proportional to creete a turnAdjust (NEEDS TUNING)
     double[] txArray = NetworkTable.getTable("limelight").getNumberArray("tx", new double[0]);
     double tx = txArray[0];
     double p = .5;

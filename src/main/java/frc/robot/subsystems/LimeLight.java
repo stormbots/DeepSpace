@@ -24,27 +24,33 @@ public class LimeLight extends Subsystem {
   }
 
   public void init(){
-    NetworkTable.getTable("limelight").putNumber("pipeline", 2);
-    NetworkTable.getTable("limelight").putNumber("camMode", 0);
+    
+    NetworkTable.getTable("limelight").putNumber("pipeline", 1);
+    // sets the limelight's camera mode to camera mode
+    NetworkTable.getTable("limelight").putNumber("camMode", 1);
 
   }
 
   public void update(){
+    // grabs the camtran value (array)
     NetworkTable.getTable("limelight").getNumberArray("camtran", new double[6]);
     double[] camtran = NetworkTable.getTable("limelight").getNumberArray("camtran", new double[6]);
 
+    // array values from the cmatran: (x,y,z,pitch,yaw,roll)
     double x = camtran[0]; // (x)
     double y = camtran[1]; // (y)
     double z = camtran[2]; // (z)
     double pitch = camtran[3]; // (x,z) green
     double yaw = camtran[4]; // (x,y) red
-    double roll = camtran[5]; // (y,z) blue
+    double roll = camtran[5]; // (y,z) blue 
 
+    // calculates pitch (not really needed)
     double h = Math.sqrt((x*x) + (z*z));
     double radianAngle = Math.acos(z/h);
     double angle = (radianAngle*180)/Math.PI;
 
-    System.out.println(angle);
-    System.out.println(pitch); //printing pitch
+    // prints out pitch (calculated and from networktable)
+    System.out.println(angle); 
+    System.out.println(pitch);
   }
 }

@@ -12,7 +12,7 @@ import static com.stormbots.Lerp.lerp;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
-
+import frc.robot.subsystems.LimeLight;
 /**
  * An example command.  You can replace me with your own command.
  */
@@ -25,21 +25,50 @@ public class LimelightTurningRight extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    NetworkTable.getTable("limelight").putNumber("pipeline", 1); //right target targeting pipeline
-
-    double[] txArray = NetworkTable.getTable("limelight").getNumberArray("tx", new double[0]);
-    double tx = txArray[0];
-    double p = .5;
-    double turnAdjust = lerp(tx, -27, 27, -1, 1) * p;
-
+    // sets the pipeline to the rightbrow targetting 
+    NetworkTable.getTable("limelight").putNumber("pipeline", 1);
+    // sets the limelight's camera mode to vision mode
+    NetworkTable.getTable("limelight").putNumber("camMode", 0);
+    // array of (x,y,z,pitch,yaw,roll)
+    double[] camtran;
+    // distance from target
+    double z; 
+    // horizontal offset from the target to the center of the limelight's vision
+    double[] txArray;
+    double tx;
+    // lerped tx to gain a turn adjustment value for turning 
+    double turnAdjust;
+    // constant proportional value for z (distance)
+    double pz;
+    // power of drive controlled using distance and a constant proportional
+    double distancePowerMod = 0;
+    // proportional for the turning adjustment used to lower the angle to close to 0
+    double pTurnAdjust;
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
+    double[] txArray = NetworkTable.getTable("limelight").getNumberArray("tx", new double[0]);
+    double tx = txArray[0];
+    double turnAdjust = lerp(tx, -27, 27, -0.25, .25);
+    double pTurnAdjust = 0.4;
+
+    NetworkTable.getTable("limelight").getNumberArray("camtran", new double[6]);
+    double[] camtran = NetworkTable.getTable("limelight").getNumberArray("camtran", new double[6]);
+    double z = camtran[2]; 
+    double pz = .5;
+    double distancePowerMod = z/pz;
+
+    // makes sure that the power of the drive does not exceed its limit
+    if (distancePowerMod > 1){
+      distancePowerMod = 1;
+    }
+    
     /*
-    Robot.drive.driver.tankDrive(0.5 + turnAdjust, 0.5 - turnAdjust);
+    Robot.drive.driver.tankDrive((0.5 * distancePowerMod) + (turnAdjust * pTurnAdjust), (0.5 * distancePowerMod) - (turnAdjust * pTurnAdjust));
     */
+    
   }
 
   // Make this return true when this Command no longer needs to run execute()
@@ -51,6 +80,8 @@ public class LimelightTurningRight extends Command {
   // Called once after isFinished returns true
   @Override
   protected void end() {
+    // sets the limelight's camera mode to camera mode
+    NetworkTable.getTable("limelight").putNumber("camMode", 1);
   }
 
   // Called when another command which requires one or more of the same
