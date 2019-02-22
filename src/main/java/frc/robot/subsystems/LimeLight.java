@@ -49,7 +49,7 @@ public class LimeLight extends Subsystem {
     double angle = (radianAngle*180)/Math.PI;
 
     // prints out pitch (calculated and from networktable)
-    System.out.println(angle); 
-    System.out.println(pitch);
+    //System.out.println(angle); 
+    //System.out.println(pitch);
   }
 }
