@@ -6,8 +6,15 @@
 /*----------------------------------------------------------------------------*/
 
 package frc.robot;
+import com.stormbots.devices.pixy2.Pixy2;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+
+import edu.wpi.first.wpilibj.CameraServer;
+import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
+import edu.wpi.first.wpilibj.SPI.Port;
+
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj.command.Command;
@@ -16,8 +23,17 @@ import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.subsystems.ArmElevator;
+import frc.robot.subsystems.Chassis;
 import frc.robot.subsystems.ExampleSubsystem;
+
 import frc.robot.subsystems.LimeLight;
+
+import frc.robot.subsystems.Hand;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.PassThrough;
+import frc.robot.subsystems.Pogos;
+
 
 
 /**
@@ -28,20 +44,27 @@ import frc.robot.subsystems.LimeLight;
  * project.
  */
 public class Robot extends TimedRobot {
+  public static Compressor compressor = new Compressor();
   public static ExampleSubsystem m_subsystem = new ExampleSubsystem();
-  public static OI m_oi;
+
   public LimeLight limelight = new LimeLight();
 
-  DigitalInput armHome = new DigitalInput(8);
-  DigitalInput wristHome = new DigitalInput(6);
-  DigitalInput elevatorHome = new DigitalInput(7);
-
-  DigitalInput belly = new DigitalInput(9);
-
-  Ultrasonic sonarL = new Ultrasonic(1, 2);
-  Ultrasonic sonarR = new Ultrasonic(3, 4);
+  public static ArmElevator armLift = new ArmElevator();
+  public static Hand hand = new Hand();
+  //public static ShuffleboardTab driveTab = Shuffleboard.getTab("Match Dashboard");
+  public static Pogos pogos = new Pogos();
+  
 
 
+  public static Pixy2 pixy = new Pixy2(Port.kOnboardCS0);
+
+  public static Chassis drive = new Chassis(); //new ChassisTalonSRX();
+  public static PowerDistributionPanel pdp = new PowerDistributionPanel();
+  
+  
+  public static Intake intake = new Intake();
+  public static PassThrough passThrough = new PassThrough();
+  public static OI m_oi = new OI();
 
   Command m_autonomousCommand;
   SendableChooser<Command> m_chooser = new SendableChooser<>();
@@ -52,10 +75,17 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    m_oi = new OI();
+    compressor.clearAllPCMStickyFaults();
+    hand.close();
+
     m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
     // chooser.addOption("My Auto", new MyAutoCommand());
     SmartDashboard.putData("Auto mode", m_chooser);
+    //driveTab.add("Front Camera", CameraServer.getInstance().startAutomaticCapture()); //startAutomaticCapture(int)
+    // driveTab.add("Back Camera", CameraServer.getInstance().startAutomaticCapture());
+    CameraServer.getInstance().startAutomaticCapture(0);
+    CameraServer.getInstance().startAutomaticCapture(1);
+
   }
 
   /**
@@ -89,6 +119,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void disabledInit() {
+    // System.out.println(pixy.setLamp(false,false));
   }
 
   @Override
@@ -139,11 +170,15 @@ public class Robot extends TimedRobot {
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
+    
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+
+    // System.out.println(pixy.setLamp(true,false));
   }
 
+  
   /**
    * This function is called periodically during operator control.
    */
@@ -152,6 +187,11 @@ public class Robot extends TimedRobot {
     Scheduler.getInstance().run();
 
     limelight.update();
+    armLift.update();
+    hand.update();
+    intake.update();
+    passThrough.update();
+
   }
 
   /**
@@ -161,4 +201,5 @@ public class Robot extends TimedRobot {
   public void testPeriodic() {
 
   }
+
 }
