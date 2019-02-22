@@ -7,10 +7,7 @@
 
 package frc.robot.commands;
 
-import static com.stormbots.Clamp.clamp;
-
 import edu.wpi.first.wpilibj.command.Command;
-import frc.robot.OI;
 import frc.robot.Robot;
 
 /**
@@ -27,6 +24,11 @@ public class ChassisTeleopDrive extends Command {
   @Override
   protected void initialize() {
     //set mode back to manual
+
+    Robot.drive.motorL0.restoreFactoryDefaults();
+    Robot.drive.motorL1.restoreFactoryDefaults();    
+
+    Robot.drive.motorL1.follow(Robot.drive.motorL0);
     System.out.println("ChassisTeleopDrive execute is running");
   }
 
@@ -37,10 +39,11 @@ public class ChassisTeleopDrive extends Command {
     //Robot.drive.driver.tankDrive(OI.getDriveFwdL(), OI.getDriveFwdR()); //OI.getDriveFwdL()); // Use this one for TankDrive
     //Robot.drive.driver.arcadeDrive(OI.getDriveFwdL(), OI.getDriveSideR());// Caden's Arcade
     //Robot.drive.driver.arcadeDrive(clamp(OI.getDriveFwdR(), -0.5, 0.5), clamp(OI.getDriveSideL(), -0.5, 0.5));// Normal Arcade
-    Robot.drive.driver.arcadeDrive(OI.getDriveFwdR(), -OI.getDriveSideL(),true);// Normal Arcade
+    //Robot.drive.driver.arcadeDrive(OI.getDriveFwdR(), -OI.getDriveSideL(),true);// Normal Arcade
     //Robot.drive.driver.arcadeDrive(0.4, 0);
     //Robot.drive.motorL.set(0.3);
-    
+    Robot.drive.motorL0.set(0.5);
+    //Robot.drive.motorL1.set(0.5);
   }
 
   // Make this return true when this Command no longer needs to run execute()

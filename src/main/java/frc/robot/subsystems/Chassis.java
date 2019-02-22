@@ -11,6 +11,9 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.CANEncoder;
+import com.revrobotics.CANPIDController;
+import com.revrobotics.ControlType;
 
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.Solenoid;
@@ -29,17 +32,17 @@ public class Chassis extends Subsystem {
   //Motors must be burshless or the robot will explode
   public CANSparkMax motorL0 = new CANSparkMax(1, MotorType.kBrushless);
   public CANSparkMax motorL1 = new CANSparkMax(2, MotorType.kBrushless);
-  public CANSparkMax motorL2 = new CANSparkMax(3, MotorType.kBrushless);
-  public CANSparkMax motorR0 = new CANSparkMax(4, MotorType.kBrushless); // 4
-  public CANSparkMax motorR1 = new CANSparkMax(5, MotorType.kBrushless); // 5
-  public CANSparkMax motorR2 = new CANSparkMax(6, MotorType.kBrushless);
+  //public CANSparkMax motorL2 = new CANSparkMax(3, MotorType.kBrushless);
+  // public CANSparkMax motorR0 = new CANSparkMax(4, MotorType.kBrushless);
+  // public CANSparkMax motorR1 = new CANSparkMax(5, MotorType.kBrushless);
+  // public CANSparkMax motorR2 = new CANSparkMax(6, MotorType.kBrushless);
   // */
 
-  public SpeedControllerGroup motorsLeft = new SpeedControllerGroup(motorL0, motorL1, motorL2);
-  public SpeedControllerGroup motorsRight = new SpeedControllerGroup(motorR0, motorR1, motorR2);
+  // public SpeedControllerGroup motorsLeft = new SpeedControllerGroup(motorL0, motorL1, motorL2);
+  // public SpeedControllerGroup motorsRight = new SpeedControllerGroup(motorR0, motorR1, motorR2);
 
   //Motor 1 and 4 are the leaders of their sides. 1 for left and 4 for right.
-  public DifferentialDrive driver = new DifferentialDrive(motorsLeft, motorsRight);
+  //public DifferentialDrive driver = new DifferentialDrive(motorsLeft, motorsRight);
 
   //Gearbox Shifters
   public Solenoid shifter = new Solenoid(2);
@@ -97,18 +100,18 @@ public class Chassis extends Subsystem {
     int limitRPM = 6700/3;
     motorL0.setSmartCurrentLimit(stallLimit, freeLimit, limitRPM);
     motorL1.setSmartCurrentLimit(stallLimit, freeLimit, limitRPM);
-    motorL2.setSmartCurrentLimit(stallLimit, freeLimit, limitRPM);
-    motorR0.setSmartCurrentLimit(stallLimit, freeLimit, limitRPM);
-    motorR1.setSmartCurrentLimit(stallLimit, freeLimit, limitRPM);
-    motorR2.setSmartCurrentLimit(stallLimit, freeLimit, limitRPM);
+    // motorL2.setSmartCurrentLimit(stallLimit, freeLimit, limitRPM);
+    // motorR0.setSmartCurrentLimit(stallLimit, freeLimit, limitRPM);
+    // motorR1.setSmartCurrentLimit(stallLimit, freeLimit, limitRPM);
+    // motorR2.setSmartCurrentLimit(stallLimit, freeLimit, limitRPM);
 
-    double rampRate = 260;
-    motorL0.setRampRate(rampRate);
-    motorL1.setRampRate(rampRate);
-    motorL2.setRampRate(rampRate);
-    motorR0.setRampRate(rampRate);
-    motorR1.setRampRate(rampRate);
-    motorR2.setRampRate(rampRate);
+    double rampRate = 260.0;
+    motorL0.setOpenLoopRampRate(rampRate);
+    motorL1.setOpenLoopRampRate(rampRate);
+    // motorL2.setRampRate(rampRate);
+    // motorR0.setRampRate(rampRate);
+    // motorR1.setRampRate(rampRate);
+    // motorR2.setRampRate(rampRate);
 
     shift(Gear.LOW);
     if(Preferences.getInstance().getBoolean("compbot", true)){
