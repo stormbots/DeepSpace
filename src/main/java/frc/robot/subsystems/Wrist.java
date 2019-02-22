@@ -13,6 +13,7 @@ import com.stormbots.Clamp;
 import com.stormbots.Lerp;
 import com.stormbots.closedloop.MiniPID;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -34,6 +35,8 @@ public class Wrist extends Subsystem {
 
       public double wristPower = 0.0;
       double armPosition = 0.0; // Used for floor-relative calculations
+
+      //public DigitalInput armlimit = new DigitalInput(); //TODO: What port?
 
       //double kWristGain = 0.005;
       //double kWristGain = 0.006;
@@ -191,12 +194,12 @@ public class Wrist extends Subsystem {
                   case HOMING:
                         //NOTE: We do not actually have limit switches for this.
                         //Instead, we would need to trust gravity or initial boot-up position
-                        // if(!armLimit.get()) {
-                        //       wristPower = 0;
-                        // }
-                        // else {
-                        //       wristPower = -0.3;
-                        // }
+                        //  if(!armLimit.get()) {
+                              //  wristPower = 0;
+                        //  }
+                        //  else {
+                              //  wristPower = -0.3;
+                        //  }
                   break;
 
                   case DISABLED:

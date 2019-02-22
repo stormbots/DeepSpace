@@ -33,7 +33,7 @@ public class Elevator extends Subsystem {
 
       //Elevator has two positions that need to be programmed in supposedly
       public static final double MAX_HEIGHT = 69;
-      public static final double MIN_HEIGHT = 42;
+      public static final double MIN_HEIGHT = 41;
       double elevatorHeightRestriction = MAX_HEIGHT;
       double elevatorTargetHeight = 0;
       double currentPos = 0;
