@@ -52,12 +52,12 @@ public class LimelightTurningRight extends Command {
     double[] txArray = NetworkTable.getTable("limelight").getNumberArray("tx", new double[0]);
     double tx = txArray[0];
     double turnAdjust = lerp(tx, -27, 27, -0.25, .25);
-    double pTurnAdjust = 0.4;
+    double pTurnAdjust = 0.4; //Needs tuned 
 
     NetworkTable.getTable("limelight").getNumberArray("camtran", new double[6]);
     double[] camtran = NetworkTable.getTable("limelight").getNumberArray("camtran", new double[6]);
     double z = camtran[2]; 
-    double pz = .5;
+    double pz = .5; //Needs tuned 
     double distancePowerMod = z/pz;
 
     // makes sure that the power of the drive does not exceed its limit
@@ -65,16 +65,23 @@ public class LimelightTurningRight extends Command {
       distancePowerMod = 1;
     }
     
-    /*
     Robot.drive.driver.tankDrive((0.5 * distancePowerMod) + (turnAdjust * pTurnAdjust), (0.5 * distancePowerMod) - (turnAdjust * pTurnAdjust));
-    */
     
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return false;
+    NetworkTable.getTable("limelight").getNumberArray("camtran", new double[6]);
+    double[] camtran = NetworkTable.getTable("limelight").getNumberArray("camtran", new double[6]);
+    double z = camtran[2]; 
+
+    if (z <= 18 ) {
+      return true;
+    }
+    else {
+      return false;
+    }
   }
 
   // Called once after isFinished returns true

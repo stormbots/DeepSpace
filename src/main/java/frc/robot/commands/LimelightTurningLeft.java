@@ -26,6 +26,11 @@ public class LimelightTurningLeft extends Command {
 
   }
 
+  /* 
+  The Limelight has been swapped to the right side of the robot, so this command is not currently 
+  functional. May be made functional if the Limelight moves again.
+  */
+
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {

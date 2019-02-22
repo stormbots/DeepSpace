@@ -24,7 +24,6 @@ public class LimeLight extends Subsystem {
   }
 
   public void init(){
-    
     NetworkTable.getTable("limelight").putNumber("pipeline", 1);
     // sets the limelight's camera mode to camera mode
     NetworkTable.getTable("limelight").putNumber("camMode", 1);
