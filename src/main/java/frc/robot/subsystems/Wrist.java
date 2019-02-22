@@ -16,6 +16,7 @@ import com.stormbots.closedloop.MiniPID;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Robot;
 import frc.robot.subsystems.ArmElevator.Mode;
 import frc.robot.subsystems.ArmElevator.Pose;
 
@@ -60,12 +61,6 @@ public class Wrist extends Subsystem {
             //current limited motors to force it back into nominal position
             //reset();
 
-            if(Preferences.getInstance().getBoolean("compbot", true)){
-                  wristMotor.setInverted(true);
-            }
-            else{
-                 wristMotor.setInverted(false);
-            }
             wristMotor.configOpenloopRamp(0.2);
             wristMotor.setSensorPhase(true);
             
@@ -85,6 +80,15 @@ public class Wrist extends Subsystem {
             //pidWrist.setSetpointRange(35.0);
       }
 
+      /** Runs on robot boot after network/SmartDashboard becomes available */
+      public void robotInit(){
+            if(Robot.isCompbot){
+                  wristMotor.setInverted(true);
+            }
+            else{
+                  wristMotor.setInverted(false);
+            }
+      }
       /** Specified by 4096 ticks per rotation, with a 42:24 gear ratio */
       // public Lerp wristToDegrees = new Lerp(0, 4096*(42.0/24.0), 0, 360);
       public Lerp wristToDegrees = new Lerp(0, 2395.0, 0, 90);

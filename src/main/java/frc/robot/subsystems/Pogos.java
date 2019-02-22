@@ -13,6 +13,7 @@ import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import frc.robot.Robot;
 
 /**
  * Add your docs here.
@@ -34,16 +35,19 @@ public class Pogos extends Subsystem {
   public static final boolean RETRACTED = !DEPLOYED;
   double motorPower = 0.3;
   double velocity = 0.0;
-  public static boolean help = false;
 
   public Pogos(){
-
-    //leftPogo.set(DEPLOYED);
     pogo.set(RETRACTED);
     pogoB.set(DEPLOYED);
-    help = true;
     System.out.println("Pogo is Initialized");
-    
+  }
+
+  /** Runs on robot boot after network/SmartDashboard becomes available */
+  public void robotInit(){
+    if(Robot.isCompbot){
+    }
+    else{
+    }
   }
 
   public void deployPogos(){
