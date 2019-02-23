@@ -16,6 +16,7 @@ import com.stormbots.closedloop.FB;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Robot;
 import frc.robot.subsystems.ArmElevator.Mode;
 import frc.robot.subsystems.ArmElevator.Pose;
 
@@ -52,12 +53,6 @@ public class Arm extends Subsystem {
             //as a test mode thing, we could potentially reset this using
             //current limited motors to force it back into nominal position
 
-            if(Preferences.getInstance().getBoolean("compbot", true)){
-                  armMotor.setInverted(true);
-            }
-            else{
-                 armMotor.setInverted(false);
-            }
             armMotor.setSensorPhase(true);
             armMotor.configOpenloopRamp(0.2); 
 
@@ -68,8 +63,16 @@ public class Arm extends Subsystem {
             armMotor.configPeakCurrentDuration(200, 10); // 200ms
             armMotor.configContinuousCurrentLimit(8, 10); // 30A
             armMotor.enableCurrentLimit(true); // turn it on
+      }
 
-
+      /** Runs on robot boot after network/SmartDashboard becomes available */
+      public void robotInit(){
+            if(Robot.isCompbot){
+                  armMotor.setInverted(true);
+            }
+            else{
+                 armMotor.setInverted(false);
+            }
       }
 
       /** Specified by 4096 ticks per rotation, with a 54:18 gear ratio */

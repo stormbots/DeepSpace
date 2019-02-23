@@ -35,7 +35,12 @@ public class ArmElevator extends Subsystem {
 
 	public ArmElevator() {
             this.setPose(pose.STARTUP);
-
+      }
+      
+	public void robotInit() {
+            arm.robotInit();
+            elevator.robotInit();
+            wrist.robotInit();
 	}
 
 	public enum Mode {

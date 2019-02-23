@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Robot;
 
 /**
  * Add your docs here.
@@ -59,13 +60,18 @@ public class Hand extends Subsystem {
       motor.configPeakCurrentDuration(200, 10); // 200ms
       motor.configContinuousCurrentLimit(3, 10); // 30A
       motor.enableCurrentLimit(true); // turn it on
-      if(Preferences.getInstance().getBoolean("compbot", true)){
-          motor.setInverted(true);
+    }
+
+    /** Runs on robot boot after network/SmartDashboard becomes available */
+    public void robotInit(){
+      if(Robot.isCompbot){
+        motor.setInverted(true);
       }
       else{
-          motor.setInverted(false);
+        motor.setInverted(false);
       }
     }
+
 
     public void setPosition(Position position){
       this.position = position;
