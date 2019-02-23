@@ -25,9 +25,6 @@ public class ChassisTeleopDrive extends Command {
   protected void initialize() {
     //set mode back to manual
 
-    Robot.drive.motorL0.restoreFactoryDefaults();
-    Robot.drive.motorL1.restoreFactoryDefaults();    
-
     Robot.drive.motorL1.follow(Robot.drive.motorL0);
     System.out.println("ChassisTeleopDrive execute is running");
   }

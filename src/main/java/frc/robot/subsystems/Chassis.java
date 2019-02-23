@@ -93,6 +93,9 @@ public class Chassis extends Subsystem {
     //NOTE: Max power draw for  for Neo Brushless at stall is 105Amps
     //NOTE: Max free-spin speed is 5700 RPM
 
+    motorL0.restoreFactoryDefaults();
+    motorL1.restoreFactoryDefaults();    
+
     //In an attempt to budget power across all motors, this is a safe start point that should
     // minimize brownouts
     int stallLimit = 180/4;  // /6;  
