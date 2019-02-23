@@ -29,7 +29,7 @@ public class RobotGrabHab extends Command {
     timeToAngle = new Lerp(0,moveTime, 90, Robot.intake.PIVOT_MIN_HAB);
     // Use requires() here to declare subsystem dependencies
     requires(Robot.intake);
-    requires(Robot.drive);
+    requires(Robot.chassis);
     requires(Robot.pogos);
   }
 
@@ -84,7 +84,7 @@ public class RobotGrabHab extends Command {
   // Called once after isFinished returns true
   @Override
   protected void end() {
-    Robot.drive.driver.tankDrive(0, 0);
+    Robot.chassis.driver.tankDrive(0, 0);
     Robot.pogos.setPogoPower(0);
   }
 
@@ -92,7 +92,7 @@ public class RobotGrabHab extends Command {
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
-    Robot.drive.driver.tankDrive(0, 0);
+    Robot.chassis.driver.tankDrive(0, 0);
     Robot.pogos.setPogoPower(0);
   }
 }
