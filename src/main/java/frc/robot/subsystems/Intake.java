@@ -21,6 +21,7 @@ import com.stormbots.closedloop.FB;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Robot;
 import frc.robot.commands.IntakeRestPosition;
 
 /**
@@ -61,7 +62,7 @@ public class Intake extends Subsystem {
   public static final double PIVOT_MIN = 15;
   public static final double PIVOT_MIN_HAB = -10;
   // public static final double PIVOT_MAX = 110.0; //practice bot
-  public static final double PIVOT_MAX = 135.0;
+  public static       double PIVOT_MAX = 135.0;
   public static final double PIVOT_GRAB_HAB = 0;
   public static final double PIVOT_REST = PIVOT_MAX-5;
   public static final double PIVOT_GRAB_CARGO = 76.5; //was 61.5
@@ -87,17 +88,22 @@ public class Intake extends Subsystem {
     //pivotMotor.setSmartCurrentLimit(5, 10, 6700/3);
     pivotMotor.set(0);
 
+
     //Rollers
-    if(Preferences.getInstance().getBoolean("compbot", true)){
+    rollerMotor.set(ControlMode.PercentOutput, 0);
+
+    System.out.println("Pivot Firmware: " + pivotMotor.getFirmwareString());
+  }
+
+  /** Runs on robot boot after network/SmartDashboard becomes available */
+  public void robotInit(){
+    if(Robot.isCompbot){
       rollerMotor.setInverted(true);
     }
     else{
       rollerMotor.setInverted(false);
+      PIVOT_MAX = 110.0;
     }
-
-    rollerMotor.set(ControlMode.PercentOutput, 0);
-
-     System.out.println("Pivot Firmware: " + pivotMotor.getFirmwareString());
   }
 
   @Override

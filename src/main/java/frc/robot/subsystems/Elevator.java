@@ -13,9 +13,9 @@ import com.stormbots.Clamp;
 import com.stormbots.Lerp;
 import com.stormbots.closedloop.FB;
 
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Robot;
 import frc.robot.subsystems.ArmElevator.Mode;
 import frc.robot.subsystems.ArmElevator.Pose;
 
@@ -57,7 +57,13 @@ public class Elevator extends Subsystem {
 
             elevMotorF.follow(elevMotor);
       }
-
+      /** Runs on robot boot after network/SmartDashboard becomes available */
+      public void robotInit(){
+            if(Robot.isCompbot){
+            }
+            else{
+            }
+      }
 
       private Mode mode = Mode.CLOSEDLOOP;
       private boolean homed = false;

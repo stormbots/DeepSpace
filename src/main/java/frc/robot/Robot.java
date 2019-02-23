@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
+import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
@@ -36,6 +37,7 @@ import frc.robot.subsystems.Pogos;
  * project.
  */
 public class Robot extends TimedRobot {
+  public static boolean isCompbot = true;
   public static Compressor compressor = new Compressor();
   public static ExampleSubsystem m_subsystem = new ExampleSubsystem();
   public static ArmElevator armLift = new ArmElevator();
@@ -45,7 +47,7 @@ public class Robot extends TimedRobot {
 
   public static Pixy2 pixy = new Pixy2(Port.kOnboardCS0);
 
-  public static Chassis drive = new Chassis(); //new ChassisTalonSRX();
+  public static Chassis chassis = new Chassis(); //new ChassisTalonSRX();
   public static PowerDistributionPanel pdp = new PowerDistributionPanel();
   
   public static Intake intake = new Intake();
@@ -60,9 +62,29 @@ public class Robot extends TimedRobot {
   /**
    * This function is run when the robot is first started up and should be
    * used for any initialization code.
+   * 
+   * Different than a constructor as this is run when SmartDashboard and network functions
+   * are operational.
    */
   @Override
   public void robotInit() {
+    //Deal with robot-specific differences
+    // Don't change this code: Instead, change the value in SmartDashboard Preferences to "false".
+    // This ensures that in case of any error, the code defaults to comp bot for competition safety
+    if(!Preferences.getInstance().containsKey("compbot")){
+      Preferences.getInstance().putBoolean("compbot", true); 
+    }
+    isCompbot = Preferences.getInstance().getBoolean("compbot", true);
+
+    armLift.robotInit();
+    chassis.robotInit();
+    hand.robotInit();
+    intake.robotInit();
+    passThrough.robotInit();
+    pogos.robotInit();
+
+
+
     compressor.clearAllPCMStickyFaults();
     hand.close();
 
@@ -137,6 +159,8 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousPeriodic() {
     Scheduler.getInstance().run();
+    // Don't do anything special for autonomousPeriodic: Just run teleopPeriodic instead
+    teleopPeriodic();
   }
 
   @Override
@@ -167,6 +191,7 @@ public class Robot extends TimedRobot {
     hand.update();
     intake.update();
     passThrough.update();
+    pogos.update();
   }
 
   /**

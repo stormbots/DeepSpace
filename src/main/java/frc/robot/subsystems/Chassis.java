@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import frc.robot.Robot;
 import frc.robot.commands.ChassisTeleopDrive;
 
 
@@ -111,13 +112,16 @@ public class Chassis extends Subsystem {
     motorR2.setRampRate(rampRate);
 
     shift(Gear.LOW);
-    if(Preferences.getInstance().getBoolean("compbot", true)){
-      
+  }
+
+  /** Runs on robot boot after network/SmartDashboard becomes available */
+  public void robotInit(){
+    if(Robot.isCompbot){
     }
     else{
-      
     }
   }
+  
 
   public void shift(Gear gear){
     shifter.set(gear.bool());
