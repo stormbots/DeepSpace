@@ -53,6 +53,7 @@ public class Intake extends Subsystem {
     SmartDashboard.putData("Intake/Position",gyro.set(getPosition()));
     SmartDashboard.putNumber("Intake/Current Pos", getPosition());
     SmartDashboard.putString("Intake/Command", getCurrentCommandName());
+    SmartDashboard.putNumber("Intake/Target Pos",this.pivotTargetPosition);
   }
   
   public enum Mode {CLOSEDLOOP,MANUAL,HABLIFT,DISABLE};
@@ -99,8 +100,6 @@ public class Intake extends Subsystem {
 
     //Rollers
     rollerMotor.set(ControlMode.PercentOutput, 0);
-
-    System.out.println("Pivot Firmware: " + pivotMotor.getFirmwareString());
   }
 
   /** Runs on robot boot after network/SmartDashboard becomes available */
@@ -127,7 +126,6 @@ public class Intake extends Subsystem {
     double targetPosition = this.pivotTargetPosition;
     double currentPosition = getPosition();  
     // tab.add("TargetPosition", targetPosition);
-    SmartDashboard.putNumber("Intake/Target Pos",targetPosition);
 
     //Check Soft Limits
     targetPosition = clamp(targetPosition,PIVOT_MIN,PIVOT_MAX);
@@ -155,6 +153,7 @@ public class Intake extends Subsystem {
     
     // tab.add("TargetPosition(mod)", targetPosition);
     SmartDashboard.putNumber("Intake/Current Position(final)",getPosition());
+    SmartDashboard.putNumber("Intake/Output Power",pivotPower);
 
         
     //set output power

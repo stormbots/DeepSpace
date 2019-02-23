@@ -75,6 +75,8 @@ public class Robot extends TimedRobot {
       Preferences.getInstance().putBoolean("compbot", true); 
     }
     isCompbot = Preferences.getInstance().getBoolean("compbot", true);
+    SmartDashboard.putBoolean("Combot?", isCompbot);
+    
 
     armLift.robotInit();
     chassis.robotInit();
@@ -185,11 +187,11 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
     Scheduler.getInstance().run();
 
-    // armLift.update();
-    // hand.update();
-    // intake.update();
-    // passThrough.update();
-    // pogos.update();
+    armLift.update();
+    hand.update();
+    intake.update();
+    passThrough.update();
+    pogos.update();
   }
 
   /**

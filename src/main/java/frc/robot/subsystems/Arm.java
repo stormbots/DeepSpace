@@ -161,7 +161,7 @@ public class Arm extends Subsystem {
             //Check for soft limits
             if(armPower > 0 && currentArmPos > MAX_ANGLE) armPower = 0;
             if(armPower < 0 && currentArmPos < MIN_ANGLE) armPower = 0;
-            //armPower = Clamp.clamp(armPower, -0.1, 0.1);
+            //armPower = Clamp.clamp(armPower, -0.2, 0.2);
             armMotor.set(ControlMode.PercentOutput, armPower);
             SmartDashboard.putNumber("Arm/Output Total", armPower);
             SmartDashboard.putNumber("Arm/Amps", armMotor.getOutputCurrent());
