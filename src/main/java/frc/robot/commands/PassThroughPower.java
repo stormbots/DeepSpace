@@ -9,35 +9,34 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
-import frc.robot.subsystems.Chassis.Gear;
-//import frc.robot.subsystems.ChassisTalonSRX.Gear;
 
 /**
  * An example command.  You can replace me with your own command.
  */
-public class ChassisShift extends Command {
-  Gear gear;
-  public ChassisShift(Gear gear) {
-    this.gear = gear;
+public class PassThroughPower extends Command {
+  private double power;
+
+  public PassThroughPower(double power) {
     // Use requires() here to declare subsystem dependencies
-    // requires(Robot.m_subsystem);
+    requires(Robot.passThrough);
+    this.power = power;
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    Robot.chassis.shift(gear);
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
+    Robot.passThrough.setPower(this.power);
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return true;
+    return false;
   }
 
   // Called once after isFinished returns true

@@ -8,25 +8,24 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
-import frc.robot.subsystems.Chassis.Gear;
-//import frc.robot.subsystems.ChassisTalonSRX.Gear;
+import frc.robot.subsystems.Intake;
 
 /**
  * An example command.  You can replace me with your own command.
  */
-public class ChassisShift extends Command {
-  Gear gear;
-  public ChassisShift(Gear gear) {
-    this.gear = gear;
+public class IntakeRestPosition extends Command {
+  public IntakeRestPosition() {
     // Use requires() here to declare subsystem dependencies
-    // requires(Robot.m_subsystem);
+    requires(Robot.intake);
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    Robot.chassis.shift(gear);
+    Robot.intake.setTargetPosition(Intake.PIVOT_REST);
+    Robot.intake.setRollerPower(0);
   }
 
   // Called repeatedly when this Command is scheduled to run
@@ -37,7 +36,7 @@ public class ChassisShift extends Command {
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return true;
+    return false;
   }
 
   // Called once after isFinished returns true

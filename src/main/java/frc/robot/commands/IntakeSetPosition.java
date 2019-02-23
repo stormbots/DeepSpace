@@ -9,24 +9,31 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
-import frc.robot.subsystems.Chassis.Gear;
-//import frc.robot.subsystems.ChassisTalonSRX.Gear;
 
 /**
  * An example command.  You can replace me with your own command.
  */
-public class ChassisShift extends Command {
-  Gear gear;
-  public ChassisShift(Gear gear) {
-    this.gear = gear;
+public class IntakeSetPosition extends Command {
+  double position = 0;
+  double tolerance = 0;
+  
+  public IntakeSetPosition(double position) {
     // Use requires() here to declare subsystem dependencies
-    // requires(Robot.m_subsystem);
+    requires(Robot.intake);
+    this.position = position;
+  }
+
+  public IntakeSetPosition(double position, double tolerance) {
+    // Use requires() here to declare subsystem dependencies
+    requires(Robot.intake);
+    this.position = position;
+    this.tolerance = tolerance;
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    Robot.chassis.shift(gear);
+    Robot.intake.setTargetPosition(position);
   }
 
   // Called repeatedly when this Command is scheduled to run
@@ -37,7 +44,13 @@ public class ChassisShift extends Command {
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return true;
+    //TODO: Return true if we're at the position
+    if(tolerance <= 0 ) return true;
+    if(Robot.intake.isOnTarget(tolerance)) return true;
+    return false;
+    
+   
+    
   }
 
   // Called once after isFinished returns true

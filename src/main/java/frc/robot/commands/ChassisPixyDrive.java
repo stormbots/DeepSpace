@@ -29,7 +29,7 @@ public class ChassisPixyDrive extends Command {
 
   public ChassisPixyDrive() {
     // Use requires() here to declare subsystem dependencies
-    requires(Robot.drive);
+    requires(Robot.chassis);
 
     // apparently needs to be done
     sonarL.setEnabled(true);

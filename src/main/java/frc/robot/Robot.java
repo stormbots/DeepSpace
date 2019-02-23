@@ -6,19 +6,27 @@
 /*----------------------------------------------------------------------------*/
 
 package frc.robot;
-
 import com.stormbots.devices.pixy2.Pixy2;
 
-import edu.wpi.first.wpilibj.SPI.Port;
+import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
+import edu.wpi.first.wpilibj.Preferences;
+import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.subsystems.ArmElevator;
 import frc.robot.subsystems.Chassis;
 import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.Hand;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.PassThrough;
+import frc.robot.subsystems.Pogos;
+
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -28,13 +36,24 @@ import frc.robot.subsystems.ExampleSubsystem;
  * project.
  */
 public class Robot extends TimedRobot {
-
+  public static boolean isCompbot = true;
   public static Compressor compressor = new Compressor();
-
   public static ExampleSubsystem m_subsystem = new ExampleSubsystem();
+  public static ArmElevator armLift = new ArmElevator();
+  public static Hand hand = new Hand();
+  //public static ShuffleboardTab driveTab = Shuffleboard.getTab("Match Dashboard");
+  public static Pogos pogos = new Pogos();
+  
+
+
   public static Pixy2 pixy = new Pixy2(Port.kOnboardCS0);
 
-  public static Chassis drive = new Chassis(); //new ChassisTalonSRX();
+  public static Chassis chassis = new Chassis(); //new ChassisTalonSRX();
+  public static PowerDistributionPanel pdp = new PowerDistributionPanel();
+  
+  
+  public static Intake intake = new Intake();
+  public static PassThrough passThrough = new PassThrough();
   public static OI m_oi = new OI();
 
   Command m_autonomousCommand;
@@ -43,13 +62,40 @@ public class Robot extends TimedRobot {
   /**
    * This function is run when the robot is first started up and should be
    * used for any initialization code.
+   * 
+   * Different than a constructor as this is run when SmartDashboard and network functions
+   * are operational.
    */
   @Override
   public void robotInit() {
+    //Deal with robot-specific differences
+    // Don't change this code: Instead, change the value in SmartDashboard Preferences to "false".
+    // This ensures that in case of any error, the code defaults to comp bot for competition safety
+    if(!Preferences.getInstance().containsKey("compbot")){
+      Preferences.getInstance().putBoolean("compbot", true); 
+    }
+    isCompbot = Preferences.getInstance().getBoolean("compbot", true);
+
+    armLift.robotInit();
+    chassis.robotInit();
+    hand.robotInit();
+    intake.robotInit();
+    passThrough.robotInit();
+    pogos.robotInit();
+
+
+
+    compressor.clearAllPCMStickyFaults();
+    hand.close();
 
     m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
     // chooser.addOption("My Auto", new MyAutoCommand());
     SmartDashboard.putData("Auto mode", m_chooser);
+    //driveTab.add("Front Camera", CameraServer.getInstance().startAutomaticCapture()); //startAutomaticCapture(int)
+    // driveTab.add("Back Camera", CameraServer.getInstance().startAutomaticCapture());
+    CameraServer.getInstance().startAutomaticCapture(0);
+    CameraServer.getInstance().startAutomaticCapture(1);
+
   }
 
   /**
@@ -113,6 +159,8 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousPeriodic() {
     Scheduler.getInstance().run();
+    // Don't do anything special for autonomousPeriodic: Just run teleopPeriodic instead
+    teleopPeriodic();
   }
 
   @Override
@@ -121,6 +169,7 @@ public class Robot extends TimedRobot {
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
+    
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
@@ -128,12 +177,19 @@ public class Robot extends TimedRobot {
     // System.out.println(pixy.setLamp(true,false));
   }
 
+  
   /**
    * This function is called periodically during operator control.
    */
   @Override
   public void teleopPeriodic() {
     Scheduler.getInstance().run();
+
+    armLift.update();
+    hand.update();
+    intake.update();
+    passThrough.update();
+    pogos.update();
   }
 
   /**
@@ -143,4 +199,5 @@ public class Robot extends TimedRobot {
   public void testPeriodic() {
 
   }
+
 }

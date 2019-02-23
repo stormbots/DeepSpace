@@ -1,15 +1,19 @@
 package com.stormbots.closedloop;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 /**
-* Small, easy to use PID implementation with advanced controller capability.<br> 
-* Minimal usage:<br>
-* MiniPID pid = new MiniPID(p,i,d); <br>
-* ...looping code...{ <br>
-*   output= pid.getOutput(sensorvalue,target); <br>
-* }
-* 
-* @see https://github.com/tekdemo/MiniPID-Java
-* @see http://brettbeauregard.com/blog/2011/04/improving-the-beginners-pid-direction/improving-the-beginners-pid-introduction
-*/
+ * Small, easy to use PID implementation with advanced controller
+ * capability.<br>
+ * Minimal usage:<br>
+ * MiniPID pid = new MiniPID(p,i,d); <br>
+ * ...looping code...{ <br>
+ * output= pid.getOutput(sensorvalue,target); <br>
+ * }
+ * 
+ * @see https://github.com/tekdemo/MiniPID-Java
+ * @see http://brettbeauregard.com/blog/2011/04/improving-the-beginners-pid-direction/improving-the-beginners-pid-introduction
+ */
 public class MiniPID{
 	//**********************************
 	// Class private variables
@@ -336,6 +340,7 @@ public class MiniPID{
 		// System.out.printf("Final output %5.2f [ %5.2f, %5.2f , %5.2f  ], eSum %.2f\n",output,Poutput, Ioutput, Doutput,errorSum );
 		// System.out.printf("%5.2f\t%5.2f\t%5.2f\t%5.2f\n",output,Poutput, Ioutput, Doutput );
 
+		SmartDashboard.putNumber("PID error", error);
 		lastOutput=output;
 		return output;
 	}

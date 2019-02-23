@@ -16,7 +16,7 @@ import frc.robot.Robot;
 public class ChassisTeleopDrive extends Command {
   public ChassisTeleopDrive() {
     // Use requires() here to declare subsystem dependencies
-    requires(Robot.drive);
+    requires(Robot.chassis);
     System.out.println("ChassisTeleopDrive Constructor ran");
   }
 
@@ -25,7 +25,7 @@ public class ChassisTeleopDrive extends Command {
   protected void initialize() {
     //set mode back to manual
 
-    Robot.drive.motorL1.follow(Robot.drive.motorL0);
+    //Robot.drive.motorL1.follow(Robot.drive.motorL0);
     System.out.println("ChassisTeleopDrive execute is running");
   }
 
@@ -39,7 +39,7 @@ public class ChassisTeleopDrive extends Command {
     //Robot.drive.driver.arcadeDrive(OI.getDriveFwdR(), -OI.getDriveSideL(),true);// Normal Arcade
     //Robot.drive.driver.arcadeDrive(0.4, 0);
     //Robot.drive.motorL.set(0.3);
-    Robot.drive.motorL0.set(0.5);
+    //Robot.drive.motorL0.set(0.5);
     //Robot.drive.motorL1.set(0.5);
   }
 
