@@ -79,7 +79,7 @@ public class LimelightTurningRight extends Command {
     }
     double zAverage = sum / 4;
 
-    double distancePowerMod = zAverage; //needs Lerp 
+    double distancePowerMod = zAverage; //needs Lerp, need to find limelights range in z dimension
 
     // makes sure that the power of the drive does not exceed its limit
     if (distancePowerMod > 1){
