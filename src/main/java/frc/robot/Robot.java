@@ -8,7 +8,7 @@
 package frc.robot;
 import com.stormbots.devices.pixy2.Pixy2;
 
-import edu.wpi.first.wpilibj.CameraServer;
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.Preferences;
@@ -185,11 +185,11 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
     Scheduler.getInstance().run();
 
-    armLift.update();
-    hand.update();
-    intake.update();
-    passThrough.update();
-    pogos.update();
+    // armLift.update();
+    // hand.update();
+    // intake.update();
+    // passThrough.update();
+    // pogos.update();
   }
 
   /**

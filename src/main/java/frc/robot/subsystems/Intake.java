@@ -18,7 +18,6 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.stormbots.Lerp;
 import com.stormbots.closedloop.FB;
 
-import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
@@ -45,7 +44,16 @@ public class Intake extends Subsystem {
   //TODO Create new named tab motor output position
 
   // Example program
-  // ShuffleboardTab tab = Shuffleboard.getTab("Intake"); 
+
+  /** Create a fake Gyro sendable to get a 0-360 rotationwidget */
+  FakeGyro gyro = new FakeGyro();
+
+  @Override 
+  public void periodic(){
+    SmartDashboard.putData("Intake/Position",gyro.set(getPosition()));
+    SmartDashboard.putNumber("Intake/Current Pos", getPosition());
+    SmartDashboard.putString("Intake/Command", getCurrentCommandName());
+  }
   
   public enum Mode {CLOSEDLOOP,MANUAL,HABLIFT,DISABLE};
   private Mode mode = Mode.CLOSEDLOOP;
@@ -114,13 +122,12 @@ public class Intake extends Subsystem {
 
   
   public void update(){
-    SmartDashboard.putString("Intake Command", getCurrentCommandName());
+    
     //setup variables and defaults
     double targetPosition = this.pivotTargetPosition;
     double currentPosition = getPosition();  
     // tab.add("TargetPosition", targetPosition);
-    SmartDashboard.putNumber("Intake Current Pos", currentPosition);
-    SmartDashboard.putNumber("Intake Target Pos",targetPosition);
+    SmartDashboard.putNumber("Intake/Target Pos",targetPosition);
 
     //Check Soft Limits
     targetPosition = clamp(targetPosition,PIVOT_MIN,PIVOT_MAX);
@@ -147,7 +154,7 @@ public class Intake extends Subsystem {
     //if(pivotPower < 0  && currentPosition < PIVOT_MIN) { pivotPower = 0;}
     
     // tab.add("TargetPosition(mod)", targetPosition);
-    SmartDashboard.putNumber("Position",getPosition());
+    SmartDashboard.putNumber("Intake/Current Position(final)",getPosition());
 
         
     //set output power
@@ -166,7 +173,6 @@ public class Intake extends Subsystem {
 
   /** Returns Degrees */
   public double getPosition() {
-    SmartDashboard.putNumber("Intake position tau", pivotEnc.getPosition());
     return PIVOT_MAX-pivotToDegrees.get(pivotEnc.getPosition()); 
   }
 
@@ -183,6 +189,7 @@ public class Intake extends Subsystem {
   public void setRollerPower(double newPower){
     rollerPower = newPower;
   }
+
 
   
 

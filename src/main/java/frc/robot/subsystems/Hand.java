@@ -96,7 +96,7 @@ public class Hand extends Subsystem {
     }
 
     public void update(){
-      SmartDashboard.putString("Hand Command",getCurrentCommandName());
+      SmartDashboard.putString("Hand/Command",getCurrentCommandName());
       motor.set(ControlMode.PercentOutput, rollerPower);
     }
 
