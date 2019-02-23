@@ -25,7 +25,7 @@ public class ChassisTeleopDrive extends Command {
   protected void initialize() {
     //set mode back to manual
 
-    //Robot.drive.motorL1.follow(Robot.drive.motorL0);
+    Robot.chassis.motorL1.follow(Robot.chassis.motorL0);
     System.out.println("ChassisTeleopDrive execute is running");
   }
 
@@ -36,10 +36,10 @@ public class ChassisTeleopDrive extends Command {
     //Robot.drive.driver.tankDrive(OI.getDriveFwdL(), OI.getDriveFwdR()); //OI.getDriveFwdL()); // Use this one for TankDrive
     //Robot.drive.driver.arcadeDrive(OI.getDriveFwdL(), OI.getDriveSideR());// Caden's Arcade
     //Robot.drive.driver.arcadeDrive(clamp(OI.getDriveFwdR(), -0.5, 0.5), clamp(OI.getDriveSideL(), -0.5, 0.5));// Normal Arcade
-    //Robot.drive.driver.arcadeDrive(OI.getDriveFwdR(), -OI.getDriveSideL(),true);// Normal Arcade
+    Robot.chassis.driver.arcadeDrive(Robot.m_oi.getDriveFwdR(), -Robot.m_oi.getDriveSideL(),true);// Normal Arcade
     //Robot.drive.driver.arcadeDrive(0.4, 0);
     //Robot.drive.motorL.set(0.3);
-    //Robot.drive.motorL0.set(0.5);
+    //Robot.chassis.motorL0.set(0.5);
     //Robot.drive.motorL1.set(0.5);
   }
 
