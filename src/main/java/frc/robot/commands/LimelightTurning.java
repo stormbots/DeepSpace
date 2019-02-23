@@ -16,8 +16,8 @@ import frc.robot.subsystems.LimeLight;
 /**
  * An example command.  You can replace me with your own command.
  */
-public class LimelightTurningRight extends Command {
-  public LimelightTurningRight() {
+public class LimelightTurning extends Command {
+  public LimelightTurning() {
     // Use requires() here to declare subsystem dependencies
     requires(Robot.m_subsystem);
   }
@@ -60,7 +60,7 @@ public class LimelightTurningRight extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    double[] txArray = NetworkTable.getTable("limelight").getNumberArray("tx", new double[0]);
+    double[] txArray = NetworkTable.getTable("limelight").getNumberArray("tx", new double[1]);
     double tx = txArray[0];
     double turnAdjust = lerp(tx, -27, 27, -0.25, .25);
     double pTurnAdjust = 0.4; //Needs tuned 
@@ -69,8 +69,8 @@ public class LimelightTurningRight extends Command {
     double[] camtran = NetworkTable.getTable("limelight").getNumberArray("camtran", new double[6]);
     double z = camtran[2];
 
-    // Average, calculated on a 4 iteration basis and used to make the jitter z value 
-    // taken from camtran from 3D compute more accurate.
+    // Average, calculated on a 4 iteration basis and used to make the jittery z value 
+    // taken from 3D compute more accurate.
     
     double sum = 0.0;
     for(int i = 0; i < 4; i++) {
@@ -108,7 +108,7 @@ public class LimelightTurningRight extends Command {
     double zAverage = sum / 4;
 
     // tells us to stop when we get close enough to the target
-    if (zAverage <= 18 ) {
+    if (zAverage <= 18 ) { //measured in inches 
       return true;
     }
     else {
