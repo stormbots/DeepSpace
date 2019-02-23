@@ -31,6 +31,7 @@ public class Wrist extends Subsystem {
       //public MiniPID pidWrist = new MiniPID(1.0/1350.0*6, 1.0/4000.0*0.0, 1.0/100000.0); //these values are pretty good
       //public MiniPID pidWrist = new MiniPID(1.0/35.0, 0.0, 0.0004/2.0*0.0);
       //NOTE: Curremt implementation uses only floor-relative angles
+      FakeGyro gyro = new FakeGyro();
       double targetWristToFloorAngle = 0.0;
 
       public double wristPower = 0.0;
@@ -50,6 +51,11 @@ public class Wrist extends Subsystem {
       // Physical limits that may be changed based on dynamic constraints and robot positions
       double maxAngleToArm = 90.0;
       double minAngleToArm = -90.0;
+
+      @Override
+      public void periodic(){
+            SmartDashboard.putData("Wrist/Position", gyro.set(getWristAngleFromFloor()));
+      }
 
       public Wrist() {
             // NOTE: We cannot reset the sensors, as we have no limit switches
@@ -184,11 +190,11 @@ public class Wrist extends Subsystem {
                         //        +kWristFF*Math.cos(Math.toRadians(angleFromFloor));
 
                         wristPower = pidWrist.getOutput(angleFromFloor, targetWristToFloorAngle);
-                        SmartDashboard.putNumber("Wrist Power PID", wristPower);
+                        SmartDashboard.putNumber("Wrist/Output PID", wristPower);
                         wristPower += kWristFF*Math.cos(Math.toRadians(angleFromFloor));
 
                         //SmartDashboard.putNumber("FB Function Wrist", FB.fb(targetWristToFloorAngle, angleFromFloor, kWristGain));
-                        SmartDashboard.putNumber("Feed Forward Wrist", kWristFF*Math.cos(Math.toRadians(angleFromFloor)));
+                        SmartDashboard.putNumber("Wrist/Output FF", kWristFF*Math.cos(Math.toRadians(angleFromFloor)));
 
                   break;
 
@@ -219,9 +225,10 @@ public class Wrist extends Subsystem {
             wristMotor.set(ControlMode.PercentOutput, wristPower);
 
             //SimpleWidget wp = ArmElevator.armavatorTab.add("Wrist Power", wristPower);
-            SmartDashboard.putNumber("Wrist Power", wristPower);
-            SmartDashboard.putNumber("Wrist Target Angle", targetWristToArmAngle);
-            SmartDashboard.putNumber("Wrist Current", wristMotor.getOutputCurrent());
+            SmartDashboard.putNumber("Wrist/Output Total", wristPower);
+            SmartDashboard.putNumber("Wrist/Amps", wristMotor.getOutputCurrent());
+            
+            
       }
 
 
