@@ -185,11 +185,11 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
     Scheduler.getInstance().run();
 
-    // armLift.update();
-    // hand.update();
-    // intake.update();
-    // passThrough.update();
-    // pogos.update();
+    armLift.update();
+    hand.update();
+    intake.update();
+    passThrough.update();
+    pogos.update();
   }
 
   /**
