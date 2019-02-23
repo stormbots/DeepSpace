@@ -83,9 +83,9 @@ public class ArmElevator extends Subsystem {
                   this.armAngle = armAngle;
                   this.wristAngle = wristAngle;
             }
-            double eleHeight() {return this.eleHeight;};
-            double armAngle() {return this.armAngle;};
-            double wristAngle() {return this.wristAngle;};
+            public double eleHeight() {return this.eleHeight;};
+            public double armAngle() {return this.armAngle;};
+            public double wristAngle() {return this.wristAngle;};
             
             // public String toString(){
             //       return String.format("Pose(E:%3.2f A:%3.2f W:%3.2f)",this.eleHeight,this.armAngle,this.wristAngle);
