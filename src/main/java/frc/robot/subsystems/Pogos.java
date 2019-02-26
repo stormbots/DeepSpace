@@ -8,9 +8,11 @@
 package frc.robot.subsystems;
 
 import static com.stormbots.closedloop.FB.fb;
+import static com.stormbots.Clamp.clamp;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.stormbots.Clamp;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.command.Subsystem;
@@ -22,49 +24,61 @@ import frc.robot.Robot;
 public class Pogos extends Subsystem {
 
   //public Solenoid leftPogo = new Solenoid(5);
-  public TalonSRX pogo = new TalonSRX(16); // NEED TO CHECK THE ACTUAL DEVICE ID THIS IS WRONG!!!!!!!--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-  public DigitalInput onHabCenter = new DigitalInput(9);
+  public TalonSRX pogo = new TalonSRX(16); //TODO: SET Pogo DEVICE ID
+  
+  public DigitalInput onHabCenter = new DigitalInput(9); //TODO: SET hab DigitalInput ID
 
   // Put methods for controlling this subsystem
   // here. Call these from Commands.
 
   // public static final double maxVelocity = 0; //fix this
   // public static final double maxAcceleration = 0;
-  public static final double maxPosition = 4096; // NEEDS TO BE TUNED
-  public double fbConstant = 0.002;
+  public static final double RETRACTED = 0;
+  public static double DEPLOYED = 4096; //TODO: Find pogo down encoder ticks
+  public double kPogoFF = 0.002;
   public double targetPos = 0;
 
   public Pogos(){
     System.out.println("Pogo is Initialized");  
+    pogo.setSensorPhase(true); //default for talon + encoder combo
+
+    //TODO Pogo initialization? 
+    // Since boot encoder == 0 and ideal targetPos == 0, we don't need to really do much
   }
 
   /** Runs on robot boot after network/SmartDashboard becomes available */
   public void robotInit(){
-    pogo.setSelectedSensorPosition(0);
-    retractPogos();
     if(Robot.isCompbot){
     }
     else{
     }
   }
 
-  // pushes the pogos down
-  public void deployPogos() {
-    targetPos = maxPosition;
-  }
-
-  // pulls the pogos up
-  public void retractPogos() {
-    targetPos = 0;
-  }
-
-  // public void setPogoPower(double pwr){
-  //   pogo.set(ControlMode.PercentOutput, pwr);
-  // }
-
   public void update(){
-    pogo.set(ControlMode.PercentOutput, fb(targetPos, pogo.getSelectedSensorPosition(0), fbConstant));
+    //TODO: Pogos should, as a safety, retract pogos if nothing is using them
+    //if(this.getCurrentCommand() == null) targetPos = 0; //might 
+    //optionally, could create a PogoPosition DefaultCommand and set the targetPos in the init
+
+    //TODO: we should clampthe targetPos to within the bounds of the system, just in case
+    // Note, that since we're being lazy about this and using ticks, we need to be aware that 
+    // DEPLOYED might be negative, and so we'd have to check for that as part of our clamp process
+
+    double outputPower = fb(targetPos, pogo.getSelectedSensorPosition(0), targetPos);
+
+    //TODO: Remove pogo safety clamp
+    outputPower = clamp(outputPower,-0.05,0.05); 
+
+    pogo.set(ControlMode.PercentOutput, outputPower );
+
+  }
+
+  public void setPosition(double position){
+    this.targetPos = position;
+  }
+
+  public boolean isFloorDetected(){
+    //TODO: Validate switch default vs triggerd state
+    return onHabCenter.get() == true;
   }
   
   @Override

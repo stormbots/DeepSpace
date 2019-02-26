@@ -21,12 +21,14 @@ import frc.robot.subsystems.Pogos;
 public class RobotGrabHab extends Command {
   // double angle = 0;
   double moveTime;
-  Lerp timeToAngle;
+  Lerp timeToIntakeAngle;
+  Lerp timeToPogoPosition;
   double startTime = 0;
 
   public RobotGrabHab(double moveTime) {
     this.moveTime = moveTime;
-    timeToAngle = new Lerp(0,moveTime, 90, Robot.intake.PIVOT_MIN_HAB);
+    timeToIntakeAngle = new Lerp(0,moveTime, 90, Robot.intake.PIVOT_MIN_HAB);
+    timeToPogoPosition = new Lerp(0,moveTime, Pogos.RETRACTED, Pogos.DEPLOYED);
     // Use requires() here to declare subsystem dependencies
     requires(Robot.intake);
     requires(Robot.pogos);
@@ -38,7 +40,6 @@ public class RobotGrabHab extends Command {
   protected void initialize() {
     startTime = Timer.getFPGATimestamp();
     System.out.println("RobotGrabHab has initialized");
-    Robot.pogos.deployPogos();
   }
 
   // Called repeatedly when this Command is scheduled to run
@@ -48,16 +49,18 @@ public class RobotGrabHab extends Command {
     currentTime = Clamp.clamp(currentTime, 0, moveTime);
     boolean robotIsUp = currentTime >= moveTime;
 
-    Robot.intake.setTargetPosition(timeToAngle.get(currentTime));
-    Robot.chassis.driver.tankDrive(0.2, 0.2);
-    Robot.intake.setRollerPower(0.3);
 
-    if(robotIsUp && Robot.pogos.onHabCenter.get()) {
-      Robot.pogos.retractPogos();
+    if( robotIsUp && Robot.pogos.isFloorDetected() ){
+      Robot.pogos.setPosition(Pogos.RETRACTED);
       Robot.intake.setRollerPower(0);
       Robot.chassis.driver.tankDrive(0,0);
     }
-    
+    else{
+      Robot.intake.setTargetPosition(timeToIntakeAngle.get(currentTime));
+      Robot.pogos.setPosition(timeToPogoPosition.get(currentTime));
+      Robot.chassis.driver.tankDrive(0.2, 0.2);
+      Robot.intake.setRollerPower(0.3);
+      }
   }
 
   // Make this return true when this Command no longer needs to run execute()
