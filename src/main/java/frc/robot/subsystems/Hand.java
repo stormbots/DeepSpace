@@ -25,8 +25,8 @@ public class Hand extends Subsystem {
     public Solenoid handB = new Solenoid(7);
 
     public enum Position{
-      OPEN(false),
-      CLOSE(true);
+      OPEN(true), //comp bot is false
+      CLOSE(false); //comp bot is true
       private boolean bool;
       Position(boolean solenoid){this.bool = solenoid;}
       public boolean bool(){return bool;};
