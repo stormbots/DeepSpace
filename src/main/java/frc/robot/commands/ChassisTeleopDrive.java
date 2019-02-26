@@ -8,6 +8,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 
 /**
@@ -41,6 +42,9 @@ public class ChassisTeleopDrive extends Command {
     //Robot.drive.motorL.set(0.3);
     //Robot.chassis.motorL0.set(0.5);
     //Robot.drive.motorL1.set(0.5);
+
+    SmartDashboard.putNumber("Drive Velocity: ", Robot.chassis.motorL0.getEncoder().getVelocity());
+    // is about 5,300... exact data not gained yet.
   }
 
   // Make this return true when this Command no longer needs to run execute()
