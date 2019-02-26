@@ -7,30 +7,33 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 import frc.robot.subsystems.ArmElevator.Mode;
+import frc.robot.subsystems.ArmElevator.Pose;
 
-public class ArmHoming extends Command {
-  DigitalInput armLimit = new DigitalInput(1); //Only on compbot
+public class WristHoming extends Command {
 
-  boolean wristHomed = false;
-
-  public ArmHoming() {
+  public WristHoming() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
     requires(Robot.intake);
+    requires(Robot.armLift.arm);
+    requires(Robot.armLift.wrist);
+    requires(Robot.armLift.elevator);
+    requires(Robot.hand);
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
+    Robot.armLift.wrist.setMode(Mode.MANUAL);
     setTimeout(4);
     Robot.intake.setTargetPosition(90);
     //set arm
     // Robot.armLift.arm.set(Pose.LOAD_CARGO_PREP);
     Robot.armLift.arm.setAngle(75);
+    Robot.hand.setPosition(frc.robot.subsystems.Hand.Position.CLOSE);
   }
 
   // Called repeatedly when this Command is scheduled to run
@@ -40,6 +43,9 @@ public class ArmHoming extends Command {
     if(Robot.armLift.arm.isOnTarget(5)){
       Robot.armLift.wrist.setPower(-0.2);
     }
+    else{
+      Robot.armLift.wrist.setPower(-0.1);
+    }
   }
 
   // Make this return true when this Command no longer needs to run execute()
@@ -48,7 +54,7 @@ public class ArmHoming extends Command {
     //we run out of time and give up
     //we hit the switch
     if(isTimedOut()){return true;}
-    if(!armLimit.get()){return true;}
+    if(Robot.armLift.wrist.isLimitPressed()){return true;}
     
     return false;
   }
@@ -58,12 +64,14 @@ public class ArmHoming extends Command {
   protected void end() {
     //set wrist as homed
     Robot.armLift.wrist.setPower(0);
-    wristHomed = true;
-    Robot.armLift.wrist.setMode(Mode.CLOSEDLOOP); }
+    Robot.armLift.wrist.setMode(Mode.CLOSEDLOOP);
+    Robot.armLift.arm.set(Pose.LOAD_CARGO_PREP);
+  }
 
   // Called when another command which requires one or more of the same
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
+    Robot.armLift.wrist.setMode(Mode.CLOSEDLOOP);
   }
 }

@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.WristHoming;
 import frc.robot.subsystems.ArmElevator;
 import frc.robot.subsystems.Chassis;
 import frc.robot.subsystems.ExampleSubsystem;
@@ -58,6 +59,7 @@ public class Robot extends TimedRobot {
 
   Command m_autonomousCommand;
   SendableChooser<Command> m_chooser = new SendableChooser<>();
+  Command wristHoming = new WristHoming();
 
   /**
    * This function is run when the robot is first started up and should be
@@ -87,6 +89,7 @@ public class Robot extends TimedRobot {
 
     compressor.clearAllPCMStickyFaults();
     hand.close();
+    wristHoming.start();
 
     m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
     // chooser.addOption("My Auto", new MyAutoCommand());
@@ -95,7 +98,6 @@ public class Robot extends TimedRobot {
     // driveTab.add("Back Camera", CameraServer.getInstance().startAutomaticCapture());
     CameraServer.getInstance().startAutomaticCapture(0);
     CameraServer.getInstance().startAutomaticCapture(1);
-
   }
 
   /**
