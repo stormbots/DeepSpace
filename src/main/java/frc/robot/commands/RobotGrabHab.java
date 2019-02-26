@@ -7,6 +7,7 @@
 
 package frc.robot.commands;
 
+import com.stormbots.Clamp;
 import com.stormbots.Lerp;
 
 import edu.wpi.first.wpilibj.Timer;
@@ -22,21 +23,21 @@ public class RobotGrabHab extends Command {
   double moveTime;
   Lerp timeToAngle;
   double startTime = 0;
-  double timeBellyPassed = 0;
 
   public RobotGrabHab(double moveTime) {
     this.moveTime = moveTime;
     timeToAngle = new Lerp(0,moveTime, 90, Robot.intake.PIVOT_MIN_HAB);
     // Use requires() here to declare subsystem dependencies
     requires(Robot.intake);
-    requires(Robot.chassis);
     requires(Robot.pogos);
+    requires(Robot.chassis);
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
     startTime = Timer.getFPGATimestamp();
+    System.out.println("RobotGrabHab has initialized");
     Robot.pogos.deployPogos();
   }
 
@@ -44,32 +45,19 @@ public class RobotGrabHab extends Command {
   @Override
   protected void execute() {
     double currentTime = Timer.getFPGATimestamp() - startTime;
-    boolean robotIsUp = currentTime > moveTime;
+    currentTime = Clamp.clamp(currentTime, 0, moveTime);
+    boolean robotIsUp = currentTime >= moveTime;
 
+    Robot.intake.setTargetPosition(timeToAngle.get(currentTime));
+    Robot.chassis.driver.tankDrive(0.2, 0.2);
+    Robot.intake.setRollerPower(0.3);
 
-    if(!robotIsUp) {
-      Robot.intake.setTargetPosition(timeToAngle.get(currentTime));
+    if(robotIsUp && Robot.pogos.onHabCenter.get()) {
+      Robot.pogos.retractPogos();
+      Robot.intake.setRollerPower(0);
+      Robot.chassis.driver.tankDrive(0,0);
     }
-    else{
-
-      Robot.intake.setTargetPosition(timeToAngle.get(moveTime));
-
-      if(Robot.bellySensor.get() && robotIsUp) {
-        timeBellyPassed = currentTime;
-        Robot.pogos.retractPogos();
-      }
-      else{
-        Robot.pogos.setPogoPower(0.4);
-
-      }
-
-      // if(timeBellyPassed != 0) {
-      //   Robot.drive.driver.tankDrive(0.4, 0.4);
-      // }
-      // else{
-      //   Robot.drive.driver.tankDrive(0, 0);
-      // }
-    }
+    
   }
 
   // Make this return true when this Command no longer needs to run execute()
@@ -85,7 +73,11 @@ public class RobotGrabHab extends Command {
   @Override
   protected void end() {
     Robot.chassis.driver.tankDrive(0, 0);
-    Robot.pogos.setPogoPower(0);
+
+    // NOTE:  NEED TO BE ABSOLUTELY SURE BEFORE ALLOWING THIS INTO THE CODE !!!!!!!!!!!!!!
+    //Robot.pogos.retractPogos();
+
+    System.out.println("RobotGrabHab has ended");
   }
 
   // Called when another command which requires one or more of the same
@@ -93,6 +85,8 @@ public class RobotGrabHab extends Command {
   @Override
   protected void interrupted() {
     Robot.chassis.driver.tankDrive(0, 0);
-    Robot.pogos.setPogoPower(0);
+    System.out.println("RobotGrabHab has ended");
+
+    // NOTE:  DO NOT allow the pogos to retract, or we will topple over the edge and destroy the robot
   }
 }
