@@ -43,8 +43,6 @@ public class Robot extends TimedRobot {
   public static Hand hand = new Hand();
   //public static ShuffleboardTab driveTab = Shuffleboard.getTab("Match Dashboard");
   public static Pogos pogos = new Pogos();
-  
-
 
   public static Pixy2 pixy = new Pixy2(Port.kOnboardCS0);
 

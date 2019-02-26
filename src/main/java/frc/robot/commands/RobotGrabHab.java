@@ -21,23 +21,22 @@ public class RobotGrabHab extends Command {
   double moveTime;
   Lerp timeToAngle;
   double startTime = 0;
-  double timeBellyPassed = 0;
 
   public RobotGrabHab(double moveTime) {
     this.moveTime = moveTime;
     timeToAngle = new Lerp(0,moveTime, Robot.intake.PIVOT_REST, Robot.intake.PIVOT_MIN_HAB);
     // Use requires() here to declare subsystem dependencies
     requires(Robot.intake);
-    //requires(Robot.pogos);
-    //requires(Robot.drive);
+    requires(Robot.pogos);
+    requires(Robot.chassis);
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
     startTime = Timer.getFPGATimestamp();
-    //Robot.pogos.deployPogos();
     System.out.println("RobotGrabHab has initialized");
+    Robot.pogos.deployPogos();
   }
 
   // Called repeatedly when this Command is scheduled to run
@@ -45,23 +44,12 @@ public class RobotGrabHab extends Command {
   protected void execute() {
     double currentTime = Timer.getFPGATimestamp() - startTime;
     Robot.intake.setTargetPosition(timeToAngle.get(currentTime));
-    /*
-    
-    if(Robot.belly.get()) {
-      if(timeBellyPassed == 0) timeBellyPassed = currentTime;
-      
-      Robot.drive.driver.tankDrive(0.2, 0.2);
-    }
+    Robot.chassis.driver.tankDrive(0.2, 0.2);
+    Robot.intake.setRollerPower(0.3);
 
-    // NOTE: the '+2000' is if the timer is in Milliseconds... DOUBLE CHECK BEFORE RUNNING
-    if((timeBellyPassed != 0) && (timeBellyPassed+2000 < currentTime)) {
-      Robot.pogos.setPogoPower(0);
+    if(Robot.pogos.onHabCenter.get()) {
+      Robot.pogos.retractPogos();
     }
-    else {
-      Robot.pogos.setPogoPower(0.4);
-    }
-
-    */
     
   }
 
@@ -76,8 +64,7 @@ public class RobotGrabHab extends Command {
   // Called once after isFinished returns true
   @Override
   protected void end() {
-    //Robot.pogos.setPogoPower(0);
-    //Robot.drive.driver.tankDrive(0, 0);
+    Robot.chassis.driver.tankDrive(0, 0);
 
     // NOTE:  NEED TO BE ABSOLUTELY SURE BEFORE ALLOWING THIS INTO THE CODE !!!!!!!!!!!!!!
     //Robot.pogos.retractPogos();
@@ -89,8 +76,7 @@ public class RobotGrabHab extends Command {
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
-    //Robot.pogos.setPogoPower(0);
-    //Robot.drive.driver.tankDrive(0, 0);
+    Robot.chassis.driver.tankDrive(0, 0);
     System.out.println("RobotGrabHab has ended");
 
     // NOTE:  DO NOT allow the pogos to retract, or we will topple over the edge and destroy the robot
