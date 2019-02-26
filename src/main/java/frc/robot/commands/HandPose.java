@@ -56,6 +56,7 @@ public class HandPose extends Command {
   protected void initialize() {
     if(toggleOpen){
       Robot.hand.togglePosition();
+      System.out.println("Toggled");
     }else{
       if(position!=null)Robot.hand.setPosition(position);
       Robot.hand.setRollers(rollerPower);

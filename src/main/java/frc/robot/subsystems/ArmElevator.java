@@ -84,24 +84,25 @@ public class ArmElevator extends Subsystem {
       // sub-subsystems to handle individual ones. We can still do 
       // set<thing>(double) to do anything outside of this
       public enum Pose{
+            // Elevator bottom pos 41
             // E  A  W 
-            HIDE(42,-90,-90),
+            HIDE(41,-90,-90),
 
-            STARTUP(42,-90,0),
+            STARTUP(41,-90,0), //TODO
 
-            CARGO_1(49,-90,0),
-            CARGO_2(49,-90,0), //not sure elev height, might have to move arm
-            CARGO_3(63,+90,0),
+            CARGO_1(45,-90,0),
+            CARGO_2(41,+90,0), //not sure elev height, might have to move arm
+            CARGO_3(65,+90,0),
 
-            HATCH_1(42,-90,0),
+            HATCH_1(45,-90,0),
             HATCH_2(69,-90,0),
-            HATCH_3(57,+90,0),
+            HATCH_3(58,+90,0),
 
             LOAD_HATCH(42,-90,0),
             // LOAD_CARGO_PREP(42,-59,0), // was -59 arm
             // LOAD_CARGO(42,-59,-150); //arm used to be -70, wrist angle was -135
-            LOAD_CARGO_PREP(42,-53,0),
-            LOAD_CARGO(42,-53,-150);
+            LOAD_CARGO_PREP(41,-53,0),
+            LOAD_CARGO(41,-53,-150);
 
             private double eleHeight;
             private double armAngle;

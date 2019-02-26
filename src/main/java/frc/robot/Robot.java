@@ -10,6 +10,7 @@ import com.stormbots.devices.pixy2.Pixy2;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.SPI.Port;
@@ -19,6 +20,7 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.WristHoming;
 import frc.robot.subsystems.ArmElevator;
 import frc.robot.subsystems.Chassis;
 import frc.robot.subsystems.ExampleSubsystem;
@@ -43,21 +45,21 @@ public class Robot extends TimedRobot {
   public static Hand hand = new Hand();
   //public static ShuffleboardTab driveTab = Shuffleboard.getTab("Match Dashboard");
   public static Pogos pogos = new Pogos();
-  
-
 
   public static Pixy2 pixy = new Pixy2(Port.kOnboardCS0);
 
   public static Chassis chassis = new Chassis(); //new ChassisTalonSRX();
   public static PowerDistributionPanel pdp = new PowerDistributionPanel();
   
-  
   public static Intake intake = new Intake();
   public static PassThrough passThrough = new PassThrough();
   public static OI m_oi = new OI();
 
+  public static DigitalInput bellySensor = new DigitalInput(9);
+
   Command m_autonomousCommand;
   SendableChooser<Command> m_chooser = new SendableChooser<>();
+  Command wristHoming = new WristHoming();
 
   /**
    * This function is run when the robot is first started up and should be
@@ -89,6 +91,7 @@ public class Robot extends TimedRobot {
 
     compressor.clearAllPCMStickyFaults();
     hand.close();
+    wristHoming.start();
 
     m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
     // chooser.addOption("My Auto", new MyAutoCommand());
@@ -97,7 +100,6 @@ public class Robot extends TimedRobot {
     // driveTab.add("Back Camera", CameraServer.getInstance().startAutomaticCapture());
     CameraServer.getInstance().startAutomaticCapture(0);
     CameraServer.getInstance().startAutomaticCapture(1);
-
   }
 
   /**
@@ -110,6 +112,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
+    SmartDashboard.putData(wristHoming);
   }
 
   /**
@@ -172,6 +175,8 @@ public class Robot extends TimedRobot {
     // continue until interrupted by another command, remove
     // this line or comment it out.
     
+    pogos.retractPogos();
+
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
@@ -187,7 +192,7 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
     Scheduler.getInstance().run();
 
-    armLift.update();
+    //armLift.update();
     hand.update();
     intake.update();
     passThrough.update();

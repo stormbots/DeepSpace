@@ -74,7 +74,7 @@ public class Intake extends Subsystem {
   public static       double PIVOT_MAX = 135.0;
   public static final double PIVOT_GRAB_HAB = 0;
   public static final double PIVOT_REST = PIVOT_MAX-5;
-  public static final double PIVOT_GRAB_CARGO = 76.5; //was 61.5
+  public static final double PIVOT_GRAB_CARGO = 71.5; //was 61.5, 76.5
   public static final double ROLLER_GRAB_CARGO = 1.0;
   public static final double ROLLER_GRAB_POWER = 0;
 
@@ -88,13 +88,13 @@ public class Intake extends Subsystem {
     pivotTargetPosition = getPosition();
 
     //TODO: We may need to tune kPivot values on the smartdashboard
-    kPivotFF = 0.05; // Holds itself stable quite well due to gearing
+    kPivotFF = 0.09; //5// Holds itself stable quite well due to gearing
     // kPivotGain = 0.004;
      kPivotGain = 0.08;
 
 
     //TODO: Increase current restrictions after limit and motor checks
-    pivotMotor.setSmartCurrentLimit(5, 10, 6700/3);
+    //pivotMotor.setSmartCurrentLimit(5, 10, 6700/3);
     pivotMotor.set(0);
 
 
