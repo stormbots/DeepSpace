@@ -87,17 +87,11 @@ public class Robot extends TimedRobot {
     passThrough.robotInit();
     pogos.robotInit();
 
-
-
     compressor.clearAllPCMStickyFaults();
-    hand.close();
-    wristHoming.start();
 
-    m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
+    // m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
     // chooser.addOption("My Auto", new MyAutoCommand());
-    SmartDashboard.putData("Auto mode", m_chooser);
-    //driveTab.add("Front Camera", CameraServer.getInstance().startAutomaticCapture()); //startAutomaticCapture(int)
-    // driveTab.add("Back Camera", CameraServer.getInstance().startAutomaticCapture());
+    // SmartDashboard.putData("Auto mode", m_chooser);
     CameraServer.getInstance().startAutomaticCapture(0);
     CameraServer.getInstance().startAutomaticCapture(1);
   }
@@ -122,7 +116,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void disabledInit() {
-    // System.out.println(pixy.setLamp(false,false));
   }
 
   @Override
@@ -175,13 +168,9 @@ public class Robot extends TimedRobot {
     // continue until interrupted by another command, remove
     // this line or comment it out.
     
-    pogos.retractPogos();
-
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-
-    // System.out.println(pixy.setLamp(true,false));
   }
 
   
@@ -192,7 +181,7 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
     Scheduler.getInstance().run();
 
-    //armLift.update();
+    armLift.update();
     hand.update();
     intake.update();
     passThrough.update();

@@ -52,8 +52,6 @@ public class Hand extends Subsystem {
     
   
     public Hand(){
-      setPosition(Position.CLOSE);
-
       //We probably want a very low continuous current, to avoid causing harm to the cargo. 
       //this lets us keep it running without much concern, as we have no sensors
       motor.configPeakCurrentLimit(5, 10); // 35 A 
@@ -64,6 +62,8 @@ public class Hand extends Subsystem {
 
     /** Runs on robot boot after network/SmartDashboard becomes available */
     public void robotInit(){
+      setPosition(Position.CLOSE);
+
       if(Robot.isCompbot){
         motor.setInverted(true);
       }
