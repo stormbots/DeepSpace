@@ -49,11 +49,14 @@ public class Chassis extends Subsystem {
   // Use an Enum to define pnuematic truth values, so that you get good named values 
   // backed by type checking everywhere.
   public enum Gear{
-    HIGH(true),
-    LOW(false);
-    private boolean bool;
-    Gear(boolean bool){this.bool = bool;}
-    public boolean bool(){return bool;};
+    HIGH(true,true),
+    LOW(false,false);
+    private boolean compbot,practicebot;
+    Gear(boolean compbot, boolean practicebot){
+      this.compbot = compbot;
+      this.practicebot = practicebot;
+    }
+    public boolean bool(){return Robot.isCompbot ? this.compbot : this.practicebot;};
   }
 
 
@@ -93,6 +96,8 @@ public class Chassis extends Subsystem {
 
     //In an attempt to budget power across all motors, this is a safe start point that should
     // minimize brownouts
+    //TODO: Make sure we budget appropriately for the number of motors we're running
+    //TODO: Examine how much power we're using and see where it needs to all go
     int stallLimit = 180/4;  // /6;  
     int freeLimit = 220/4;  // /6;
     int limitRPM = 6700/3;
@@ -111,11 +116,12 @@ public class Chassis extends Subsystem {
     motorR1.setOpenLoopRampRate(rampRate);
     motorR2.setOpenLoopRampRate(rampRate);
 
-    shift(Gear.LOW);
   }
 
   /** Runs on robot boot after network/SmartDashboard becomes available */
   public void robotInit(){
+    shift(Gear.LOW);
+
     if(Robot.isCompbot){
     }
     else{
