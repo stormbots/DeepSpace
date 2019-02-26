@@ -38,7 +38,9 @@ public class Arm extends Subsystem {
       double armAngle = 0.0;
 
       // double kArmGain = 0.027;
-      double kArmGain = 0.035;
+      // double kArmGain = 0.035; //comp bot
+      double kArmGain = 0.042;
+
       
       // double kArmFF = 0.3;
       double kArmFF = 0.3; //0.5 Practice Bot

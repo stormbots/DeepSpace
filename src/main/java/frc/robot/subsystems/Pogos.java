@@ -31,7 +31,9 @@ public class Pogos extends Subsystem {
   // Put methods for controlling this subsystem
   // here. Call these from Commands.
 
-  public static final boolean DEPLOYED = false; //true practice bot
+  public static final boolean DEPLOYED = true; //true practice bot
+  // public static final boolean DEPLOYED = false; //false practice bot
+
   public static final boolean RETRACTED = !DEPLOYED;
   double motorPower = 0.3;
   double velocity = 0.0;

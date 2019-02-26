@@ -45,11 +45,11 @@ public class IntakeGrabBall extends Command {
   @Override
   protected boolean isFinished() {
     //if(hasBall == false && Robot.passThrough.hasBall()){
-      if(true){
-      //hasBall = true; 
-      //hasBallTime = Timer.getFPGATimestamp();
-      Robot.intake.setTargetPosition(Intake.PIVOT_REST);
-    }
+    //   if(true){
+    //   //hasBall = true; 
+    //   //hasBallTime = Timer.getFPGATimestamp();
+    //   Robot.intake.setTargetPosition(Intake.PIVOT_REST);
+    // }
     //if(hasBall && (Timer.getFPGATimestamp() >= hasBallTime + 1.0)){
     //  Robot.passThrough.setPower(0);
     //}
