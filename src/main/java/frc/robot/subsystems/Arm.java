@@ -28,6 +28,8 @@ public class Arm extends Subsystem {
       // here. Call these from Commands.
       public TalonSRX armMotor = new TalonSRX(12);
 
+      FakeGyro gyro = new FakeGyro();
+
       double targetArmPos = 0.0;
       double currentArmPos = 0.0;
       double armPower = 0.0;
@@ -36,13 +38,20 @@ public class Arm extends Subsystem {
       double armAngle = 0.0;
 
       // double kArmGain = 0.027;
-      double kArmGain = 0.035;
+      // double kArmGain = 0.035; //comp bot
+      double kArmGain = 0.042;
+
       
       // double kArmFF = 0.3;
       double kArmFF = 0.3; //0.5 Practice Bot
 
       public static final double MAX_ANGLE = 90.0;
       public static final double MIN_ANGLE = -90.0;
+
+      @Override
+      public void periodic(){
+            SmartDashboard.putData("Arm/Position",gyro.set(getArmAngle()));
+      }
 
       public Arm() {
             // NOTE: We cannot reset the sensors, as we have no limit switches
@@ -127,8 +136,8 @@ public class Arm extends Subsystem {
                               kArmFF*Math.cos(Math.toRadians(currentArmPos)
                               );
 
-                        SmartDashboard.putNumber("FB Output without FF Arm", FB.fb(targetArmPos, currentArmPos, kArmGain));
-                        SmartDashboard.putNumber("Feed Forward Arm",  kArmFF*Math.cos(Math.toRadians(currentArmPos)));
+                        SmartDashboard.putNumber("Arm/Output FB", FB.fb(targetArmPos, currentArmPos, kArmGain));
+                        SmartDashboard.putNumber("Arm/Output FF",  kArmFF*Math.cos(Math.toRadians(currentArmPos)));
                         //TODO find voltage needed to keep arm level (kArmFF),
 
                   break;
@@ -156,9 +165,8 @@ public class Arm extends Subsystem {
             if(armPower < 0 && currentArmPos < MIN_ANGLE) armPower = 0;
             //armPower = Clamp.clamp(armPower, -0.1, 0.1);
             armMotor.set(ControlMode.PercentOutput, armPower);
-            SmartDashboard.putNumber("Arm Power", armPower);
-            SmartDashboard.putNumber("Arm Current", armMotor.getOutputCurrent());
-            //ArmElevator.armavatorTab.add("Arm Power", armPower);
+            SmartDashboard.putNumber("Arm/Output Total", armPower);
+            SmartDashboard.putNumber("Arm/Amps", armMotor.getOutputCurrent());
       }
 
 

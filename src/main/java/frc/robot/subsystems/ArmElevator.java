@@ -33,6 +33,27 @@ public class ArmElevator extends Subsystem {
       // public final double ARM_LENGTH = 20;
       // public final double HAND_LENGTH_WITH_HATCH = 8;
 
+      @Override
+      public void periodic(){
+            SmartDashboard.putNumber("Wrist/Current Angle (Floor)", wrist.getWristAngleFromFloor());
+            SmartDashboard.putNumber("Wrist/Current Angle (Arm)", wrist.getWristAngleFromArm());
+            SmartDashboard.putNumber("Wrist/Encoder", wrist.wristMotor.getSelectedSensorPosition());
+            SmartDashboard.putNumber("Wrist/Target Angle", pose.wristAngle);
+
+            SmartDashboard.putNumber("Arm/Current Angle", arm.getArmAngle());
+            SmartDashboard.putNumber("Arm/Encoder", arm.armMotor.getSelectedSensorPosition());
+            SmartDashboard.putNumber("Arm/Target Angle", pose.armAngle);
+
+            SmartDashboard.putNumber("Elevator/Target Height", pose.eleHeight);
+            SmartDashboard.putNumber("Elevator/Height", elevator.getPosition());
+            SmartDashboard.putNumber("Elevator/Encoder", elevator.elevMotor.getSelectedSensorPosition());
+
+            SmartDashboard.putString("Wrist/Pose", pose.toString());
+            SmartDashboard.putString("Arm/Pose", pose.toString());
+            SmartDashboard.putString("Elevator/Pose", pose.toString());
+
+      }
+
 	public ArmElevator() {
             this.setPose(pose.STARTUP);
       }
@@ -77,9 +98,11 @@ public class ArmElevator extends Subsystem {
             HATCH_2(69,-90,0),
             HATCH_3(58,+90,0),
 
-            LOAD_HATCH(41,-90,0),
-            LOAD_CARGO_PREP(41,-59,0), //used to be 42, -50, 0. Changed to elev lifted instead of arm out
-            LOAD_CARGO(41,-59,-150); //arm used to be -70, wrist angle was -135
+            LOAD_HATCH(42,-90,0),
+            // LOAD_CARGO_PREP(42,-59,0), // was -59 arm
+            // LOAD_CARGO(42,-59,-150); //arm used to be -70, wrist angle was -135
+            LOAD_CARGO_PREP(41,-53,0),
+            LOAD_CARGO(41,-53,-150);
 
             private double eleHeight;
             private double armAngle;
@@ -193,16 +216,7 @@ public class ArmElevator extends Subsystem {
             le (Arm)", wrist.getWristAngleFromArm());
             armavatorTab.add("Wrist Position", wrist.wristMotor.getSelectedSensorPosition());
             */
-            SmartDashboard.putNumber("Wrist Current Angle (Floor)", wrist.getWristAngleFromFloor());
-            SmartDashboard.putNumber("Wrist Current Angle (Arm)", wrist.getWristAngleFromArm());
-            SmartDashboard.putNumber("Wrist Position", wrist.wristMotor.getSelectedSensorPosition());
-            SmartDashboard.putNumber("Arm Angle", arm.getArmAngle());
-            SmartDashboard.putNumber("Arm Position", arm.armMotor.getSelectedSensorPosition());
-            SmartDashboard.putNumber("Wrist Target Angle (Pose)", pose.wristAngle);
-            SmartDashboard.putNumber("Arm Target Position", pose.armAngle);
-            SmartDashboard.putNumber("Elevator Target Position", pose.eleHeight);
-            SmartDashboard.putNumber("Elevator Position", elevator.elevMotor.getSelectedSensorPosition());
-            SmartDashboard.putString("Pose", pose.toString());
+            
             
             // armavatorTab.add("Pose", this.getPose()); //causes robots don't quit
             //armavatorTab.add("Arm Pose Angle", pose.armAngle());

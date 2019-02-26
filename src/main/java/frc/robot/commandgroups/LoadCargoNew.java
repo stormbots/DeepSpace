@@ -52,7 +52,7 @@ public class LoadCargoNew extends CommandGroup {
     addParallel(new HandPose(Hand.Position.OPEN,Hand.GRAB_POWER,  Hand.Position.CLOSE,Hand.HOLD_POWER));
 
     //use the TimeOut argument of addSequential to hijack the passthrough command with a max time
-    addSequential(new PassThroughPower(Robot.passThrough.LOAD_BALL_POWER),1.5);
+    addSequential(new PassThroughPower(Robot.passThrough.LOAD_BALL_POWER),4);
 
     // addSequential(new WaitCommand(7.0));
 

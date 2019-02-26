@@ -151,10 +151,9 @@ public class Elevator extends Subsystem {
 
             //ArmElevator.armavatorTab.add("Elevator Power", elevatorPwr);
             //ArmElevator.armavatorTab.add("Limit Touched", elevLimit.get());
-            SmartDashboard.putNumber("ELevator Height (in)", currentPos);
-            SmartDashboard.putNumber("Elevator Power", elevatorPwr);
-            SmartDashboard.putNumber("Elevator Feed Fwd", elevatorFF);
-            SmartDashboard.putNumber("Elevator FB", FB.fb(target, currentPos, kElevatorGain));
+            SmartDashboard.putNumber("Elevator/Output Total", elevatorPwr);
+            SmartDashboard.putNumber("Elevator/Output FF", elevatorFF);
+            SmartDashboard.putNumber("Elevator/Output FB", FB.fb(target, currentPos, kElevatorGain));
       }
 
       @Override
