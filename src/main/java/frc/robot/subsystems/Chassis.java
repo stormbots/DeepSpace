@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import frc.robot.Robot;
+import frc.robot.RobotMap;
 import frc.robot.commands.ChassisTeleopDrive;
 
 
@@ -44,8 +45,8 @@ public class Chassis extends Subsystem {
   public Solenoid shifter = new Solenoid(2);
   public Solenoid shifterInverse = new Solenoid(5);
 
-  public Ultrasonic sonarL = new Ultrasonic(0,1);
-  public Ultrasonic sonarR = new Ultrasonic(2,3);
+  public Ultrasonic sonarL = new Ultrasonic(RobotMap.UltrasonicLeftPing,RobotMap.UltrasonicLeftEcho);
+  public Ultrasonic sonarR = new Ultrasonic(RobotMap.UltrasonicRightPing,RobotMap.UltrasonicRightEcho);
 
   // Use an Enum to define pnuematic truth values, so that you get good named values 
   // backed by type checking everywhere.

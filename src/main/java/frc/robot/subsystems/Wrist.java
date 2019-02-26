@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
+import frc.robot.RobotMap;
 import frc.robot.subsystems.ArmElevator.Mode;
 import frc.robot.subsystems.ArmElevator.Pose;
 
@@ -28,7 +29,7 @@ public class Wrist extends Subsystem {
       // Put methods for controlling this subsystem
       // here. Call these from Commands.
       public TalonSRX wristMotor = new TalonSRX(13);
-      DigitalInput armLimit = new DigitalInput(4); //Only on compbot
+      DigitalInput wristLimit = new DigitalInput(RobotMap.WristLimitSwitch); //Only on compbot
 
       public MiniPID pidWrist = new MiniPID(0.012, 0.001*0.0, 0.0);
       //public MiniPID pidWrist = new MiniPID(1.0/1350.0*6, 1.0/4000.0*0.0, 1.0/100000.0); //these values are pretty good
@@ -150,7 +151,7 @@ public class Wrist extends Subsystem {
       }
 
       public boolean isLimitPressed(){
-            if(!armLimit.get()){
+            if(!wristLimit.get()){
                   return true;
             }
             return false;

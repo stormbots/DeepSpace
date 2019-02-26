@@ -7,26 +7,26 @@
 
 package frc.robot.subsystems;
 
-import static com.stormbots.closedloop.FB.fb;
 import static com.stormbots.Clamp.clamp;
+import static com.stormbots.closedloop.FB.fb;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.stormbots.Clamp;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.Robot;
+import frc.robot.RobotMap;
 
 /**
  * Add your docs here.
  */
 public class Pogos extends Subsystem {
 
-  //public Solenoid leftPogo = new Solenoid(5);
-  public TalonSRX pogo = new TalonSRX(16); //TODO: SET Pogo DEVICE ID
-  
-  public DigitalInput onHabCenter = new DigitalInput(9); //TODO: SET hab DigitalInput ID
+  // public Solenoid leftPogo = new Solenoid(5);
+  public TalonSRX pogo = new TalonSRX(16); // TODO: SET Pogo DEVICE ID
+
+  public DigitalInput onHabCenter = new DigitalInput(RobotMap.PogoFloorSensor); // TODO: SET hab DigitalInput ID
 
   // Put methods for controlling this subsystem
   // here. Call these from Commands.

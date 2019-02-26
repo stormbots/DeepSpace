@@ -9,7 +9,6 @@ package frc.robot.commands;
 
 import com.stormbots.devices.pixy2.Line;
 
-import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
