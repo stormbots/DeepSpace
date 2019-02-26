@@ -28,7 +28,7 @@ public class Wrist extends Subsystem {
       // Put methods for controlling this subsystem
       // here. Call these from Commands.
       public TalonSRX wristMotor = new TalonSRX(13);
-      DigitalInput armLimit = new DigitalInput(1); //Only on compbot
+      DigitalInput armLimit = new DigitalInput(4); //Only on compbot
 
       public MiniPID pidWrist = new MiniPID(0.012, 0.001*0.0, 0.0);
       //public MiniPID pidWrist = new MiniPID(1.0/1350.0*6, 1.0/4000.0*0.0, 1.0/100000.0); //these values are pretty good
@@ -39,8 +39,6 @@ public class Wrist extends Subsystem {
 
       public double wristPower = 0.0;
       double armPosition = 0.0; // Used for floor-relative calculations
-
-      //public DigitalInput armlimit = new DigitalInput(); //TODO: What port?
 
       //double kWristGain = 0.005;
       //double kWristGain = 0.006;
@@ -60,6 +58,7 @@ public class Wrist extends Subsystem {
       @Override
       public void periodic(){
             SmartDashboard.putData("Wrist/Position", gyro.set(getWristAngleFromFloor()));
+            SmartDashboard.putString("Wrist/Command", getCurrentCommandName());
       }
 
       public Wrist() {
