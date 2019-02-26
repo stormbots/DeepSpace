@@ -55,8 +55,6 @@ public class Robot extends TimedRobot {
   public static PassThrough passThrough = new PassThrough();
   public static OI m_oi = new OI();
 
-  public static DigitalInput bellySensor = new DigitalInput(9);
-
   Command m_autonomousCommand;
   SendableChooser<Command> m_chooser = new SendableChooser<>();
   Command wristHoming = new WristHoming();

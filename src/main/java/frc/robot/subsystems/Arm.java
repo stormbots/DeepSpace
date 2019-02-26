@@ -43,7 +43,7 @@ public class Arm extends Subsystem {
 
       
       // double kArmFF = 0.3;
-      double kArmFF = 0.3; //0.5 Practice Bot
+      double kArmFF = 0.3; // See RobotInit for practicebot
 
       public static final double MAX_ANGLE = 90.0;
       public static final double MIN_ANGLE = -90.0;
@@ -80,7 +80,8 @@ public class Arm extends Subsystem {
                   armMotor.setInverted(true);
             }
             else{
-                 armMotor.setInverted(false);
+                  kArmFF = 0.5;
+                  armMotor.setInverted(false);
             }
       }
 
@@ -138,7 +139,6 @@ public class Arm extends Subsystem {
 
                         SmartDashboard.putNumber("Arm/Output FB", FB.fb(targetArmPos, currentArmPos, kArmGain));
                         SmartDashboard.putNumber("Arm/Output FF",  kArmFF*Math.cos(Math.toRadians(currentArmPos)));
-                        //TODO find voltage needed to keep arm level (kArmFF),
 
                   break;
 
@@ -154,7 +154,6 @@ public class Arm extends Subsystem {
                   break;
 
                   case DISABLED:
-                        //TODO: Disabled should set all power variables to zero
                         armPower = 0;
                   break;
 

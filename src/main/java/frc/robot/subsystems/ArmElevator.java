@@ -18,20 +18,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class ArmElevator extends Subsystem {
 	// Put methods for controlling this subsystem
 	// here. Call these from Commands.
-	/*public TalonSRX elevMotor = new TalonSRX(10);
-	public TalonSRX armMotor = new TalonSRX(12);
-      DigitalInput elevLimit = new DigitalInput(0);
-      DigitalInput armLimit = new DigitalInput(1);
-      */
       
       public Elevator elevator = new Elevator();
       public Wrist wrist = new Wrist();
       public Arm arm = new Arm();
       public static ShuffleboardTab armavatorTab = Shuffleboard.getTab("Armavator");
-
-      //TODO: Do we want to calculate anything with these constants?
-      // public final double ARM_LENGTH = 20;
-      // public final double HAND_LENGTH_WITH_HATCH = 8;
 
       @Override
       public void periodic(){
@@ -208,28 +199,7 @@ public class ArmElevator extends Subsystem {
             elevator.update();
             arm.update();
             wrist.update(arm.getArmAngle());
-            
-            //armavatorTab.add("Elevator Current Height", elevator.getPosition());
-            //armavatorTab.add("Arm Current Angle", arm.getArmAngle());
-            /*armavatorTab.add("Wrist Current Angle (Floor)", wrist.getWristAngleFromFloor());
-            armavatorTab.add("Wrist Current Ang
-            le (Arm)", wrist.getWristAngleFromArm());
-            armavatorTab.add("Wrist Position", wrist.wristMotor.getSelectedSensorPosition());
-            */
-            
-            
-            // armavatorTab.add("Pose", this.getPose()); //causes robots don't quit
-            //armavatorTab.add("Arm Pose Angle", pose.armAngle());
-            //armavatorTab.add("Wrist Pose Angle", pose.wristAngle());
-            //armavatorTab.add("Elevator Pose Height", pose.eleHeight());
-
       }
-
-
-      //TODO Possibly useful for debuggin?
-      // public double getHandHeight(){
-      //       return elevator.getPosition() + ARM_LENGTH*Math.sin(arm.getArmAngle());
-      // }
 
 	@Override
 	public void initDefaultCommand() {

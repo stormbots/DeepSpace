@@ -87,10 +87,8 @@ public class Intake extends Subsystem {
      */
     pivotTargetPosition = getPosition();
 
-    //TODO: We may need to tune kPivot values on the smartdashboard
-    kPivotFF = 0.09; //5// Holds itself stable quite well due to gearing
-    // kPivotGain = 0.004;
-     kPivotGain = 0.08;
+    kPivotFF = 0.09;
+    kPivotGain = 0.08; //see RobotInit note
 
 
     //TODO: Increase current restrictions after limit and motor checks
@@ -110,6 +108,7 @@ public class Intake extends Subsystem {
     else{
       rollerMotor.setInverted(false);
       PIVOT_MAX = 110.0;
+      kPivotGain = kPivotGain/2.0; //TODO: Remove intake fbgain adjustment when gearbox is firmly attached again
     }
   }
 
@@ -125,7 +124,6 @@ public class Intake extends Subsystem {
     //setup variables and defaults
     double targetPosition = this.pivotTargetPosition;
     double currentPosition = getPosition();  
-    // tab.add("TargetPosition", targetPosition);
 
     //Check Soft Limits
     targetPosition = clamp(targetPosition,PIVOT_MIN,PIVOT_MAX);
@@ -151,7 +149,6 @@ public class Intake extends Subsystem {
     //Position block should fix it unless we're oscillating wildly
     //if(pivotPower < 0  && currentPosition < PIVOT_MIN) { pivotPower = 0;}
     
-    // tab.add("TargetPosition(mod)", targetPosition);
     SmartDashboard.putNumber("Intake/Current Position(final)",getPosition());
     SmartDashboard.putNumber("Intake/Output Power",pivotPower);
 

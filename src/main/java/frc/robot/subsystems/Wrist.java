@@ -86,8 +86,6 @@ public class Wrist extends Subsystem {
             targetWristToFloorAngle = getWristAngleFromFloor();
             pidWrist.setOutputLimits(-1+kWristFF,1-kWristFF);
             pidWrist.setMaxIOutput(0.2);
-            // pidWrist.setOutputRampRate(0.01); //0.005
-            //pidWrist.setSetpointRange(35.0);
       }
 
       /** Runs on robot boot after network/SmartDashboard becomes available */

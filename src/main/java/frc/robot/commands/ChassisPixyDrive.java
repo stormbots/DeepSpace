@@ -24,20 +24,10 @@ public class ChassisPixyDrive extends Command {
   boolean areWeBroken = false;
   Line line = new Line();
   int cyclesSinceLastLine = 100;
-  Ultrasonic sonarL = new Ultrasonic(0,1);
-  Ultrasonic sonarR = new Ultrasonic(2,3);
 
   public ChassisPixyDrive() {
     // Use requires() here to declare subsystem dependencies
     requires(Robot.chassis);
-
-    // apparently needs to be done
-    sonarL.setEnabled(true);
-    sonarR.setEnabled(true);
-
-    // apparently needs to be done with every new ultrasonic
-    sonarL.setAutomaticMode(true);
-    sonarR.setAutomaticMode(true);
 
     System.out.println("ChassisPixyDrive Constructor ran");
   }
@@ -141,7 +131,7 @@ public class ChassisPixyDrive extends Command {
     midY = ((farPoint - closePoint) / 2) + closePoint;
     */
 
-    if((sonarL.getRangeInches() + sonarR.getRangeInches()) / 2 < 6) {
+    if((Robot.chassis.sonarL.getRangeInches() + Robot.chassis.sonarR.getRangeInches()) / 2 < 6) {
       //Robot.drive.driver.tankDrive(0.2, 0.2);
     }
     else if(Math.sqrt(Math.pow(startX-endX, 2) + Math.pow(startY-endY, 2)) < 0.1) {

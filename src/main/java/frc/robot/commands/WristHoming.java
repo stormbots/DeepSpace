@@ -62,7 +62,8 @@ public class WristHoming extends Command {
   // Called once after isFinished returns true
   @Override
   protected void end() {
-    //set wrist as homed
+    //TODO: set wrist as homed
+    //TODO: Wrist home reset also needs to account for the arm position, which affects the angle of contact with the switch >_>
     Robot.armLift.wrist.setPower(0);
     Robot.armLift.wrist.setMode(Mode.CLOSEDLOOP);
     Robot.armLift.arm.set(Pose.LOAD_CARGO_PREP);

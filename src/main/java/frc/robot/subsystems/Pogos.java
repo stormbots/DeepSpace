@@ -34,8 +34,9 @@ public class Pogos extends Subsystem {
   // public static final double maxVelocity = 0; //fix this
   // public static final double maxAcceleration = 0;
   public static final double RETRACTED = 0;
-  public static double DEPLOYED = 4096; //TODO: Find pogo down encoder ticks
-  public double kPogoFF = 0.002;
+  // public static double HAB_2 = 4096; //TODO: Find pogo down encoder ticks
+  public static double DEPLOY_HAB_3 = 4096; //TODO: Find pogo down encoder ticks
+  public double kPogoGain = 0.002;
   public double targetPos = 0;
 
   public Pogos(){

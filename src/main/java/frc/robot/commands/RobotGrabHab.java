@@ -13,6 +13,7 @@ import com.stormbots.Lerp;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Pogos;
 
 /**
@@ -27,8 +28,8 @@ public class RobotGrabHab extends Command {
 
   public RobotGrabHab(double moveTime) {
     this.moveTime = moveTime;
-    timeToIntakeAngle = new Lerp(0,moveTime, 90, Robot.intake.PIVOT_MIN_HAB);
-    timeToPogoPosition = new Lerp(0,moveTime, Pogos.RETRACTED, Pogos.DEPLOYED);
+    timeToIntakeAngle = new Lerp(0,moveTime, 90, Intake.PIVOT_MIN_HAB);
+    timeToPogoPosition = new Lerp(0,moveTime, Pogos.RETRACTED, Pogos.DEPLOY_HAB_3);
     // Use requires() here to declare subsystem dependencies
     requires(Robot.intake);
     requires(Robot.pogos);
