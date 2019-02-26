@@ -17,7 +17,7 @@ import frc.robot.subsystems.ArmElevator.Pose;
 
 public class ArmPose extends Command {
   Pose pose;
-  double moveTime = 2;
+  double moveTime = 0.5;
   double startTime = 0;
   Lerp timeToArmAngle;
   Lerp timeToElevatorHeight;
@@ -34,7 +34,7 @@ public class ArmPose extends Command {
     requires(Robot.armLift.elevator);
     requires(Robot.armLift.wrist);
     requires(Robot.armLift.arm);
-    currentTime=0;
+    currentTime = 0;
   }
 
   // Called just before this Command runs the first time
