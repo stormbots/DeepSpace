@@ -77,6 +77,8 @@ public class Hand extends Subsystem {
       this.position = position;
       hand.set(position.bool());
       handB.set(!position.bool());
+      System.out.println(position);
+      System.out.println(position.bool());
     }
 
     public Position getPosition(){

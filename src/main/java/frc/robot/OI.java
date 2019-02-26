@@ -91,8 +91,8 @@ public class OI {
 
     // handSuckIn.whileHeld(new HandPower(Robot.hand.GRAB_POWER,Robot.hand.HOLD_POWER));
     handSuckIn.whileHeld(new HandPose(Position.OPEN, Hand.GRAB_POWER, Hand.Position.CLOSE, Hand.HOLD_POWER));
-    handSpitOut.whileHeld(new HandPose(Position.CLOSE, Hand.EJECT_POWER));
-    handGrab.toggleWhenPressed(new HandPose());
+    handSpitOut.whileHeld(new HandPose(Position.CLOSE, Hand.EJECT_POWER, Hand.Position.CLOSE, Hand.OFF));
+    handGrab.whenPressed(new HandPose());
 
     grabCargo.whileHeld(new IntakeGrabBall());
 
