@@ -53,6 +53,7 @@ public class Intake extends Subsystem {
     SmartDashboard.putData("Intake/Position",gyro.set(getPosition()));
     SmartDashboard.putNumber("Intake/Current Pos", getPosition());
     SmartDashboard.putString("Intake/Command", getCurrentCommandName());
+    SmartDashboard.putNumber("Intake/Target Pos",this.pivotTargetPosition);
   }
   
   public enum Mode {CLOSEDLOOP,MANUAL,HABLIFT,DISABLE};
@@ -73,7 +74,7 @@ public class Intake extends Subsystem {
   public static       double PIVOT_MAX = 135.0;
   public static final double PIVOT_GRAB_HAB = 0;
   public static final double PIVOT_REST = PIVOT_MAX-5;
-  public static final double PIVOT_GRAB_CARGO = 76.5; //was 61.5
+  public static final double PIVOT_GRAB_CARGO = 71.5; //was 61.5, 76.5
   public static final double ROLLER_GRAB_CARGO = 1.0;
   public static final double ROLLER_GRAB_POWER = 0;
 
@@ -86,21 +87,17 @@ public class Intake extends Subsystem {
      */
     pivotTargetPosition = getPosition();
 
-    //TODO: We may need to tune kPivot values on the smartdashboard
-    kPivotFF = 0.05; // Holds itself stable quite well due to gearing
-    // kPivotGain = 0.004;
-     kPivotGain = 0.08;
+    kPivotFF = 0.09;
+    kPivotGain = 0.08; //see RobotInit note
 
 
     //TODO: Increase current restrictions after limit and motor checks
-    pivotMotor.setSmartCurrentLimit(5, 10, 6700/3);
+    //pivotMotor.setSmartCurrentLimit(5, 10, 6700/3);
     pivotMotor.set(0);
 
 
     //Rollers
     rollerMotor.set(ControlMode.PercentOutput, 0);
-
-    System.out.println("Pivot Firmware: " + pivotMotor.getFirmwareString());
   }
 
   /** Runs on robot boot after network/SmartDashboard becomes available */
@@ -111,6 +108,7 @@ public class Intake extends Subsystem {
     else{
       rollerMotor.setInverted(false);
       PIVOT_MAX = 110.0;
+      kPivotGain = kPivotGain/2.0; //TODO: Remove intake fbgain adjustment when gearbox is firmly attached again
     }
   }
 
@@ -126,8 +124,6 @@ public class Intake extends Subsystem {
     //setup variables and defaults
     double targetPosition = this.pivotTargetPosition;
     double currentPosition = getPosition();  
-    // tab.add("TargetPosition", targetPosition);
-    SmartDashboard.putNumber("Intake/Target Pos",targetPosition);
 
     //Check Soft Limits
     targetPosition = clamp(targetPosition,PIVOT_MIN,PIVOT_MAX);
@@ -153,8 +149,8 @@ public class Intake extends Subsystem {
     //Position block should fix it unless we're oscillating wildly
     //if(pivotPower < 0  && currentPosition < PIVOT_MIN) { pivotPower = 0;}
     
-    // tab.add("TargetPosition(mod)", targetPosition);
     SmartDashboard.putNumber("Intake/Current Position(final)",getPosition());
+    SmartDashboard.putNumber("Intake/Output Power",pivotPower);
 
         
     //set output power

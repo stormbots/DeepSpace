@@ -13,9 +13,11 @@ import com.stormbots.Clamp;
 import com.stormbots.Lerp;
 import com.stormbots.closedloop.FB;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
+import frc.robot.RobotMap;
 import frc.robot.subsystems.ArmElevator.Mode;
 import frc.robot.subsystems.ArmElevator.Pose;
 
@@ -29,11 +31,11 @@ public class Elevator extends Subsystem {
       public TalonSRX elevMotorF = new TalonSRX(11);
      
       //ublic TalonSRX elevMotor2 = new TalonSRX(11);
-      //DigitalInput elevLimit = new DigitalInput(2);
+      DigitalInput elevLimit = new DigitalInput(RobotMap.ElevatorLimitSwitch);
 
       //Elevator has two positions that need to be programmed in supposedly
       public static final double MAX_HEIGHT = 69;
-      public static final double MIN_HEIGHT = 42;
+      public static final double MIN_HEIGHT = 41;
       double elevatorHeightRestriction = MAX_HEIGHT;
       double elevatorTargetHeight = 0;
       double currentPos = 0;

@@ -10,6 +10,7 @@ import com.stormbots.devices.pixy2.Pixy2;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.SPI.Port;
@@ -19,6 +20,7 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.WristHoming;
 import frc.robot.subsystems.ArmElevator;
 import frc.robot.subsystems.Chassis;
 import frc.robot.subsystems.ExampleSubsystem;
@@ -49,13 +51,13 @@ public class Robot extends TimedRobot {
   public static Chassis chassis = new Chassis(); //new ChassisTalonSRX();
   public static PowerDistributionPanel pdp = new PowerDistributionPanel();
   
-  
   public static Intake intake = new Intake();
   public static PassThrough passThrough = new PassThrough();
   public static OI m_oi = new OI();
 
   Command m_autonomousCommand;
   SendableChooser<Command> m_chooser = new SendableChooser<>();
+  Command wristHoming = new WristHoming();
 
   /**
    * This function is run when the robot is first started up and should be
@@ -73,6 +75,8 @@ public class Robot extends TimedRobot {
       Preferences.getInstance().putBoolean("compbot", true); 
     }
     isCompbot = Preferences.getInstance().getBoolean("compbot", true);
+    SmartDashboard.putBoolean("Combot?", isCompbot);
+    
 
     armLift.robotInit();
     chassis.robotInit();
@@ -81,19 +85,13 @@ public class Robot extends TimedRobot {
     passThrough.robotInit();
     pogos.robotInit();
 
-
-
     compressor.clearAllPCMStickyFaults();
-    hand.close();
 
-    m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
+    // m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
     // chooser.addOption("My Auto", new MyAutoCommand());
-    SmartDashboard.putData("Auto mode", m_chooser);
-    //driveTab.add("Front Camera", CameraServer.getInstance().startAutomaticCapture()); //startAutomaticCapture(int)
-    // driveTab.add("Back Camera", CameraServer.getInstance().startAutomaticCapture());
+    // SmartDashboard.putData("Auto mode", m_chooser);
     CameraServer.getInstance().startAutomaticCapture(0);
     CameraServer.getInstance().startAutomaticCapture(1);
-
   }
 
   /**
@@ -106,6 +104,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
+    SmartDashboard.putData(wristHoming);
   }
 
   /**
@@ -115,7 +114,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void disabledInit() {
-    // System.out.println(pixy.setLamp(false,false));
   }
 
   @Override
@@ -171,8 +169,6 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-
-    // System.out.println(pixy.setLamp(true,false));
   }
 
   

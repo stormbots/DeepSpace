@@ -25,11 +25,14 @@ public class Hand extends Subsystem {
     public Solenoid handB = new Solenoid(7);
 
     public enum Position{
-      OPEN(false),
-      CLOSE(true);
-      private boolean bool;
-      Position(boolean solenoid){this.bool = solenoid;}
-      public boolean bool(){return bool;};
+      OPEN(false,true),
+      CLOSE(true,false);
+      private boolean compbot,practicebot;
+      Position(boolean compbot, boolean practicebot){
+        this.compbot = compbot;
+        this.practicebot = practicebot;
+      }
+      public boolean bool(){return Robot.isCompbot ? this.compbot : this.practicebot;};
     }
     Position position = Position.CLOSE;
     
@@ -52,8 +55,6 @@ public class Hand extends Subsystem {
     
   
     public Hand(){
-      setPosition(Position.CLOSE);
-
       //We probably want a very low continuous current, to avoid causing harm to the cargo. 
       //this lets us keep it running without much concern, as we have no sensors
       motor.configPeakCurrentLimit(5, 10); // 35 A 
@@ -64,6 +65,8 @@ public class Hand extends Subsystem {
 
     /** Runs on robot boot after network/SmartDashboard becomes available */
     public void robotInit(){
+      setPosition(Position.CLOSE);
+
       if(Robot.isCompbot){
         motor.setInverted(true);
       }
@@ -77,6 +80,8 @@ public class Hand extends Subsystem {
       this.position = position;
       hand.set(position.bool());
       handB.set(!position.bool());
+      System.out.println(position);
+      System.out.println(position.bool());
     }
 
     public Position getPosition(){
