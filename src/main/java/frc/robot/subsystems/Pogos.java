@@ -32,8 +32,9 @@ public class Pogos extends Subsystem {
   // public static final double maxVelocity = 0; //fix this
   // public static final double maxAcceleration = 0;
   public static final double maxPosition = 4096; // NEEDS TO BE TUNED
+  public static final double minPosition = 0;
   public double fbConstant = 0.002;
-  public double targetPos = 0;
+  public double targetPos = minPosition;
 
   public Pogos(){
     System.out.println("Pogo is Initialized");  
@@ -56,7 +57,7 @@ public class Pogos extends Subsystem {
 
   // pulls the pogos up
   public void retractPogos() {
-    targetPos = 0;
+    targetPos = minPosition;
   }
 
   // public void setPogoPower(double pwr){

@@ -21,10 +21,11 @@ public class RobotGrabHab extends Command {
   double moveTime;
   Lerp timeToAngle;
   double startTime = 0;
+  double endTime = 0;
 
   public RobotGrabHab(double moveTime) {
     this.moveTime = moveTime;
-    timeToAngle = new Lerp(0,moveTime, Robot.intake.PIVOT_REST, Robot.intake.PIVOT_MIN_HAB);
+    timeToAngle = new Lerp(0, moveTime, Robot.intake.PIVOT_REST, Robot.intake.PIVOT_MIN_HAB);
     // Use requires() here to declare subsystem dependencies
     requires(Robot.intake);
     requires(Robot.pogos);
@@ -43,9 +44,15 @@ public class RobotGrabHab extends Command {
   @Override
   protected void execute() {
     double currentTime = Timer.getFPGATimestamp() - startTime;
-    Robot.intake.setTargetPosition(timeToAngle.get(currentTime));
-    Robot.chassis.driver.tankDrive(0.2, 0.2);
-    Robot.intake.setRollerPower(0.3);
+
+    if(currentTime < moveTime) {
+      Robot.intake.setTargetPosition(timeToAngle.get(currentTime));
+    }
+    else {
+      Robot.intake.setTargetPosition(timeToAngle.get(moveTime));
+      Robot.chassis.driver.tankDrive(0.15, 0.15);
+      Robot.intake.setRollerPower(0.3);
+    }
 
     if(Robot.pogos.onHabCenter.get()) {
       Robot.pogos.retractPogos();
@@ -64,11 +71,10 @@ public class RobotGrabHab extends Command {
   // Called once after isFinished returns true
   @Override
   protected void end() {
-    Robot.chassis.driver.tankDrive(0, 0);
-
     // NOTE:  NEED TO BE ABSOLUTELY SURE BEFORE ALLOWING THIS INTO THE CODE !!!!!!!!!!!!!!
     //Robot.pogos.retractPogos();
 
+    Robot.chassis.driver.tankDrive(0, 0);
     System.out.println("RobotGrabHab has ended");
   }
 
@@ -77,7 +83,7 @@ public class RobotGrabHab extends Command {
   @Override
   protected void interrupted() {
     Robot.chassis.driver.tankDrive(0, 0);
-    System.out.println("RobotGrabHab has ended");
+    System.out.println("RobotGrabHab has been interrupted");
 
     // NOTE:  DO NOT allow the pogos to retract, or we will topple over the edge and destroy the robot
   }
