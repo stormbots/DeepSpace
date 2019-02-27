@@ -38,8 +38,8 @@ public class Arm extends Subsystem {
       double armAngle = 0.0;
 
       // double kArmGain = 0.027;
-      // double kArmGain = 0.035; //comp bot
-      double kArmGain = 0.042;
+      double kArmGain = 0.035; //comp bot
+      
 
       
       // double kArmFF = 0.3;
@@ -81,6 +81,7 @@ public class Arm extends Subsystem {
             }
             else{
                   kArmFF = 0.5;
+                  kArmGain = 0.042;
                   armMotor.setInverted(false);
             }
       }

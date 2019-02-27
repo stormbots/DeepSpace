@@ -46,7 +46,7 @@ public class Wrist extends Subsystem {
       //double kWristGain = 0.0065;
       //double kWristGain = 0.007;
       //double kWristGain = 0.01;
-      double kWristFF = 0.13; //0.16 Practice bot
+      double kWristFF = 0.13;
 
       // Physical limits that apply to the wrist at all times
       public static final double MAX_ANGLE_TO_ARM = 90.0;
@@ -95,6 +95,8 @@ public class Wrist extends Subsystem {
                   wristMotor.setInverted(true);
             }
             else{
+                  pidWrist = new MiniPID(1.0/1350.0*6, 1.0/4000.0*0.0, 1.0/100000.0);
+                  kWristFF = 0.16;
                   wristMotor.setInverted(false);
             }
       }
