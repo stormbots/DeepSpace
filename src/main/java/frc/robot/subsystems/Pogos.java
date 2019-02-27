@@ -60,14 +60,14 @@ public class Pogos extends Subsystem {
     //if(this.getCurrentCommand() == null) targetPos = 0; //might 
     //optionally, could create a PogoPosition DefaultCommand and set the targetPos in the init
 
-    //TODO: we should clampthe targetPos to within the bounds of the system, just in case
+    //TODO: we should clamp the targetPos to within the bounds of the system, just in case
     // Note, that since we're being lazy about this and using ticks, we need to be aware that 
     // DEPLOYED might be negative, and so we'd have to check for that as part of our clamp process
 
-    double outputPower = fb(targetPos, pogo.getSelectedSensorPosition(0), targetPos);
+    double outputPower = fb(targetPos, pogo.getSelectedSensorPosition(0), kPogoGain);
 
     //TODO: Remove pogo safety clamp
-    outputPower = clamp(outputPower,-0.05,0.05); 
+    outputPower = clamp(outputPower,-0.06,0.06); 
 
     pogo.set(ControlMode.PercentOutput, outputPower );
 

@@ -30,6 +30,7 @@ public class RobotMap {
   public static int UltrasonicRightPing = 2;
   public static int UltrasonicRightEcho = 3;
   public static int ElevatorLimitSwitch = 4;
+  // public static int ArmLimitSwitch = 5; Not sure why this isn't in... but don't want to add it if we don't actually use it
   public static int WristLimitSwitch = 5;
   public static int PogoFloorSensor = 6;
   
