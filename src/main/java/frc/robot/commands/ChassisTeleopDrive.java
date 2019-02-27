@@ -7,6 +7,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
@@ -15,6 +16,12 @@ import frc.robot.Robot;
  * An example command.  You can replace me with your own command.
  */
 public class ChassisTeleopDrive extends Command {
+
+  public double maxVelocity = 0;
+  public double minAccelerationTime = Integer.MAX_VALUE;
+  public double startTime = 0;
+  public double currentTime = 0; 
+
   public ChassisTeleopDrive() {
     // Use requires() here to declare subsystem dependencies
     requires(Robot.chassis);
@@ -28,6 +35,9 @@ public class ChassisTeleopDrive extends Command {
 
     Robot.chassis.motorL1.follow(Robot.chassis.motorL0);
     System.out.println("ChassisTeleopDrive execute is running");
+    maxVelocity = 0;
+    minAccelerationTime = Integer.MAX_VALUE;
+    startTime = Timer.getFPGATimestamp();
   }
 
   // Called repeatedly when this Command is scheduled to run
@@ -43,8 +53,32 @@ public class ChassisTeleopDrive extends Command {
     //Robot.chassis.motorL0.set(0.5);
     //Robot.drive.motorL1.set(0.5);
 
-    SmartDashboard.putNumber("Drive Velocity: ", Robot.chassis.motorL0.getEncoder().getVelocity());
+    double currentVelocity = Math.abs(Robot.chassis.motorL0.getEncoder().getVelocity());
+    currentTime = Timer.getFPGATimestamp();
+
+    if(currentVelocity == 0) {
+      startTime = Timer.getFPGATimestamp();
+    }
+
+    double accelerationTime = Integer.MAX_VALUE;
+
+    if(maxVelocity == currentVelocity && maxVelocity > 5100) {
+      accelerationTime = currentTime - startTime;
+    }
+
+    maxVelocity = Math.max(maxVelocity, currentVelocity);
+    minAccelerationTime = Math.min(minAccelerationTime, accelerationTime);
+
+    SmartDashboard.putNumber("Drive MaxAccelerationTime: ", minAccelerationTime);
+    SmartDashboard.putNumber("Drive MaxAccelerationTime (Graph): ", minAccelerationTime);
+    SmartDashboard.putNumber("Drive Velocity: ", maxVelocity);
+    SmartDashboard.putNumber("Drive Velocity (Graph): ", maxVelocity);
+    SmartDashboard.putNumber("Drive MaxAcceleration", maxVelocity/minAccelerationTime);
     // is about 5,300... exact data not gained yet.
+
+    // [practice] exact(ish) Max Velocity:  5222.8574
+    // [practice] exact(ish) Max Acceleration Time:  2.1198
+    // [practice] exact(ish) Max Acceleration:  2463.8375
   }
 
   // Make this return true when this Command no longer needs to run execute()
