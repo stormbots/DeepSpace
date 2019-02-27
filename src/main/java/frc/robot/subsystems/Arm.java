@@ -80,7 +80,10 @@ public class Arm extends Subsystem {
                   armMotor.setInverted(true);
             }
             else{
-                  // kArmFF = 0.5;
+                  kArmFF = 0.5;
+                  // kArmGain = 0.1;//too high
+                  // kArmGain = 0.042; //too low 
+                  kArmGain = 0.08;
                   armMotor.setInverted(false);
             }
       }
