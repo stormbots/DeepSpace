@@ -184,6 +184,7 @@ public class Robot extends TimedRobot {
     intake.update();
     passThrough.update();
     pogos.update();
+    chassis.update();
   }
 
   /**

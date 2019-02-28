@@ -28,7 +28,7 @@ public class RobotGrabHab extends Command {
 
   public RobotGrabHab(double moveTime) {
     this.moveTime = moveTime;
-    timeToIntakeAngle = new Lerp(0,moveTime, 90, Intake.PIVOT_MIN_HAB);
+    timeToIntakeAngle = new Lerp(0,moveTime, 110, Intake.PIVOT_MIN_HAB);
     timeToPogoPosition = new Lerp(0,moveTime, Pogos.RETRACTED, Pogos.DEPLOY_HAB_3);
     // Use requires() here to declare subsystem dependencies
     requires(Robot.intake);
@@ -51,17 +51,23 @@ public class RobotGrabHab extends Command {
     boolean robotIsUp = currentTime >= moveTime;
 
 
-    if( robotIsUp && Robot.pogos.isFloorDetected() ){
+    if( robotIsUp && Robot.pogos.isFloorDetected() && false){
       Robot.pogos.setPosition(Pogos.RETRACTED);
       Robot.intake.setRollerPower(0);
-      Robot.chassis.driver.tankDrive(0,0);
+      Robot.chassis.arcadeDrive(0,0);
+    }
+    else if(robotIsUp) {
+      Robot.intake.setRollerPower(1); // make a constant when time permits
+      Robot.chassis.arcadeDrive(-0.1,0);
     }
     else{
       Robot.intake.setTargetPosition(timeToIntakeAngle.get(currentTime));
       Robot.pogos.setPosition(timeToPogoPosition.get(currentTime));
-      Robot.chassis.driver.tankDrive(0.2, 0.2);
-      Robot.intake.setRollerPower(0.3);
+      Robot.chassis.arcadeDrive(0, 0);
+      // Robot.intake.setRollerPower(1);
       }
+
+      
   }
 
   // Make this return true when this Command no longer needs to run execute()
@@ -79,7 +85,8 @@ public class RobotGrabHab extends Command {
     // NOTE:  NEED TO BE ABSOLUTELY SURE BEFORE ALLOWING THIS INTO THE CODE !!!!!!!!!!!!!!
     //Robot.pogos.retractPogos();
 
-    Robot.chassis.driver.tankDrive(0, 0);
+    Robot.chassis.arcadeDrive(0, 0);
+    Robot.pogos.setPosition(Pogos.RETRACTED);
     System.out.println("RobotGrabHab has ended");
   }
 
@@ -87,9 +94,10 @@ public class RobotGrabHab extends Command {
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
-    Robot.chassis.driver.tankDrive(0, 0);
+    Robot.chassis.arcadeDrive(0, 0);
+    Robot.pogos.setPosition(Pogos.RETRACTED);
     System.out.println("RobotGrabHab has been interrupted");
-
+    
     // NOTE:  DO NOT allow the pogos to retract, or we will topple over the edge and destroy the robot
   }
 }

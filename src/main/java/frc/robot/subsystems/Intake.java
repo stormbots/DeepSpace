@@ -65,11 +65,12 @@ public class Intake extends Subsystem {
     0, 42,
     0, 90);
 
-  double kPivotGain = 0;  /* SET VIA CONSTRUCTOR/INIT, DO NOT USE */
-  double kPivotFF = 0; /* SET VIA CONSTRUCTOR/INIT, DO NOT USE */
+    double kPivotGain = 0;  /* SET VIA CONSTRUCTOR/INIT, DO NOT USE */
+    double kPivotGainHab = 0;  /* SET VIA CONSTRUCTOR/INIT, DO NOT USE */
+    double kPivotFF = 0; /* SET VIA CONSTRUCTOR/INIT, DO NOT USE */
   //intake on ground is 19.439
   public static final double PIVOT_MIN = 15;
-  public static final double PIVOT_MIN_HAB = -10;
+  public static final double PIVOT_MIN_HAB = 0;
   // public static final double PIVOT_MAX = 110.0; //practice bot
   public static       double PIVOT_MAX = 135.0;
   public static final double PIVOT_GRAB_HAB = 0;
@@ -87,9 +88,10 @@ public class Intake extends Subsystem {
      */
     pivotTargetPosition = getPosition();
 
-    kPivotFF = 0.09;
+    // kPivotFF = 0.09;
+    kPivotFF = 0.00;// Necessary to avoid power loss in hab lift
     kPivotGain = 0.08; //see RobotInit note
-
+    
 
     //TODO: Increase current restrictions after limit and motor checks
     //pivotMotor.setSmartCurrentLimit(5, 10, 6700/3);
@@ -108,7 +110,7 @@ public class Intake extends Subsystem {
     else{
       rollerMotor.setInverted(false);
       PIVOT_MAX = 110.0;
-      kPivotGain = kPivotGain/2.0; //TODO: Remove intake fbgain adjustment when gearbox is firmly attached again
+      kPivotGain = 0.095+0.015; //TODO: override for hab testing only!
     }
   }
 
@@ -126,7 +128,7 @@ public class Intake extends Subsystem {
     double currentPosition = getPosition();  
 
     //Check Soft Limits
-    targetPosition = clamp(targetPosition,PIVOT_MIN,PIVOT_MAX);
+    targetPosition = clamp(targetPosition,PIVOT_MIN_HAB,PIVOT_MAX);
 
     switch(mode){
       case MANUAL:

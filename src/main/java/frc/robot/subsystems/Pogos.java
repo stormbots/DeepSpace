@@ -15,6 +15,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
 
@@ -24,7 +25,7 @@ import frc.robot.RobotMap;
 public class Pogos extends Subsystem {
 
   // public Solenoid leftPogo = new Solenoid(5);
-  public TalonSRX pogo = new TalonSRX(16); // TODO: SET Pogo DEVICE ID
+  public TalonSRX pogo = new TalonSRX(15); // TODO: SET Pogo DEVICE ID
 
   public DigitalInput onHabCenter = new DigitalInput(RobotMap.PogoFloorSensor); // TODO: SET hab DigitalInput ID
 
@@ -35,8 +36,8 @@ public class Pogos extends Subsystem {
   // public static final double maxAcceleration = 0;
   public static final double RETRACTED = 0;
   // public static double HAB_2 = 4096; //TODO: Find pogo down encoder ticks
-  public static double DEPLOY_HAB_3 = 4096; //TODO: Find pogo down encoder ticks
-  public double kPogoGain = 0.002;
+  public static double DEPLOY_HAB_3 = -34763; //TODO: Find pogo down encoder ticks
+  public double kPogoGain = 0.02;
   public double targetPos = 0;
 
   public Pogos(){
@@ -66,9 +67,12 @@ public class Pogos extends Subsystem {
 
     double outputPower = fb(targetPos, pogo.getSelectedSensorPosition(0), kPogoGain);
 
+    //if(!SmartDashboard.containsKey("Pogos/outputpower")){SmartDashboard.putNumber("Pogos/outputpower", 0);}
+    //outputPower = SmartDashboard.getNumber("Pogos/outputpower", 0);
     //TODO: Remove pogo safety clamp
-    outputPower = clamp(outputPower,-0.06,0.06); 
-
+    //outputPower = clamp(outputPower,-0.2,0.2); 
+    //outputPower = clamp(outputPower,-1,0.3);
+    SmartDashboard.putNumber("pogos/currentPosition", Robot.pogos.pogo.getSelectedSensorPosition());
     pogo.set(ControlMode.PercentOutput, outputPower );
 
   }
@@ -79,7 +83,7 @@ public class Pogos extends Subsystem {
 
   public boolean isFloorDetected(){
     //TODO: Validate switch default vs triggerd state
-    return onHabCenter.get() == true;
+    return onHabCenter.get() == false;
   }
   
   @Override
