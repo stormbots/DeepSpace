@@ -34,7 +34,7 @@ public class LimelightTurning extends Command {
     // array of (x,y,z,pitch,yaw,roll)
     double[] camtran;
 
-    // distance from target
+    // distance from limelight to target
     double z;
 
     // average calculated in iterations of 4, hopefully more zccurate than z
@@ -55,6 +55,7 @@ public class LimelightTurning extends Command {
 
     // proportional for the turning adjustment used to lower the angle to close to 0
     double pTurnAdjust;
+
   }
 
   // Called repeatedly when this Command is scheduled to run
@@ -69,9 +70,10 @@ public class LimelightTurning extends Command {
     double[] camtran = NetworkTable.getTable("limelight").getNumberArray("camtran", new double[6]);
     double z = camtran[2];
 
+    // need to get rid of outliers 
+
     // Average, calculated on a 4 iteration basis and used to make the jittery z value 
     // taken from 3D compute more accurate.
-    
     double sum = 0.0;
     for(int i = 0; i < 4; i++) {
       double value = z;
@@ -79,7 +81,8 @@ public class LimelightTurning extends Command {
     }
     double zAverage = sum / 4;
 
-    double distancePowerMod = zAverage; //needs Lerp, need to find limelights range in z dimension
+    // lerps the range of the limelight (0" - 65")
+    double distancePowerMod = lerp(zAverage, 0, 65, 0, 1); 
 
     // makes sure that the power of the drive does not exceed its limit
     if (distancePowerMod > 1){
@@ -87,8 +90,9 @@ public class LimelightTurning extends Command {
     }
 
     // makes us drive, should turn and then move forward in the same function
-    Robot.drive.driver.tankDrive((0.5 * distancePowerMod) + (turnAdjust * pTurnAdjust), (0.5 * distancePowerMod) - (turnAdjust * pTurnAdjust));
-    
+    Robot.drive.driver.tankDrive((0.5 * distancePowerMod) + (turnAdjust * pTurnAdjust - 6), (0.5 * distancePowerMod) - (turnAdjust * pTurnAdjust - 6));
+    // 6 is our offest in inches from the center of the robot to our limelight
+
   }
 
   // Make this return true when this Command no longer needs to run execute()
