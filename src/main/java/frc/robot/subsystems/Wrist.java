@@ -14,7 +14,6 @@ import com.stormbots.Lerp;
 import com.stormbots.closedloop.MiniPID;
 
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
@@ -56,6 +55,7 @@ public class Wrist extends Subsystem {
       double maxAngleToArm = 90.0;
       double minAngleToArm = -90.0;
       boolean isHomed = false;
+      public static double HOME_OUTPUT_POWER_MIN = 0.2;
 
       @Override
       public void periodic(){
@@ -99,6 +99,7 @@ public class Wrist extends Subsystem {
                   pidWrist = new MiniPID(1.0/1350.0*6, 1.0/4000.0*0.0, 1.0/100000.0);
                   kWristFF = 0.16;
                   wristMotor.setInverted(false);
+                  HOME_OUTPUT_POWER_MIN = 0.12;
             }
       }
       /** Specified by 4096 ticks per rotation, with a 42:24 gear ratio */
@@ -158,7 +159,13 @@ public class Wrist extends Subsystem {
 
       public boolean isHomed(){return this.isHomed;}
       public void setHomedReversed(){
+            isHomed = true;
             int encoderValue = (int)wristToDegrees.getReverse(armPosition - 90);
+            wristMotor.setSelectedSensorPosition(encoderValue, 0, 20);
+      }
+      public void setHomedForward(){
+            isHomed = true;
+            int encoderValue = (int)wristToDegrees.getReverse(armPosition + 90);
             wristMotor.setSelectedSensorPosition(encoderValue, 0, 20);
       }
 
@@ -216,7 +223,27 @@ public class Wrist extends Subsystem {
 
             }
 
-            //Check for physical limits based on arm angles
+            // AUTO HOMING CORRECTION
+            //if (armPositon straight down ) and (expect wrist to be at switch)
+                  //expect wrist to be at switch
+                  //if not at switch, add motor power
+                  //if at swtich, zero out
+            if(angleFromFloor > -90 && targetWristToFloorAngle >= 0 && armPosition < -85){
+                  if(isLimitPressed()){
+                        setHomedForward();
+                  }
+                  else{
+                        if(Robot.isCompbot){
+                              wristPower = Clamp.clamp(wristPower,HOME_OUTPUT_POWER_MIN,1);
+                        }
+                        else{
+                              //broken, until switches working
+                              // wristPower = Clamp.clamp(wristPower,HOME_OUTPUT_POWER_MIN,1);
+                        }
+                  }
+            }
+
+            //TODO Check for physical limits based on arm angles
             //if(wristPower > 0 && angleFromArm > MAX_ANGLE_TO_ARM) wristPower = 0;
             //if(wristPower < 0 && angleFromArm < MIN_ANGLE_TO_ARM) wristPower = 0;
 
