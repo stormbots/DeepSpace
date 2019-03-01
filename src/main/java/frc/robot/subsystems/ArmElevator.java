@@ -195,8 +195,18 @@ public class ArmElevator extends Subsystem {
             //       // until the arm can move out of the way 
             //     elevator.elevatorHeightRestriction = Elevator.ElevatorPosition.WRIST_SAFETY_LIMIT
             // }
-            
+
+            if(getCurrentCommandName().isBlank() /*&& isOnTarget()*/){
+                  SmartDashboard.putBoolean("Elevator/ManualPose",true);
+                  switch(pose){
+                        case LOAD_CARGO_PREP:
+                        case LOAD_CARGO_PREP_2:
+                        case STARTUP:
+                        setPose(Pose.HATCH_1);
+                  }
+            }
       
+
             //Run all the updates
             elevator.update();
             arm.update();

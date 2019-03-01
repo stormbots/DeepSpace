@@ -18,6 +18,7 @@ public class WristHoming extends Command {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
     requires(Robot.intake);
+    requires(Robot.armLift);
     requires(Robot.armLift.arm);
     requires(Robot.armLift.wrist);
     requires(Robot.armLift.elevator);
