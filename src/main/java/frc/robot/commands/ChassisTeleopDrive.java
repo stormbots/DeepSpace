@@ -12,6 +12,7 @@ import static com.stormbots.Clamp.clamp;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.OI;
 import frc.robot.Robot;
+import frc.robot.subsystems.Chassis.Mode;
 
 /**
  * An example command.  You can replace me with your own command.
@@ -28,6 +29,7 @@ public class ChassisTeleopDrive extends Command {
   protected void initialize() {
     //set mode back to manual
     System.out.println("ChassisTeleopDrive execute is running");
+    Robot.chassis.setMode(Mode.DRIVER);
   }
 
   // Called repeatedly when this Command is scheduled to run

@@ -11,6 +11,7 @@ import com.stormbots.devices.pixy2.Line;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
+import frc.robot.subsystems.Chassis.Mode;
 
 import static com.stormbots.Lerp.lerp;
 import static com.stormbots.Clamp.clamp;
@@ -35,7 +36,7 @@ public class ChassisPixyDrive extends Command {
   @Override
   protected void initialize() {
     Robot.pixy.setLamp(true, false);
-
+    Robot.chassis.setMode(Mode.TANKDRIVE);
   }
 
   // Called repeatedly when this Command is scheduled to run
@@ -131,10 +132,10 @@ public class ChassisPixyDrive extends Command {
     */
 
     if((Robot.chassis.sonarL.getRangeInches() + Robot.chassis.sonarR.getRangeInches()) / 2 < 6) {
-      //Robot.drive.driver.tankDrive(0.2, 0.2);
+      Robot.chassis.tankDrive(0.2, 0.2);
     }
     else if(Math.sqrt(Math.pow(startX-endX, 2) + Math.pow(startY-endY, 2)) < 0.1) {
-      //Robot.drive.driver.tankDrive(0.2, 0.2);
+      Robot.chassis.tankDrive(0.2, 0.2);
     }
     else {
 
@@ -146,15 +147,15 @@ public class ChassisPixyDrive extends Command {
       double longSidePower = 0.5*newY + 2.0*Math.abs(newX);
 
       if(startX > 0) {
-        //Robot.drive.driver.tankDrive(0.2*midY + 0.5*Math.abs(midX), 0.2*midY); // IS GOOD
-        //Robot.drive.driver.tankDrive(shortSidePower, longSidePower);
+        //Robot.chassis.tankDrive(0.2*midY + 0.5*Math.abs(midX), 0.2*midY); // IS GOOD
+        Robot.chassis.tankDrive(shortSidePower, longSidePower); // NEW... MIGHT WORK
       }
       else if(startX < 0) {
         //Robot.drive.driver.tankDrive(0.2*midY, 0.2*midY + 0.5*Math.abs(midX)); // IS GOOD
-        //Robot.drive.driver.tankDrive(longSidePower, shortSidePower);
+        Robot.chassis.tankDrive(longSidePower, shortSidePower); // NEW... MIGHT WORK
       }
       else {
-        //Robot.drive.driver.tankDrive(shortSidePower, shortSidePower);
+        Robot.chassis.tankDrive(shortSidePower, shortSidePower);
       }
     }
 
@@ -182,6 +183,7 @@ public class ChassisPixyDrive extends Command {
   // Called once after isFinished returns true
   @Override
   protected void end() {
+    Robot.chassis.setMode(Mode.DRIVER);
     Robot.pixy.setLamp(false, false);
 
   }
@@ -190,6 +192,7 @@ public class ChassisPixyDrive extends Command {
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
+    Robot.chassis.setMode(Mode.DRIVER);
     Robot.pixy.setLamp(false, false);
   }
 }

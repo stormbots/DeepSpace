@@ -17,6 +17,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.stormbots.Lerp;
 import com.stormbots.closedloop.FB;
+import com.stormbots.filter.SimpleMovingAverage;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -36,6 +37,7 @@ public class Intake extends Subsystem {
   private TalonSRX rollerMotor = new TalonSRX(8);
   // PassThrough
 
+  private SimpleMovingAverage outputFilter = new SimpleMovingAverage(4);
   
   double pivotPower = 0;
   double rollerPower = 0;
@@ -54,6 +56,7 @@ public class Intake extends Subsystem {
     SmartDashboard.putNumber("Intake/Current Pos", getPosition());
     SmartDashboard.putString("Intake/Command", getCurrentCommandName());
     SmartDashboard.putNumber("Intake/Target Pos",this.pivotTargetPosition);
+    SmartDashboard.putString("Intake/Mode", mode.toString());
   }
   
   public enum Mode {CLOSEDLOOP,MANUAL,HABLIFT,DISABLE};
@@ -88,10 +91,9 @@ public class Intake extends Subsystem {
      */
     pivotTargetPosition = getPosition();
 
-    // kPivotFF = 0.09;
-    kPivotFF = 0.00;// Necessary to avoid power loss in hab lift
+    kPivotFF = 0.09;
     kPivotGain = 0.08; //see RobotInit note
-    
+    kPivotGainHab = 0.095+0.015;
 
     //TODO: Increase current restrictions after limit and motor checks
     //pivotMotor.setSmartCurrentLimit(5, 10, 6700/3);
@@ -104,13 +106,14 @@ public class Intake extends Subsystem {
 
   /** Runs on robot boot after network/SmartDashboard becomes available */
   public void robotInit(){
+
     if(Robot.isCompbot){
       rollerMotor.setInverted(true);
     }
     else{
       rollerMotor.setInverted(false);
       PIVOT_MAX = 110.0;
-      kPivotGain = 0.095+0.015; //TODO: override for hab testing only!
+      kPivotGainHab = 0.095+0.015;
     }
   }
 
@@ -136,6 +139,8 @@ public class Intake extends Subsystem {
         break;
       case HABLIFT: 
         // No change from CLOSEDLOOP from positional and current limits
+        pivotPower = FB.fb(targetPosition, currentPosition, kPivotGainHab);
+        break;
       case CLOSEDLOOP:
       
         //run feedback function
@@ -145,8 +150,11 @@ public class Intake extends Subsystem {
       case DISABLE: 
         pivotPower = 0;
         break;
-      }
-         
+    }
+
+    // outputFilter.put(pivotPower);
+    // pivotPower = outputFilter.get();
+
     //TODO Do we need to check check physical limits of motion?
     //Position block should fix it unless we're oscillating wildly
     //if(pivotPower < 0  && currentPosition < PIVOT_MIN) { pivotPower = 0;}
@@ -154,7 +162,7 @@ public class Intake extends Subsystem {
     SmartDashboard.putNumber("Intake/Current Position(final)",getPosition());
     SmartDashboard.putNumber("Intake/Output Power",pivotPower);
 
-        
+
     //set output power
     //pivotPower = Clamp.clamp(pivotPower, -0.1, 0.1);
     pivotMotor.set( -pivotPower);
@@ -188,6 +196,9 @@ public class Intake extends Subsystem {
     rollerPower = newPower;
   }
 
+  public void teleopInit() {
+    outputFilter.clear();
+  }
 
   
 

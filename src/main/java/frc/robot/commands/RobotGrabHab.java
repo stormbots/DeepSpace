@@ -13,6 +13,7 @@ import com.stormbots.Lerp;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
+import frc.robot.subsystems.Chassis.Mode;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Pogos;
 
@@ -41,6 +42,8 @@ public class RobotGrabHab extends Command {
   protected void initialize() {
     startTime = Timer.getFPGATimestamp();
     System.out.println("RobotGrabHab has initialized");
+    Robot.intake.setMode(Intake.Mode.HABLIFT);
+    Robot.chassis.setMode(Mode.TANKDRIVE);
   }
 
   // Called repeatedly when this Command is scheduled to run
@@ -54,17 +57,16 @@ public class RobotGrabHab extends Command {
     if( robotIsUp && Robot.pogos.isFloorDetected() && false){
       Robot.pogos.setPosition(Pogos.RETRACTED);
       Robot.intake.setRollerPower(0);
-      Robot.chassis.arcadeDrive(0,0);
+      Robot.chassis.tankDrive(0,0);
     }
     else if(robotIsUp) {
       Robot.intake.setRollerPower(1); // make a constant when time permits
-      Robot.chassis.arcadeDrive(-0.1,0);
+      Robot.chassis.tankDrive(-0.1,-0.1);
     }
     else{
       Robot.intake.setTargetPosition(timeToIntakeAngle.get(currentTime));
       Robot.pogos.setPosition(timeToPogoPosition.get(currentTime));
-      Robot.chassis.arcadeDrive(0, 0);
-      // Robot.intake.setRollerPower(1);
+      Robot.chassis.tankDrive(0, 0);
       }
 
       
@@ -85,8 +87,10 @@ public class RobotGrabHab extends Command {
     // NOTE:  NEED TO BE ABSOLUTELY SURE BEFORE ALLOWING THIS INTO THE CODE !!!!!!!!!!!!!!
     //Robot.pogos.retractPogos();
 
-    Robot.chassis.arcadeDrive(0, 0);
+    Robot.chassis.tankDrive(0, 0);
     Robot.pogos.setPosition(Pogos.RETRACTED);
+    Robot.chassis.setMode(Mode.DRIVER);
+    Robot.intake.setMode(Intake.Mode.CLOSEDLOOP);
     System.out.println("RobotGrabHab has ended");
   }
 
@@ -94,8 +98,10 @@ public class RobotGrabHab extends Command {
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
-    Robot.chassis.arcadeDrive(0, 0);
+    Robot.chassis.tankDrive(0, 0);
     Robot.pogos.setPosition(Pogos.RETRACTED);
+    Robot.chassis.setMode(Mode.DRIVER);
+    Robot.intake.setMode(Intake.Mode.CLOSEDLOOP);
     System.out.println("RobotGrabHab has been interrupted");
     
     // NOTE:  DO NOT allow the pogos to retract, or we will topple over the edge and destroy the robot

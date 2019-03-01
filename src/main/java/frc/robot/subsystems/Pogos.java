@@ -72,7 +72,7 @@ public class Pogos extends Subsystem {
     //TODO: Remove pogo safety clamp
     //outputPower = clamp(outputPower,-0.2,0.2); 
     //outputPower = clamp(outputPower,-1,0.3);
-    SmartDashboard.putNumber("pogos/currentPosition", Robot.pogos.pogo.getSelectedSensorPosition());
+    SmartDashboard.putNumber("Pogos/currentPosition", Robot.pogos.pogo.getSelectedSensorPosition());
     pogo.set(ControlMode.PercentOutput, outputPower );
 
   }

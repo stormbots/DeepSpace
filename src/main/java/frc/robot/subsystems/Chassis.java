@@ -51,6 +51,18 @@ public class Chassis extends Subsystem {
   double arcadeForward = 0;
   double arcadeTurn = 0;
 
+  double tankLeft = 0;
+  double tankRight = 0;
+
+  private Mode driveMode = Mode.DRIVER;
+
+  // Use an Enum to select a Differentail Drive type
+  public enum Mode{
+    DRIVER,
+    TANKDRIVE
+  }
+
+
   // Use an Enum to define pnuematic truth values, so that you get good named values 
   // backed by type checking everywhere.
   public enum Gear{
@@ -133,7 +145,23 @@ public class Chassis extends Subsystem {
     arcadeTurn = turn;
   }
 
+  public void tankDrive(double leftSpeed, double rightSpeed) {
+    tankLeft = leftSpeed;
+    tankRight = rightSpeed;
+  }
+
+  public void setMode(Mode newMode) {
+    driveMode = newMode;
+  }
+
   public void update(){
-    drive.arcadeDrive(arcadeForward, arcadeTurn,true);
+    switch(driveMode){
+      case DRIVER:
+        drive.arcadeDrive(arcadeForward, arcadeTurn,true);
+        break;
+      case TANKDRIVE:
+        drive.tankDrive(tankLeft, tankRight);
+        break;
+    }
   }
 }
