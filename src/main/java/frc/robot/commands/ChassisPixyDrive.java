@@ -25,6 +25,9 @@ public class ChassisPixyDrive extends Command {
   Line line = new Line();
   int cyclesSinceLastLine = 100;
 
+  double shortSidePower = 0;
+  double longSidePower = 0;
+
   public ChassisPixyDrive() {
     // Use requires() here to declare subsystem dependencies
     requires(Robot.chassis);
@@ -37,6 +40,39 @@ public class ChassisPixyDrive extends Command {
   protected void initialize() {
     Robot.pixy.setLamp(true, false);
     Robot.chassis.setMode(Mode.TANKDRIVE);
+  }
+
+  private void followRawCloseLine(double x1, double y1, double x2, double y2) {
+    double startX = x1;
+    double startY = y1;
+    double endX = x2;
+    double endY = y2;
+
+    shortSidePower = 0.5*startY;
+    longSidePower = 0.5*startY + 2.0*Math.abs(startX);
+  }
+
+  private void followAugmentedCloseLine(double x1, double y1, double x2, double y2) {
+    double startX = x1;
+    double startY = y1;
+    double endX = x2;
+    double endY = y2;
+
+    double startXq1 = lerp(startX, -1, 1, 0, 1);
+    double endXq1 = lerp(endX, -1, 1, 0, 1);
+
+    double k = 10.0; // needs some fixing
+
+    double newX = -(endXq1 - startXq1) * k + startXq1;
+    double newY = -(endY - startY) * k + startY;
+
+    newX = lerp(newX, 0, 1, -1, 1);
+
+    newX = clamp(newX, -1, 1);
+    newY = clamp(newY, 0, 1);
+
+    shortSidePower = 0.5*newY;
+    longSidePower = 0.5*newY + 2.0*Math.abs(newX);
   }
 
   // Called repeatedly when this Command is scheduled to run
@@ -53,7 +89,7 @@ public class ChassisPixyDrive extends Command {
     }
     if(cyclesSinceLastLine > 10){
       //chassis speed  = 0
-      //Robot.drive.driver.tankDrive(0.4, 0.4);
+      //Robot.chassis.tankDrive(0.4, 0.4);
       return ; 
     }
 
@@ -61,117 +97,27 @@ public class ChassisPixyDrive extends Command {
 
     System.out.println(line + "   " + cyclesSinceLastLine);
     line.normalizeBottom();
-    double startX = line.x0;
-    double startY = line.y0;
-    double endX = line.x1;
-    double endY = line.y1;
 
-    //adjusts to the first quadrant
-    double startXq1 = lerp(startX, -1, 1, 0, 1);
-    double endXq1 = lerp(endX, -1, 1, 0, 1);
-
-    double k = 10.0; // needs some fixing
-
-    double newX = -(endXq1 - startXq1) * k + startXq1;
-    double newY = -(endY - startY) * k + startY;
-
-    newX = lerp(newX, 0, 1, -1, 1);
-
-    newX = clamp(newX, -1, 1);
-    newY = clamp(newY, 0, 1);
-
-    /*
-    double midX;
-    double midY;
-
-    // System.out.println("start (X,Y): (" + startX + " , " + startY + ")");
-    // System.out.println("end (X,Y): (" + endX + " , " + endY + ")");
-
-    double farPoint;
-    double closePoint;
-    double offset = 0;
-
-    // is the line across the center? if so make it on the posotive side
-    if(startX * endX < 0) {
-      offset = Math.abs(Math.min(startX, endX));
-      startX += offset;
-      endX += offset;
-    }
-    
-    // figure out what point to use
-    if(Math.abs(startX) == Math.max(Math.abs(startX), Math.abs(endX))) {
-      farPoint = startX;
-      closePoint = endX;
-    }
-    else {
-      farPoint = endX;
-      closePoint = startX;
-    }
-    // use those points to find the midpoint
-    midX = ((farPoint - closePoint) / 2) + closePoint;
-
-    // reset the points and asjust the midpoint if it was changed at the beginning
-    if(offset > 0) {
-      midX -= offset;
-      startX -= offset;
-      endX -= offset;
-    }
-
-    // figure out which points to use
-
-    if(Math.abs(startY) == Math.max(Math.abs(startY), Math.abs(endY))) {
-      farPoint = startY;
-      closePoint = endY;
-    }
-    else {
-      farPoint = endY;
-      closePoint = startY;
-    }
-    // use those points we figured out
-    midY = ((farPoint - closePoint) / 2) + closePoint;
-    */
+    followRawCloseLine(line.x0, line.y0, line.x1, line.y1);
+    followAugmentedCloseLine(line.x0, line.y0, line.x1, line.y1);
 
     if((Robot.chassis.sonarL.getRangeInches() + Robot.chassis.sonarR.getRangeInches()) / 2 < 6) {
       Robot.chassis.tankDrive(0.2, 0.2);
     }
-    else if(Math.sqrt(Math.pow(startX-endX, 2) + Math.pow(startY-endY, 2)) < 0.1) {
+    else if(Math.sqrt(Math.pow(line.x0-line.x1, 2) + Math.pow(line.y0-line.y1, 2)) < 0.1) {
       Robot.chassis.tankDrive(0.2, 0.2);
     }
     else {
-
-      // known... can be set to this instead.
-      //double shortSidePower = 0.5*startY;
-      //double longSidePower = 0.5*startY + 2.0*Math.abs(startX);
-
-      double shortSidePower = 0.5*newY;
-      double longSidePower = 0.5*newY + 2.0*Math.abs(newX);
-
-      if(startX > 0) {
-        //Robot.chassis.tankDrive(0.2*midY + 0.5*Math.abs(midX), 0.2*midY); // IS GOOD
-        Robot.chassis.tankDrive(shortSidePower, longSidePower); // NEW... MIGHT WORK
+      if(line.x0 > 0) {
+        Robot.chassis.tankDrive(shortSidePower, longSidePower);
       }
-      else if(startX < 0) {
-        //Robot.drive.driver.tankDrive(0.2*midY, 0.2*midY + 0.5*Math.abs(midX)); // IS GOOD
-        Robot.chassis.tankDrive(longSidePower, shortSidePower); // NEW... MIGHT WORK
+      else if(line.x0 < 0) {
+        Robot.chassis.tankDrive(longSidePower, shortSidePower);
       }
       else {
         Robot.chassis.tankDrive(shortSidePower, shortSidePower);
       }
     }
-
-    /*
-    else{
-      if(midX > 0) {
-        //Robot.drive.driver.tankDrive(0.2*midY + 0.5*Math.abs(midX), 0.2*midY); // IS GOOD
-        Robot.drive.driver.tankDrive(0.5*midY, 0.5*midY + 2.0*Math.abs(midX));
-      }
-      else {
-        //Robot.drive.driver.tankDrive(0.2*midY, 0.2*midY + 0.5*Math.abs(midX)); // IS GOOD
-        Robot.drive.driver.tankDrive(0.5*midY + 2.0*Math.abs(midX), 0.5*midY);
-      }
-    }
-    */
-    
   }
 
   // Make this return true when this Command no longer needs to run execute()
