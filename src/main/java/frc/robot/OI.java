@@ -60,6 +60,9 @@ public class OI {
   public JoystickButton handSpitOut = new JoystickButton(leftStick,7);
   public JoystickButton autoLineup = new JoystickButton(leftStick,8);
 
+  //Annika needs to change :)
+  public JoystickButton placeHatch = new JoystickButton(leftStick,10);
+
   //NOT PROPERLY ASSIGNED
   public JoystickButton pixyfollower = new JoystickButton(driveStick, 5);
   public JoystickButton shifter = new JoystickButton(driveStick, 6);
@@ -86,6 +89,7 @@ public class OI {
     poseHatch2.whenPressed(new ArmPose(Pose.HATCH_2));
     poseHatch3.whenPressed(new ArmPose(Pose.HATCH_3));
     //loadHatch.whenPressed(new ArmPose(Pose.LOAD_HATCH));
+    placeHatch.whenPressed(new PlaceHatch());
 
     //autoLineup.whileHeld(new ChassisPixyDrive());
 
@@ -163,7 +167,7 @@ public class OI {
   }
 
   public static double getDriveSideL() {
-    return driveStick.getRawAxis(0);//*Math.abs(driveStick.getRawAxis(0)); // NORMAL PEOPLE's drive
+    return driveStick.getRawAxis(0)/2;//*Math.abs(driveStick.getRawAxis(0)); // NORMAL PEOPLE's drive
     // make the output "-" for Zeus
   }
 

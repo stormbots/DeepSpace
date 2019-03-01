@@ -101,10 +101,13 @@ public class Hand extends Subsystem {
     }
 
     public void update(){
-      SmartDashboard.putString("Hand/Command",getCurrentCommandName());
       motor.set(ControlMode.PercentOutput, rollerPower);
     }
 
+    @Override
+    public void periodic(){
+      SmartDashboard.putString("Hand/Command",getCurrentCommandName());
+    }
     @Override
     public void initDefaultCommand() {
       // Set the default command for a subsystem here.

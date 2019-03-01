@@ -30,7 +30,7 @@ public class WristHoming extends Command {
     Robot.armLift.wrist.setMode(Mode.MANUAL);
     setTimeout(2);
     Robot.intake.setTargetPosition(90);
-    if(!Robot.isCompbot)Robot.armLift.arm.setAngle(75); //TODO Do we need this?
+    if(!Robot.isCompbot)Robot.armLift.arm.set(Pose.LOAD_CARGO_PREP);; //TODO Do we need this?
     Robot.hand.setPosition(frc.robot.subsystems.Hand.Position.CLOSE);
   }
 

@@ -50,7 +50,8 @@ public class Arm extends Subsystem {
 
       @Override
       public void periodic(){
-            SmartDashboard.putData("Arm/Position",gyro.set(getArmAngle()));
+            SmartDashboard.putString("Arm/Command", getCurrentCommandName());
+            SmartDashboard.putData("Arm/Position", gyro.set(getArmAngle()));
       }
 
       public Arm() {
@@ -119,7 +120,6 @@ public class Arm extends Subsystem {
     
 
       public void update(){
-            SmartDashboard.putString("arm/command",getCurrentCommandName());
             currentArmPos = getArmAngle();
             // Create a shadow variable in local scope to avoid incorrectly altering our target
             // This is needed as we may have to constrain the target due to dynamic influences,

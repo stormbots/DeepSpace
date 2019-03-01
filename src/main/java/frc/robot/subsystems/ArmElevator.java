@@ -80,12 +80,13 @@ public class ArmElevator extends Subsystem {
             HIDE(41,-90,-90),
 
             STARTUP(41,-90,0), //TODO
+            CUSTOM(41,-90,0), //TODO
 
             CARGO_1(45,-90,0),
             CARGO_2(41,+90,0), //not sure elev height, might have to move arm
             CARGO_3(65,+90,0),
 
-            HATCH_1(45,-90,0),
+            HATCH_1(41,-90,0),
             HATCH_2(69,-90,0),
             HATCH_3(58,+90,0),
 

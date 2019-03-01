@@ -7,33 +7,71 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
+import frc.robot.Robot;
+import frc.robot.subsystems.ArmElevator.Pose;
+import frc.robot.subsystems.Hand.Position;
 
 public class PlaceHatch extends Command {
+  double startTime;
+  double currentTime;
   public PlaceHatch() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
+    requires(Robot.hand);
+    requires(Robot.armLift.wrist);
+    requires(Robot.armLift.elevator);
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
+    startTime = Timer.getFPGATimestamp();
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
+    currentTime = Timer.getFPGATimestamp() - startTime;
     //close hand
     //small delay
     //if hatch1, hatch2
       //rotate wrist down
     //if hatch3, elevatordown // maybe wait and move wrist up?
+
+    //HATCH 3
+    if(Robot.armLift.getPose() == Pose.HATCH_3){
+      if(currentTime < 0.3){
+        Robot.hand.setPosition(Position.CLOSE);
+      }
+      else if(currentTime < 0.8){
+        Robot.armLift.elevator.setPosition(Pose.HATCH_3.eleHeight()-2);
+      }
+      else if(currentTime < 1){
+        Robot.armLift.wrist.setTargetAngleFromFloor(-90);
+      }
+    }
+    //ANY OTHER POSE
+    else{
+      if(currentTime < 0.3){
+        Robot.hand.setPosition(Position.CLOSE);
+      }
+      else if(currentTime < 0.8){
+        if(Robot.armLift.getPose() == Pose.HATCH_2){
+          Robot.armLift.wrist.setTargetAngleFromFloor(-45);
+        }
+        else{
+        Robot.armLift.wrist.setTargetAngleFromFloor(-90);
+        }
+      }
+    }
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return false;
+    return currentTime > 2;
   }
 
   // Called once after isFinished returns true

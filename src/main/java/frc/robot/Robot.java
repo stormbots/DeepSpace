@@ -102,7 +102,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
-    SmartDashboard.putData(wristHoming);
+
   }
 
   /**
@@ -173,6 +173,7 @@ public class Robot extends TimedRobot {
     if(!armLift.wrist.isHomed()){
       wristHoming.start();
     }
+
   }
 
   
@@ -188,6 +189,8 @@ public class Robot extends TimedRobot {
     intake.update();
     passThrough.update();
     pogos.update();
+
+    SmartDashboard.putData(pdp);
   }
 
   /**

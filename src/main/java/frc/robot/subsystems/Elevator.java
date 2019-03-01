@@ -64,6 +64,8 @@ public class Elevator extends Subsystem {
             if(Robot.isCompbot){
             }
             else{
+                  elevatorFF = 0.3;
+
             }
       }
 

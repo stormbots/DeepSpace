@@ -56,11 +56,17 @@ public class Wrist extends Subsystem {
       double minAngleToArm = -90.0;
       boolean isHomed = false;
       public static double HOME_OUTPUT_POWER_MIN = 0.2;
+      Pose wristPose = Pose.STARTUP;
 
       @Override
       public void periodic(){
             SmartDashboard.putData("Wrist/Position", gyro.set(getWristAngleFromFloor()));
             SmartDashboard.putString("Wrist/Command", getCurrentCommandName());
+            SmartDashboard.putNumber("Wrist/Output Total", wristPower);
+            SmartDashboard.putNumber("Wrist/Amps", wristMotor.getOutputCurrent());
+            SmartDashboard.putBoolean("Wrist/Homing", isHomed());
+            SmartDashboard.putString("Wrist/Current Pose", this.wristPose.toString());
+
       }
 
       public Wrist() {
@@ -144,9 +150,11 @@ public class Wrist extends Subsystem {
       
       public void set(Pose pose){
             setTargetAngleFromFloor(pose.wristAngle());
+            this.wristPose = pose;
       }
 
       public void setPower(double pwr){
+            this.wristPose = Pose.CUSTOM;
             this.wristPower = pwr;
       }
 
@@ -252,9 +260,6 @@ public class Wrist extends Subsystem {
             wristMotor.set(ControlMode.PercentOutput, wristPower);
 
             //SimpleWidget wp = ArmElevator.armavatorTab.add("Wrist Power", wristPower);
-            SmartDashboard.putNumber("Wrist/Output Total", wristPower);
-            SmartDashboard.putNumber("Wrist/Amps", wristMotor.getOutputCurrent());
-            
             
       }
 
