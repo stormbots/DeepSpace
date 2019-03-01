@@ -93,6 +93,7 @@ public class ArmElevator extends Subsystem {
             // LOAD_CARGO_PREP(42,-59,0), // was -59 arm
             // LOAD_CARGO(42,-59,-150); //arm used to be -70, wrist angle was -135
             LOAD_CARGO_PREP(41,-53,0),
+            LOAD_CARGO_PREP_2(41, -33, 0),
             LOAD_CARGO(41,-53,-150);
 
             private double eleHeight;
@@ -127,7 +128,7 @@ public class ArmElevator extends Subsystem {
                   && wrist.isOnTarget(wristTolerance)
                   && arm.isOnTarget(armTolerance);
       }
-      public boolean isOnTarget(){ return isOnTarget(2,10,10); } 
+      public boolean isOnTarget(){ return isOnTarget(2,5,5); } 
 
 
       public Mode getMode(){

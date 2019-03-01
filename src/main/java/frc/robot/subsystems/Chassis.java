@@ -54,8 +54,8 @@ public class Chassis extends Subsystem {
   // Use an Enum to define pnuematic truth values, so that you get good named values 
   // backed by type checking everywhere.
   public enum Gear{
-    HIGH(true,true),
-    LOW(false,false);
+    HIGH(true,false),
+    LOW(false,true);
     private boolean compbot,practicebot;
     Gear(boolean compbot, boolean practicebot){
       this.compbot = compbot;

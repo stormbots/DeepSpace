@@ -9,8 +9,8 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
 
-public class ElevatorMax extends Command {
-  public ElevatorMax() {
+public class PlaceHatch extends Command {
+  public PlaceHatch() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
   }
@@ -23,6 +23,11 @@ public class ElevatorMax extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
+    //close hand
+    //small delay
+    //if hatch1, hatch2
+      //rotate wrist down
+    //if hatch3, elevatordown // maybe wait and move wrist up?
   }
 
   // Make this return true when this Command no longer needs to run execute()

@@ -30,9 +30,7 @@ public class WristHoming extends Command {
     Robot.armLift.wrist.setMode(Mode.MANUAL);
     setTimeout(4);
     Robot.intake.setTargetPosition(90);
-    //set arm
-    // Robot.armLift.arm.set(Pose.LOAD_CARGO_PREP);
-    Robot.armLift.arm.setAngle(75);
+    // Robot.armLift.arm.setAngle(75); //TODO Do we need this?
     Robot.hand.setPosition(frc.robot.subsystems.Hand.Position.CLOSE);
   }
 
@@ -62,17 +60,18 @@ public class WristHoming extends Command {
   // Called once after isFinished returns true
   @Override
   protected void end() {
-    //TODO: set wrist as homed
-    //TODO: Wrist home reset also needs to account for the arm position, which affects the angle of contact with the switch >_>
+    Robot.armLift.wrist.setHomedReversed();
     Robot.armLift.wrist.setPower(0);
     Robot.armLift.wrist.setMode(Mode.CLOSEDLOOP);
     Robot.armLift.arm.set(Pose.LOAD_CARGO_PREP);
+    
   }
 
   // Called when another command which requires one or more of the same
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
-    Robot.armLift.wrist.setMode(Mode.CLOSEDLOOP);
+    Robot.armLift.wrist.setPower(0);
+    if(!Robot.isCompbot)end();
   }
 }

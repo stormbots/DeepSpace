@@ -81,7 +81,9 @@ public class Arm extends Subsystem {
             }
             else{
                   kArmFF = 0.5;
-                  kArmGain = 0.042;
+                  // kArmGain = 0.1;//too high
+                  // kArmGain = 0.042; //too low 
+                  kArmGain = 0.08;
                   armMotor.setInverted(false);
             }
       }
@@ -117,6 +119,7 @@ public class Arm extends Subsystem {
     
 
       public void update(){
+            SmartDashboard.putString("arm/command",getCurrentCommandName());
             currentArmPos = getArmAngle();
             // Create a shadow variable in local scope to avoid incorrectly altering our target
             // This is needed as we may have to constrain the target due to dynamic influences,

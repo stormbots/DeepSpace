@@ -10,7 +10,6 @@ import com.stormbots.devices.pixy2.Pixy2;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.SPI.Port;
@@ -19,7 +18,6 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.WristHoming;
 import frc.robot.subsystems.ArmElevator;
 import frc.robot.subsystems.Chassis;
@@ -135,6 +133,9 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     m_autonomousCommand = m_chooser.getSelected();
+    if(!armLift.wrist.isHomed()){
+      wristHoming.start();
+    }
 
     /*
      * String autoSelected = SmartDashboard.getString("Auto Selector",
@@ -168,6 +169,9 @@ public class Robot extends TimedRobot {
     
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
+    }
+    if(!armLift.wrist.isHomed()){
+      wristHoming.start();
     }
   }
 

@@ -12,6 +12,7 @@ import com.stormbots.Lerp;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.command.TimedCommand;
 import frc.robot.Robot;
 import frc.robot.subsystems.ArmElevator.Pose;
 
@@ -35,6 +36,7 @@ public class ArmPose extends Command {
     requires(Robot.armLift.wrist);
     requires(Robot.armLift.arm);
     currentTime = 0;
+    setTimeout(2*moveTime);
   }
 
   // Called just before this Command runs the first time
@@ -71,7 +73,8 @@ public class ArmPose extends Command {
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return currentTime > moveTime && Robot.armLift.isOnTarget();
+    if( isTimedOut() ==true ) return true;
+    return currentTime >= moveTime && Robot.armLift.isOnTarget();
   }
 
   // Called once after isFinished returns true

@@ -55,6 +55,7 @@ public class Wrist extends Subsystem {
       // Physical limits that may be changed based on dynamic constraints and robot positions
       double maxAngleToArm = 90.0;
       double minAngleToArm = -90.0;
+      boolean isHomed = false;
 
       @Override
       public void periodic(){
@@ -145,11 +146,7 @@ public class Wrist extends Subsystem {
       }
 
       public void setPower(double pwr){
-            wristMotor.set(ControlMode.PercentOutput, pwr);
-      }
-
-      public void reset(){
-            wristMotor.setSelectedSensorPosition(0, 0, 20);
+            this.wristPower = pwr;
       }
 
       public boolean isLimitPressed(){
@@ -158,6 +155,13 @@ public class Wrist extends Subsystem {
             }
             return false;
       }
+
+      public boolean isHomed(){return this.isHomed;}
+      public void setHomedReversed(){
+            int encoderValue = (int)wristToDegrees.getReverse(armPosition - 90);
+            wristMotor.setSelectedSensorPosition(encoderValue, 0, 20);
+      }
+
 
       //Would we even need state enums like this? 
       /* public enum Track{
@@ -216,7 +220,7 @@ public class Wrist extends Subsystem {
             //if(wristPower > 0 && angleFromArm > MAX_ANGLE_TO_ARM) wristPower = 0;
             //if(wristPower < 0 && angleFromArm < MIN_ANGLE_TO_ARM) wristPower = 0;
 
-            //wristPower = Clamp.clamp(wristPower, -0.1, 0.1);
+            //wristPower = Clamp.clamp(wristPower, -0.2, 0.2);
 
             wristMotor.set(ControlMode.PercentOutput, wristPower);
 
