@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
 import frc.robot.commands.ChassisTeleopDrive;
@@ -30,8 +31,8 @@ public class Chassis extends Subsystem {
   public CANSparkMax motorL0 = new CANSparkMax(1, MotorType.kBrushless);
   public CANSparkMax motorL1 = new CANSparkMax(2, MotorType.kBrushless);
   public CANSparkMax motorL2 = new CANSparkMax(3, MotorType.kBrushless);
-  public CANSparkMax motorR0 = new CANSparkMax(4, MotorType.kBrushless); // 4
-  public CANSparkMax motorR1 = new CANSparkMax(5, MotorType.kBrushless); // 5
+  public CANSparkMax motorR0 = new CANSparkMax(4, MotorType.kBrushless);
+  public CANSparkMax motorR1 = new CANSparkMax(5, MotorType.kBrushless);
   public CANSparkMax motorR2 = new CANSparkMax(6, MotorType.kBrushless);
   // */
 
@@ -39,14 +40,29 @@ public class Chassis extends Subsystem {
   public SpeedControllerGroup motorsRight = new SpeedControllerGroup(motorR0, motorR1, motorR2);
 
   //Motor 1 and 4 are the leaders of their sides. 1 for left and 4 for right.
-  public DifferentialDrive driver = new DifferentialDrive(motorsLeft, motorsRight);
+  DifferentialDrive drive = new DifferentialDrive(motorsLeft, motorsRight);
 
   //Gearbox Shifters
   public Solenoid shifter = new Solenoid(2);
   public Solenoid shifterInverse = new Solenoid(5);
 
-  public Ultrasonic sonarL = new Ultrasonic(RobotMap.UltrasonicLeftPing,RobotMap.UltrasonicLeftEcho);
-  public Ultrasonic sonarR = new Ultrasonic(RobotMap.UltrasonicRightPing,RobotMap.UltrasonicRightEcho);
+  public Ultrasonic sonarL = new Ultrasonic(RobotMap.UltrasonicLeftPing, RobotMap.UltrasonicLeftEcho);
+  public Ultrasonic sonarR = new Ultrasonic(RobotMap.UltrasonicRightPing, RobotMap.UltrasonicRightEcho);
+
+  double arcadeForward = 0;
+  double arcadeTurn = 0;
+
+  double tankLeft = 0;
+  double tankRight = 0;
+
+  private Mode driveMode = Mode.DRIVER;
+
+  // Use an Enum to select a Differentail Drive type
+  public enum Mode{
+    DRIVER,
+    TANKDRIVE
+  }
+
 
   // Use an Enum to define pnuematic truth values, so that you get good named values 
   // backed by type checking everywhere.
@@ -123,5 +139,34 @@ public class Chassis extends Subsystem {
   public void shift(Gear gear){
     shifter.set(gear.bool());
     shifterInverse.set(!gear.bool());
+  }
+
+  public void arcadeDrive(double speed,double turn){
+    arcadeForward = speed; 
+    arcadeTurn = turn;
+  }
+
+  public void tankDrive(double leftSpeed, double rightSpeed) {
+    tankLeft = leftSpeed;
+    tankRight = rightSpeed;
+  }
+
+  public void setMode(Mode newMode) {
+    driveMode = newMode;
+  }
+
+  public void update(){
+
+    SmartDashboard.putNumber("Chassis/Left Ultrasonic", sonarL.getRangeInches());
+    SmartDashboard.putNumber("Chassis/Right Ultrasonic", sonarR.getRangeInches());
+
+    switch(driveMode){
+      case DRIVER:
+        drive.arcadeDrive(arcadeForward, arcadeTurn,true);
+        break;
+      case TANKDRIVE:
+        drive.tankDrive(tankLeft, tankRight);
+        break;
+    }
   }
 }

@@ -100,14 +100,12 @@ public class OI {
 
     grabCargo.whileHeld(new IntakeGrabBall());
 
-    //climbSequence.whileHeld(new RobotGrabHab());
-
     pixyfollower.whileHeld(new ChassisPixyDrive());
     
     // Press+Release creates a "hold" behaviour without special isFinished() conditions
     shifter.whenPressed(new ChassisShift(Gear.HIGH));
     shifter.whenReleased(new ChassisShift(Gear.LOW));
-    climbSequence.whileHeld(new RobotGrabHab(10));
+    climbSequence.whileHeld(new RobotGrabHab(13));
 
 
   }

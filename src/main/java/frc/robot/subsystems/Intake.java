@@ -17,6 +17,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.stormbots.Lerp;
 import com.stormbots.closedloop.FB;
+import com.stormbots.filter.SimpleMovingAverage;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -36,6 +37,7 @@ public class Intake extends Subsystem {
   private TalonSRX rollerMotor = new TalonSRX(8);
   // PassThrough
 
+  private SimpleMovingAverage outputFilter = new SimpleMovingAverage(4);
   
   double pivotPower = 0;
   double rollerPower = 0;
@@ -50,10 +52,11 @@ public class Intake extends Subsystem {
 
   @Override 
   public void periodic(){
-    SmartDashboard.putData("Intake/Position",gyro.set(getPosition()));
-    SmartDashboard.putNumber("Intake/Current Pos", getPosition());
+    SmartDashboard.putData("Intake/Position",gyro.set(getAngle()));
+    SmartDashboard.putNumber("Intake/Current Pos", getAngle());
     SmartDashboard.putString("Intake/Command", getCurrentCommandName());
     SmartDashboard.putNumber("Intake/Target Pos",this.pivotTargetPosition);
+    SmartDashboard.putString("Intake/Mode", mode.toString());
   }
   
   public enum Mode {CLOSEDLOOP,MANUAL,HABLIFT,DISABLE};
@@ -65,11 +68,12 @@ public class Intake extends Subsystem {
     0, 42,
     0, 90);
 
-  double kPivotGain = 0;  /* SET VIA CONSTRUCTOR/INIT, DO NOT USE */
-  double kPivotFF = 0; /* SET VIA CONSTRUCTOR/INIT, DO NOT USE */
+    double kPivotGain = 0;  /* SET VIA CONSTRUCTOR/INIT, DO NOT USE */
+    double kPivotGainHab = 0;  /* SET VIA CONSTRUCTOR/INIT, DO NOT USE */
+    double kPivotFF = 0; /* SET VIA CONSTRUCTOR/INIT, DO NOT USE */
   //intake on ground is 19.439
   public static final double PIVOT_MIN = 15;
-  public static final double PIVOT_MIN_HAB = -10;
+  public static final double PIVOT_MIN_HAB = 0;
   // public static final double PIVOT_MAX = 110.0; //practice bot
   public static       double PIVOT_MAX = 135.0;
   public static final double PIVOT_GRAB_HAB = 0;
@@ -85,11 +89,11 @@ public class Intake extends Subsystem {
      * As a result, must set targetPosition to the current postiion
      * to avoid glitching and unexpected movement on code reboots.
      */
-    pivotTargetPosition = getPosition();
+    pivotTargetPosition = getAngle();
 
     kPivotFF = 0.09;
     kPivotGain = 0.08; //see RobotInit note
-
+    kPivotGainHab = 0.095+0.015;
 
     //TODO: Increase current restrictions after limit and motor checks
     //pivotMotor.setSmartCurrentLimit(5, 10, 6700/3);
@@ -102,13 +106,14 @@ public class Intake extends Subsystem {
 
   /** Runs on robot boot after network/SmartDashboard becomes available */
   public void robotInit(){
+
     if(Robot.isCompbot){
       rollerMotor.setInverted(true);
     }
     else{
       rollerMotor.setInverted(false);
       PIVOT_MAX = 110.0;
-      kPivotGain = kPivotGain/2.0; //TODO: Remove intake fbgain adjustment when gearbox is firmly attached again
+      kPivotGainHab = 0.095+0.015;
     }
   }
 
@@ -123,10 +128,10 @@ public class Intake extends Subsystem {
     
     //setup variables and defaults
     double targetPosition = this.pivotTargetPosition;
-    double currentPosition = getPosition();  
+    double currentPosition = getAngle();  
 
     //Check Soft Limits
-    targetPosition = clamp(targetPosition,PIVOT_MIN,PIVOT_MAX);
+    targetPosition = clamp(targetPosition,PIVOT_MIN_HAB,PIVOT_MAX);
 
     switch(mode){
       case MANUAL:
@@ -134,6 +139,8 @@ public class Intake extends Subsystem {
         break;
       case HABLIFT: 
         // No change from CLOSEDLOOP from positional and current limits
+        pivotPower = FB.fb(targetPosition, currentPosition, kPivotGainHab);
+        break;
       case CLOSEDLOOP:
       
         //run feedback function
@@ -143,16 +150,19 @@ public class Intake extends Subsystem {
       case DISABLE: 
         pivotPower = 0;
         break;
-      }
-         
+    }
+
+    // outputFilter.put(pivotPower);
+    // pivotPower = outputFilter.get();
+
     //TODO Do we need to check check physical limits of motion?
     //Position block should fix it unless we're oscillating wildly
     //if(pivotPower < 0  && currentPosition < PIVOT_MIN) { pivotPower = 0;}
     
-    SmartDashboard.putNumber("Intake/Current Position(final)",getPosition());
+    SmartDashboard.putNumber("Intake/Current Position(final)",getAngle());
     SmartDashboard.putNumber("Intake/Output Power",pivotPower);
 
-        
+
     //set output power
     //pivotPower = Clamp.clamp(pivotPower, -0.1, 0.1);
     pivotMotor.set( -pivotPower);
@@ -163,29 +173,40 @@ public class Intake extends Subsystem {
     this.mode = newMode;
   }
 
+  public void setTargetHeight(double target) {
+    double angleDegrees = getAngle() - 30;
+    double angleRadians = angleDegrees * Math.PI/180.0;
+    double outsideLength = 17 * Math.sin(angleRadians);
+    double offsetHeight = 7.5; // in
+    setTargetPosition(outsideLength + offsetHeight);
+  }
+
   public void setTargetPosition(double target ){
     this.pivotTargetPosition = target;
   }
 
   /** Returns Degrees */
-  public double getPosition() {
+  public double getAngle() {
     return PIVOT_MAX-pivotToDegrees.get(pivotEnc.getPosition()); 
   }
 
   public boolean isOnTarget(double tolerance){
-    return bounded(getPosition(),pivotTargetPosition-tolerance,pivotTargetPosition+tolerance);
+    return bounded(getAngle(),pivotTargetPosition-tolerance,pivotTargetPosition+tolerance);
   }
 
   public boolean isPivotLimitPressed() {
     //TODO: Don't have limit switches, so we have to use some soft method
     // May consider current check on the "up" position, if it's safe to do so.
-    return !bounded(getPosition(), PIVOT_MIN+1, PIVOT_MAX-1);
+    return !bounded(getAngle(), PIVOT_MIN+1, PIVOT_MAX-1);
   }
 
   public void setRollerPower(double newPower){
     rollerPower = newPower;
   }
 
+  public void teleopInit() {
+    outputFilter.clear();
+  }
 
   
 

@@ -12,6 +12,7 @@ import static com.stormbots.Clamp.clamp;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.OI;
 import frc.robot.Robot;
+import frc.robot.subsystems.Chassis.Mode;
 
 /**
  * An example command.  You can replace me with your own command.
@@ -28,23 +29,21 @@ public class ChassisTeleopDrive extends Command {
   protected void initialize() {
     //set mode back to manual
     System.out.println("ChassisTeleopDrive execute is running");
+    Robot.chassis.setMode(Mode.DRIVER);
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    //Robot.drive.driver.tankDrive(clamp(OI.getDriveFwdL(), -0.5, 0.5), clamp(OI.getDriveFwdR(), -0.5, 0.5)); //OI.getDriveFwdL()); // Use this one for TankDrive
-    //Robot.drive.driver.tankDrive(OI.getDriveFwdL(), OI.getDriveFwdR()); //OI.getDriveFwdL()); // Use this one for TankDrive
-    //Robot.drive.driver.arcadeDrive(clamp(OI.getDriveFwdR(), -0.5, 0.5), clamp(OI.getDriveSideL(), -0.5, 0.5));// Normal Arcade
+    //Robot.chassis.tankDrive(clamp(OI.getDriveFwdL(), -0.5, 0.5), clamp(OI.getDriveFwdR(), -0.5, 0.5)); //OI.getDriveFwdL()); // Use this one for TankDrive
+    //Robot.chassis.tankDrive(OI.getDriveFwdL(), OI.getDriveFwdR()); //OI.getDriveFwdL()); // Use this one for TankDrive
+    //Robot.chassis.arcadeDrive(OI.getDriveFwdL(), -OI.getDriveSideR());// Caden's Arcade
+    //Robot.chassis.arcadeDrive(clamp(OI.getDriveFwdR(), -0.5, 0.5), clamp(OI.getDriveSideL(), -0.5, 0.5));// Normal Arcade
     
-    //CADEN ARCADE!!!
-    //Robot.drive.chassis.arcadeDrive(OI.getDriveFwdL(), -OI.getDriveSideR());// Caden's Arcade
+    // YOU WANT THIS ONE -- LILI'S DRIVE
+    Robot.chassis.arcadeDrive(OI.getDriveFwdR(), -OI.getDriveSideL());// Normal Arcade
     
-    //YOU WANT THIS ONE!!! IS LILI DRIVE!!! LEFT IS TURN, RIGHT IS FORWARD!!!
-    Robot.chassis.driver.arcadeDrive(OI.getDriveFwdR(), -OI.getDriveSideL(),true);// Normal Arcade
-    
-
-    //Robot.drive.driver.arcadeDrive(0.4, 0);
+    //Robot.chassis.arcadeDrive(0.4, 0);
     //Robot.drive.motorL.set(0.3);
     
   }

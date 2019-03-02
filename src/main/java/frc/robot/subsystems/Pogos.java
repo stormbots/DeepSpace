@@ -12,9 +12,11 @@ import static com.stormbots.closedloop.FB.fb;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.stormbots.Lerp;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
 
@@ -24,7 +26,7 @@ import frc.robot.RobotMap;
 public class Pogos extends Subsystem {
 
   // public Solenoid leftPogo = new Solenoid(5);
-  public TalonSRX pogo = new TalonSRX(16); // TODO: SET Pogo DEVICE ID
+  public TalonSRX pogo = new TalonSRX(15); // TODO: SET Pogo DEVICE ID
 
   public DigitalInput onHabCenter = new DigitalInput(RobotMap.PogoFloorSensor); // TODO: SET hab DigitalInput ID
 
@@ -33,11 +35,14 @@ public class Pogos extends Subsystem {
 
   // public static final double maxVelocity = 0; //fix this
   // public static final double maxAcceleration = 0;
-  public static final double RETRACTED = 0;
-  // public static double HAB_2 = 4096; //TODO: Find pogo down encoder ticks
-  public static double DEPLOY_HAB_3 = 4096; //TODO: Find pogo down encoder ticks
-  public double kPogoGain = 0.002;
+  public static final double RETRACTED = -1;
+  public static double HAB_2 = 6; 
+  public static double DEPLOY_HAB_3 = 19; // is the inches from the ground 
+  public double kPogoGain = 0.02;
+  public double kPogoGainInches = 0.7;
   public double targetPos = 0;
+
+  public static Lerp toInches = new Lerp(0, -34763, -1, 19);
 
   public Pogos(){
     System.out.println("Pogo is Initialized");  
@@ -60,26 +65,32 @@ public class Pogos extends Subsystem {
     //if(this.getCurrentCommand() == null) targetPos = 0; //might 
     //optionally, could create a PogoPosition DefaultCommand and set the targetPos in the init
 
-    //TODO: we should clampthe targetPos to within the bounds of the system, just in case
+    //TODO: we should clamp the targetPos to within the bounds of the system, just in case
     // Note, that since we're being lazy about this and using ticks, we need to be aware that 
     // DEPLOYED might be negative, and so we'd have to check for that as part of our clamp process
 
-    double outputPower = fb(targetPos, pogo.getSelectedSensorPosition(0), targetPos);
+    double outputPower = fb(targetPos, pogo.getSelectedSensorPosition(0), kPogoGain);
+    //Not varigied... but math says that it should work
+    // double outputPower = fb(targetPos, toInches.get(pogo.getSelectedSensorPosition(0)), kPogoGainInches);
 
+
+    //if(!SmartDashboard.containsKey("Pogos/outputpower")){SmartDashboard.putNumber("Pogos/outputpower", 0);}
+    //outputPower = SmartDashboard.getNumber("Pogos/outputpower", 0);
     //TODO: Remove pogo safety clamp
-    outputPower = clamp(outputPower,-0.05,0.05); 
-
-    pogo.set(ControlMode.PercentOutput, outputPower );
-
+    // outputPower = clamp(outputPower,-0.2,0.2);
+    SmartDashboard.putNumber("Pogos/Output Power", outputPower);
+    
+    SmartDashboard.putNumber("Pogos/currentPosition", Robot.pogos.pogo.getSelectedSensorPosition());
+    pogo.set(ControlMode.PercentOutput, outputPower);
   }
 
-  public void setPosition(double position){
-    this.targetPos = position;
+  public void setPosition(double position){ // pass in as Inches
+    this.targetPos = toInches.getReverse(position); // turn into ticks
   }
 
   public boolean isFloorDetected(){
     //TODO: Validate switch default vs triggerd state
-    return onHabCenter.get() == true;
+    return onHabCenter.get() == false;
   }
   
   @Override
