@@ -8,6 +8,8 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
+import com.ctre.phoenix.motorcontrol.LimitSwitchSource;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.stormbots.Clamp;
 import com.stormbots.Lerp;
@@ -28,7 +30,6 @@ public class Wrist extends Subsystem {
       // Put methods for controlling this subsystem
       // here. Call these from Commands.
       public TalonSRX wristMotor = new TalonSRX(13);
-      DigitalInput wristLimit = new DigitalInput(RobotMap.WristLimitSwitch); //Only on compbot
 
       public MiniPID pidWrist = new MiniPID(0.012, 0.001*0.0, 0.0);
       //public MiniPID pidWrist = new MiniPID(1.0/1350.0*6, 1.0/4000.0*0.0, 1.0/100000.0); //these values are pretty good
@@ -64,8 +65,9 @@ public class Wrist extends Subsystem {
             SmartDashboard.putString("Wrist/Command", getCurrentCommandName());
             SmartDashboard.putNumber("Wrist/Output Total", wristPower);
             SmartDashboard.putNumber("Wrist/Amps", wristMotor.getOutputCurrent());
-            SmartDashboard.putBoolean("Wrist/Homing", isHomed());
+            SmartDashboard.putBoolean("Wrist/Homed?", isHomed());
             SmartDashboard.putString("Wrist/Current Pose", this.wristPose.toString());
+            SmartDashboard.putBoolean("Wrist/LimitSwitch", isLimitPressed());
 
       }
 
@@ -94,18 +96,26 @@ public class Wrist extends Subsystem {
             targetWristToFloorAngle = getWristAngleFromFloor();
             pidWrist.setOutputLimits(-1+kWristFF,1-kWristFF);
             pidWrist.setMaxIOutput(0.2);
+
+            wristMotor.configForwardLimitSwitchSource(
+                  LimitSwitchSource.Deactivated, 
+                  LimitSwitchNormal.NormallyOpen);
+            wristMotor.configReverseLimitSwitchSource(
+                  LimitSwitchSource.Deactivated, 
+                  LimitSwitchNormal.NormallyOpen);
       }
 
-      /** Runs on robot boot after network/SmartDashboard becomes available */
+      /** Runs on robot boot after network/SmartDashboard becomes available */      
       public void robotInit(){
             if(Robot.isCompbot){
                   wristMotor.setInverted(true);
             }
             else{
-                  pidWrist = new MiniPID(1.0/1350.0*6, 1.0/4000.0*0.0, 1.0/100000.0);
+                  pidWrist = new MiniPID(1.0/1350.0*6, 1.0/20000.0, 1.0/100000.0);
+                  pidWrist.setMaxIOutput(0.15);
                   kWristFF = 0.16;
                   wristMotor.setInverted(false);
-                  HOME_OUTPUT_POWER_MIN = 0.12;
+                  HOME_OUTPUT_POWER_MIN = 0.125;
             }
       }
       /** Specified by 4096 ticks per rotation, with a 42:24 gear ratio */
@@ -158,8 +168,12 @@ public class Wrist extends Subsystem {
             this.wristPower = pwr;
       }
 
-      public boolean isLimitPressed(){
-            if(!wristLimit.get()){
+      public boolean isLimitPressed(){      
+            // if(!wristLimit.get()){
+            if(wristMotor.getSensorCollection().isFwdLimitSwitchClosed()){ // normally open or close??
+                  return true;
+            }
+            if(wristMotor.getSensorCollection().isRevLimitSwitchClosed()){
                   return true;
             }
             return false;
@@ -237,6 +251,9 @@ public class Wrist extends Subsystem {
                   //if not at switch, add motor power
                   //if at swtich, zero out
             if(angleFromFloor > -90 && targetWristToFloorAngle >= 0 && armPosition < -85){
+
+                  // if!lastIsPressed && isLimitPressed();
+                  //double lastIsPRessed = isLimitPressed()
                   if(isLimitPressed()){
                         setHomedForward();
                   }
@@ -246,11 +263,11 @@ public class Wrist extends Subsystem {
                         }
                         else{
                               //broken, until switches working
-                              // wristPower = Clamp.clamp(wristPower,HOME_OUTPUT_POWER_MIN,1);
+                              wristPower = Clamp.clamp(wristPower,HOME_OUTPUT_POWER_MIN,1);
                         }
                   }
             }
-
+            
             //TODO Check for physical limits based on arm angles
             //if(wristPower > 0 && angleFromArm > MAX_ANGLE_TO_ARM) wristPower = 0;
             //if(wristPower < 0 && angleFromArm < MIN_ANGLE_TO_ARM) wristPower = 0;
