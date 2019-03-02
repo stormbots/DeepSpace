@@ -46,6 +46,11 @@ public class ArmPose extends Command {
     if(Robot.armLift.pose==Pose.LOAD_CARGO) pose = Pose.LOAD_CARGO_PREP;
     Robot.armLift.setPose(pose); //TODO: needed to set for dashboard, now or later?
 
+    //Arm moves are violent if we exit before it's all the way up, so don't. 
+    if(Math.abs(pose.armAngle() - Robot.armLift.arm.getArmAngle()) > 90){
+      moveTime = 1.2 ;
+    }
+
     startTime = Timer.getFPGATimestamp();
 
     timeToArmAngle = new Lerp(0,moveTime, Robot.armLift.arm.getArmAngle(), pose.armAngle());
