@@ -47,8 +47,12 @@ public class ArmPose extends Command {
     Robot.armLift.setPose(pose); //TODO: needed to set for dashboard, now or later?
 
     //Arm moves are violent if we exit before it's all the way up, so don't. 
-    if(Math.abs(pose.armAngle() - Robot.armLift.arm.getArmAngle()) > 90){
-      moveTime = 1.2 ;
+    double armDelta = pose.armAngle() - Robot.armLift.arm.getArmAngle(); 
+    if(armDelta > 90){
+      moveTime = 0.7;
+    }
+    else if(armDelta < -90){
+        moveTime = 1.2 ;
     }
 
     startTime = Timer.getFPGATimestamp();
