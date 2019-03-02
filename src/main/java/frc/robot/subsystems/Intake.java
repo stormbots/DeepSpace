@@ -52,8 +52,8 @@ public class Intake extends Subsystem {
 
   @Override 
   public void periodic(){
-    SmartDashboard.putData("Intake/Position",gyro.set(getPosition()));
-    SmartDashboard.putNumber("Intake/Current Pos", getPosition());
+    SmartDashboard.putData("Intake/Position",gyro.set(getAngle()));
+    SmartDashboard.putNumber("Intake/Current Pos", getAngle());
     SmartDashboard.putString("Intake/Command", getCurrentCommandName());
     SmartDashboard.putNumber("Intake/Target Pos",this.pivotTargetPosition);
     SmartDashboard.putString("Intake/Mode", mode.toString());
@@ -89,7 +89,7 @@ public class Intake extends Subsystem {
      * As a result, must set targetPosition to the current postiion
      * to avoid glitching and unexpected movement on code reboots.
      */
-    pivotTargetPosition = getPosition();
+    pivotTargetPosition = getAngle();
 
     kPivotFF = 0.09;
     kPivotGain = 0.08; //see RobotInit note
@@ -128,7 +128,7 @@ public class Intake extends Subsystem {
     
     //setup variables and defaults
     double targetPosition = this.pivotTargetPosition;
-    double currentPosition = getPosition();  
+    double currentPosition = getAngle();  
 
     //Check Soft Limits
     targetPosition = clamp(targetPosition,PIVOT_MIN_HAB,PIVOT_MAX);
@@ -159,7 +159,7 @@ public class Intake extends Subsystem {
     //Position block should fix it unless we're oscillating wildly
     //if(pivotPower < 0  && currentPosition < PIVOT_MIN) { pivotPower = 0;}
     
-    SmartDashboard.putNumber("Intake/Current Position(final)",getPosition());
+    SmartDashboard.putNumber("Intake/Current Position(final)",getAngle());
     SmartDashboard.putNumber("Intake/Output Power",pivotPower);
 
 
@@ -173,23 +173,31 @@ public class Intake extends Subsystem {
     this.mode = newMode;
   }
 
+  public void setTargetHeight(double target) {
+    double angleDegrees = getAngle() - 30;
+    double angleRadians = angleDegrees * Math.PI/180.0;
+    double outsideLength = 17 * Math.sin(angleRadians);
+    double offsetHeight = 7.5; // in
+    setTargetPosition(outsideLength + offsetHeight);
+  }
+
   public void setTargetPosition(double target ){
     this.pivotTargetPosition = target;
   }
 
   /** Returns Degrees */
-  public double getPosition() {
+  public double getAngle() {
     return PIVOT_MAX-pivotToDegrees.get(pivotEnc.getPosition()); 
   }
 
   public boolean isOnTarget(double tolerance){
-    return bounded(getPosition(),pivotTargetPosition-tolerance,pivotTargetPosition+tolerance);
+    return bounded(getAngle(),pivotTargetPosition-tolerance,pivotTargetPosition+tolerance);
   }
 
   public boolean isPivotLimitPressed() {
     //TODO: Don't have limit switches, so we have to use some soft method
     // May consider current check on the "up" position, if it's safe to do so.
-    return !bounded(getPosition(), PIVOT_MIN+1, PIVOT_MAX-1);
+    return !bounded(getAngle(), PIVOT_MIN+1, PIVOT_MAX-1);
   }
 
   public void setRollerPower(double newPower){

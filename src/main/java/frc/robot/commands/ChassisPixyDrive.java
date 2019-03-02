@@ -7,14 +7,14 @@
 
 package frc.robot.commands;
 
+import static com.stormbots.Clamp.clamp;
+import static com.stormbots.Lerp.lerp;
+
 import com.stormbots.devices.pixy2.Line;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 import frc.robot.subsystems.Chassis.Mode;
-
-import static com.stormbots.Lerp.lerp;
-import static com.stormbots.Clamp.clamp;
 
 /**
  * An example command.  You can replace me with your own command.
@@ -90,7 +90,7 @@ public class ChassisPixyDrive extends Command {
     if(cyclesSinceLastLine > 10){
       //chassis speed  = 0
       //Robot.chassis.tankDrive(0.4, 0.4);
-      return ; 
+      return ;
     }
 
     //Here we can trust a line regardless of what frame it was from
@@ -98,8 +98,12 @@ public class ChassisPixyDrive extends Command {
     System.out.println(line + "   " + cyclesSinceLastLine);
     line.normalizeBottom();
 
-    followRawCloseLine(line.x0, line.y0, line.x1, line.y1);
+    //followRawCloseLine(line.x0, line.y0, line.x1, line.y1);
     followAugmentedCloseLine(line.x0, line.y0, line.x1, line.y1);
+
+    longSidePower = clamp(longSidePower, -1, 1);
+    shortSidePower = clamp(shortSidePower, -1, 1);
+    
 
     if((Robot.chassis.sonarL.getRangeInches() + Robot.chassis.sonarR.getRangeInches()) / 2 < 6) {
       Robot.chassis.tankDrive(0.2, 0.2);

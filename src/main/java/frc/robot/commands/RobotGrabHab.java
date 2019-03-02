@@ -29,8 +29,9 @@ public class RobotGrabHab extends Command {
 
   public RobotGrabHab(double moveTime) {
     this.moveTime = moveTime;
-    timeToIntakeAngle = new Lerp(0,moveTime, 110, Intake.PIVOT_MIN_HAB);
-    timeToPogoPosition = new Lerp(0,moveTime, Pogos.RETRACTED, Pogos.DEPLOY_HAB_3);
+    // timeToIntakeAngle = new Lerp(0, moveTime, 110, Intake.PIVOT_MIN_HAB);
+    timeToIntakeAngle = new Lerp(0, moveTime, 110, Intake.PIVOT_MIN_HAB);
+    timeToPogoPosition = new Lerp(0, moveTime, Pogos.RETRACTED, Pogos.DEPLOY_HAB_3);
     // Use requires() here to declare subsystem dependencies
     requires(Robot.intake);
     requires(Robot.pogos);
