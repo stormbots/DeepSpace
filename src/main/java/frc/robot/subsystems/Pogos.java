@@ -12,6 +12,7 @@ import static com.stormbots.closedloop.FB.fb;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.stormbots.Lerp;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.command.Subsystem;
@@ -34,11 +35,13 @@ public class Pogos extends Subsystem {
 
   // public static final double maxVelocity = 0; //fix this
   // public static final double maxAcceleration = 0;
-  public static final double RETRACTED = 0;
-  // public static double HAB_2 = 4096; //TODO: Find pogo down encoder ticks
-  public static double DEPLOY_HAB_3 = -34763; //TODO: Find pogo down encoder ticks
+  public static final double RETRACTED = -1;
+  public static double HAB_2 = 6; 
+  public static double DEPLOY_HAB_3 = 19; // is the inches from the ground 
   public double kPogoGain = 0.02;
   public double targetPos = 0;
+
+  public static Lerp toInches = new Lerp(0, -34763, -1, 19);
 
   public Pogos(){
     System.out.println("Pogo is Initialized");  
@@ -65,20 +68,19 @@ public class Pogos extends Subsystem {
     // Note, that since we're being lazy about this and using ticks, we need to be aware that 
     // DEPLOYED might be negative, and so we'd have to check for that as part of our clamp process
 
+    // double outputPower = fb(targetPos, pogo.getSelectedSensorPosition(0), kPogoGain);
     double outputPower = fb(targetPos, pogo.getSelectedSensorPosition(0), kPogoGain);
 
     //if(!SmartDashboard.containsKey("Pogos/outputpower")){SmartDashboard.putNumber("Pogos/outputpower", 0);}
     //outputPower = SmartDashboard.getNumber("Pogos/outputpower", 0);
     //TODO: Remove pogo safety clamp
-    //outputPower = clamp(outputPower,-0.2,0.2); 
-    //outputPower = clamp(outputPower,-1,0.3);
+    outputPower = clamp(outputPower,-0.2,0.2);
     SmartDashboard.putNumber("Pogos/currentPosition", Robot.pogos.pogo.getSelectedSensorPosition());
-    pogo.set(ControlMode.PercentOutput, outputPower );
-
+    pogo.set(ControlMode.PercentOutput, outputPower);
   }
 
-  public void setPosition(double position){
-    this.targetPos = position;
+  public void setPosition(double position){ // pass in as Inches
+    this.targetPos = toInches.getReverse(position); // turn into ticks
   }
 
   public boolean isFloorDetected(){

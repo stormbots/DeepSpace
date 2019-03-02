@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
 import frc.robot.commands.ChassisTeleopDrive;
@@ -155,6 +156,10 @@ public class Chassis extends Subsystem {
   }
 
   public void update(){
+
+    SmartDashboard.putNumber("Chassis/Left Ultrasonic", sonarL.getRangeInches());
+    SmartDashboard.putNumber("Chassis/Right Ultrasonic", sonarR.getRangeInches());
+
     switch(driveMode){
       case DRIVER:
         drive.arcadeDrive(arcadeForward, arcadeTurn,true);
