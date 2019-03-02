@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Robot;
 
 /**
  * Add your docs here.
@@ -24,11 +25,14 @@ public class Hand extends Subsystem {
     public Solenoid handB = new Solenoid(7);
 
     public enum Position{
-      OPEN(false),
-      CLOSE(true);
-      private boolean bool;
-      Position(boolean solenoid){this.bool = solenoid;}
-      public boolean bool(){return bool;};
+      OPEN(false,true),
+      CLOSE(true,false);
+      private boolean compbot,practicebot;
+      Position(boolean compbot, boolean practicebot){
+        this.compbot = compbot;
+        this.practicebot = practicebot;
+      }
+      public boolean bool(){return Robot.isCompbot ? this.compbot : this.practicebot;};
     }
     Position position = Position.CLOSE;
     
@@ -51,26 +55,33 @@ public class Hand extends Subsystem {
     
   
     public Hand(){
-      setPosition(Position.CLOSE);
-
       //We probably want a very low continuous current, to avoid causing harm to the cargo. 
       //this lets us keep it running without much concern, as we have no sensors
       motor.configPeakCurrentLimit(5, 10); // 35 A 
       motor.configPeakCurrentDuration(200, 10); // 200ms
       motor.configContinuousCurrentLimit(3, 10); // 30A
       motor.enableCurrentLimit(true); // turn it on
-      if(Preferences.getInstance().getBoolean("compbot", true)){
-          motor.setInverted(true);
+    }
+
+    /** Runs on robot boot after network/SmartDashboard becomes available */
+    public void robotInit(){
+      setPosition(Position.CLOSE);
+
+      if(Robot.isCompbot){
+        motor.setInverted(true);
       }
       else{
-          motor.setInverted(false);
+        motor.setInverted(false);
       }
     }
+
 
     public void setPosition(Position position){
       this.position = position;
       hand.set(position.bool());
       handB.set(!position.bool());
+      System.out.println(position);
+      System.out.println(position.bool());
     }
 
     public Position getPosition(){
@@ -90,7 +101,7 @@ public class Hand extends Subsystem {
     }
 
     public void update(){
-      SmartDashboard.putString("Hand Command",getCurrentCommandName());
+      SmartDashboard.putString("Hand/Command",getCurrentCommandName());
       motor.set(ControlMode.PercentOutput, rollerPower);
     }
 

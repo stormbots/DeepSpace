@@ -18,24 +18,41 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class ArmElevator extends Subsystem {
 	// Put methods for controlling this subsystem
 	// here. Call these from Commands.
-	/*public TalonSRX elevMotor = new TalonSRX(10);
-	public TalonSRX armMotor = new TalonSRX(12);
-      DigitalInput elevLimit = new DigitalInput(0);
-      DigitalInput armLimit = new DigitalInput(1);
-      */
       
       public Elevator elevator = new Elevator();
       public Wrist wrist = new Wrist();
       public Arm arm = new Arm();
       public static ShuffleboardTab armavatorTab = Shuffleboard.getTab("Armavator");
 
-      //TODO: Do we want to calculate anything with these constants?
-      // public final double ARM_LENGTH = 20;
-      // public final double HAND_LENGTH_WITH_HATCH = 8;
+      @Override
+      public void periodic(){
+            SmartDashboard.putNumber("Wrist/Current Angle (Floor)", wrist.getWristAngleFromFloor());
+            SmartDashboard.putNumber("Wrist/Current Angle (Arm)", wrist.getWristAngleFromArm());
+            SmartDashboard.putNumber("Wrist/Encoder", wrist.wristMotor.getSelectedSensorPosition());
+            SmartDashboard.putNumber("Wrist/Target Angle", pose.wristAngle);
+
+            SmartDashboard.putNumber("Arm/Current Angle", arm.getArmAngle());
+            SmartDashboard.putNumber("Arm/Encoder", arm.armMotor.getSelectedSensorPosition());
+            SmartDashboard.putNumber("Arm/Target Angle", pose.armAngle);
+
+            SmartDashboard.putNumber("Elevator/Target Height", pose.eleHeight);
+            SmartDashboard.putNumber("Elevator/Height", elevator.getPosition());
+            SmartDashboard.putNumber("Elevator/Encoder", elevator.elevMotor.getSelectedSensorPosition());
+
+            SmartDashboard.putString("Wrist/Pose", pose.toString());
+            SmartDashboard.putString("Arm/Pose", pose.toString());
+            SmartDashboard.putString("Elevator/Pose", pose.toString());
+
+      }
 
 	public ArmElevator() {
             this.setPose(pose.STARTUP);
-
+      }
+      
+	public void robotInit() {
+            arm.robotInit();
+            elevator.robotInit();
+            wrist.robotInit();
 	}
 
 	public enum Mode {
@@ -58,22 +75,26 @@ public class ArmElevator extends Subsystem {
       // sub-subsystems to handle individual ones. We can still do 
       // set<thing>(double) to do anything outside of this
       public enum Pose{
+            // Elevator bottom pos 41
             // E  A  W 
-            HIDE(42,-90,-90),
+            HIDE(41,-90,-90),
 
-            STARTUP(42,-90,0),
+            STARTUP(41,-90,0), //TODO
 
-            CARGO_1(49,-90,0),
-            CARGO_2(49,-90,0), //not sure elev height, might have to move arm
-            CARGO_3(63,+90,0),
+            CARGO_1(45,-90,0),
+            CARGO_2(41,+90,0), //not sure elev height, might have to move arm
+            CARGO_3(65,+90,0),
 
-            HATCH_1(42,-90,0),
+            HATCH_1(45,-90,0),
             HATCH_2(69,-90,0),
-            HATCH_3(57,+90,0),
+            HATCH_3(58,+90,0),
 
             LOAD_HATCH(42,-90,0),
-            LOAD_CARGO_PREP(42,-59,0), 
-            LOAD_CARGO(42,-59,-150); //arm used to be -70, wrist angle was -135
+            // LOAD_CARGO_PREP(42,-59,0), // was -59 arm
+            // LOAD_CARGO(42,-59,-150); //arm used to be -70, wrist angle was -135
+            LOAD_CARGO_PREP(41,-53,0),
+            LOAD_CARGO_PREP_2(41, -33, 0),
+            LOAD_CARGO(41,-53,-150);
 
             private double eleHeight;
             private double armAngle;
@@ -83,9 +104,9 @@ public class ArmElevator extends Subsystem {
                   this.armAngle = armAngle;
                   this.wristAngle = wristAngle;
             }
-            double eleHeight() {return this.eleHeight;};
-            double armAngle() {return this.armAngle;};
-            double wristAngle() {return this.wristAngle;};
+            public double eleHeight() {return this.eleHeight;};
+            public double armAngle() {return this.armAngle;};
+            public double wristAngle() {return this.wristAngle;};
             
             // public String toString(){
             //       return String.format("Pose(E:%3.2f A:%3.2f W:%3.2f)",this.eleHeight,this.armAngle,this.wristAngle);
@@ -107,7 +128,7 @@ public class ArmElevator extends Subsystem {
                   && wrist.isOnTarget(wristTolerance)
                   && arm.isOnTarget(armTolerance);
       }
-      public boolean isOnTarget(){ return isOnTarget(2,10,10); } 
+      public boolean isOnTarget(){ return isOnTarget(2,5,5); } 
 
 
       public Mode getMode(){
@@ -179,37 +200,7 @@ public class ArmElevator extends Subsystem {
             elevator.update();
             arm.update();
             wrist.update(arm.getArmAngle());
-            
-            //armavatorTab.add("Elevator Current Height", elevator.getPosition());
-            //armavatorTab.add("Arm Current Angle", arm.getArmAngle());
-            /*armavatorTab.add("Wrist Current Angle (Floor)", wrist.getWristAngleFromFloor());
-            armavatorTab.add("Wrist Current Ang
-            le (Arm)", wrist.getWristAngleFromArm());
-            armavatorTab.add("Wrist Position", wrist.wristMotor.getSelectedSensorPosition());
-            */
-            SmartDashboard.putNumber("Wrist Current Angle (Floor)", wrist.getWristAngleFromFloor());
-            SmartDashboard.putNumber("Wrist Current Angle (Arm)", wrist.getWristAngleFromArm());
-            SmartDashboard.putNumber("Wrist Position", wrist.wristMotor.getSelectedSensorPosition());
-            SmartDashboard.putNumber("Arm Angle", arm.getArmAngle());
-            SmartDashboard.putNumber("Arm Position", arm.armMotor.getSelectedSensorPosition());
-            SmartDashboard.putNumber("Wrist Target Angle (Pose)", pose.wristAngle);
-            SmartDashboard.putNumber("Arm Target Position", pose.armAngle);
-            SmartDashboard.putNumber("Elevator Target Position", pose.eleHeight);
-            SmartDashboard.putNumber("Elevator Position", elevator.elevMotor.getSelectedSensorPosition());
-            SmartDashboard.putString("Pose", pose.toString());
-            
-            // armavatorTab.add("Pose", this.getPose()); //causes robots don't quit
-            //armavatorTab.add("Arm Pose Angle", pose.armAngle());
-            //armavatorTab.add("Wrist Pose Angle", pose.wristAngle());
-            //armavatorTab.add("Elevator Pose Height", pose.eleHeight());
-
       }
-
-
-      //TODO Possibly useful for debuggin?
-      // public double getHandHeight(){
-      //       return elevator.getPosition() + ARM_LENGTH*Math.sin(arm.getArmAngle());
-      // }
 
 	@Override
 	public void initDefaultCommand() {

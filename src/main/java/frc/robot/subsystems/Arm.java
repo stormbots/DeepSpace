@@ -16,6 +16,7 @@ import com.stormbots.closedloop.FB;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Robot;
 import frc.robot.subsystems.ArmElevator.Mode;
 import frc.robot.subsystems.ArmElevator.Pose;
 
@@ -27,6 +28,8 @@ public class Arm extends Subsystem {
       // here. Call these from Commands.
       public TalonSRX armMotor = new TalonSRX(12);
 
+      FakeGyro gyro = new FakeGyro();
+
       double targetArmPos = 0.0;
       double currentArmPos = 0.0;
       double armPower = 0.0;
@@ -35,13 +38,20 @@ public class Arm extends Subsystem {
       double armAngle = 0.0;
 
       // double kArmGain = 0.027;
-      double kArmGain = 0.035;
+      double kArmGain = 0.035; //comp bot
+      
+
       
       // double kArmFF = 0.3;
-      double kArmFF = 0.3; //0.5 Practice Bot
+      double kArmFF = 0.3; // See RobotInit for practicebot
 
       public static final double MAX_ANGLE = 90.0;
       public static final double MIN_ANGLE = -90.0;
+
+      @Override
+      public void periodic(){
+            SmartDashboard.putData("Arm/Position",gyro.set(getArmAngle()));
+      }
 
       public Arm() {
             // NOTE: We cannot reset the sensors, as we have no limit switches
@@ -52,12 +62,6 @@ public class Arm extends Subsystem {
             //as a test mode thing, we could potentially reset this using
             //current limited motors to force it back into nominal position
 
-            if(Preferences.getInstance().getBoolean("compbot", true)){
-                  armMotor.setInverted(true);
-            }
-            else{
-                 armMotor.setInverted(false);
-            }
             armMotor.setSensorPhase(true);
             armMotor.configOpenloopRamp(0.2); 
 
@@ -68,8 +72,20 @@ public class Arm extends Subsystem {
             armMotor.configPeakCurrentDuration(200, 10); // 200ms
             armMotor.configContinuousCurrentLimit(8, 10); // 30A
             armMotor.enableCurrentLimit(true); // turn it on
+      }
 
-
+      /** Runs on robot boot after network/SmartDashboard becomes available */
+      public void robotInit(){
+            if(Robot.isCompbot){
+                  armMotor.setInverted(true);
+            }
+            else{
+                  kArmFF = 0.5;
+                  // kArmGain = 0.1;//too high
+                  // kArmGain = 0.042; //too low 
+                  kArmGain = 0.08;
+                  armMotor.setInverted(false);
+            }
       }
 
       /** Specified by 4096 ticks per rotation, with a 54:18 gear ratio */
@@ -103,6 +119,7 @@ public class Arm extends Subsystem {
     
 
       public void update(){
+            SmartDashboard.putString("arm/command",getCurrentCommandName());
             currentArmPos = getArmAngle();
             // Create a shadow variable in local scope to avoid incorrectly altering our target
             // This is needed as we may have to constrain the target due to dynamic influences,
@@ -124,9 +141,8 @@ public class Arm extends Subsystem {
                               kArmFF*Math.cos(Math.toRadians(currentArmPos)
                               );
 
-                        SmartDashboard.putNumber("FB Output without FF Arm", FB.fb(targetArmPos, currentArmPos, kArmGain));
-                        SmartDashboard.putNumber("Feed Forward Arm",  kArmFF*Math.cos(Math.toRadians(currentArmPos)));
-                        //TODO find voltage needed to keep arm level (kArmFF),
+                        SmartDashboard.putNumber("Arm/Output FB", FB.fb(targetArmPos, currentArmPos, kArmGain));
+                        SmartDashboard.putNumber("Arm/Output FF",  kArmFF*Math.cos(Math.toRadians(currentArmPos)));
 
                   break;
 
@@ -142,7 +158,6 @@ public class Arm extends Subsystem {
                   break;
 
                   case DISABLED:
-                        //TODO: Disabled should set all power variables to zero
                         armPower = 0;
                   break;
 
@@ -151,11 +166,10 @@ public class Arm extends Subsystem {
             //Check for soft limits
             if(armPower > 0 && currentArmPos > MAX_ANGLE) armPower = 0;
             if(armPower < 0 && currentArmPos < MIN_ANGLE) armPower = 0;
-            //armPower = Clamp.clamp(armPower, -0.1, 0.1);
+            //armPower = Clamp.clamp(armPower, -0.2, 0.2);
             armMotor.set(ControlMode.PercentOutput, armPower);
-            SmartDashboard.putNumber("Arm Power", armPower);
-            SmartDashboard.putNumber("Arm Current", armMotor.getOutputCurrent());
-            //ArmElevator.armavatorTab.add("Arm Power", armPower);
+            SmartDashboard.putNumber("Arm/Output Total", armPower);
+            SmartDashboard.putNumber("Arm/Amps", armMotor.getOutputCurrent());
       }
 
 

@@ -8,11 +8,14 @@
 package frc.robot;
 import com.stormbots.devices.pixy2.Pixy2;
 
-import edu.wpi.first.wpilibj.DigitalInput;
 
-import edu.wpi.first.wpilibj.CameraServer;
+import edu.wpi.first.wpilibj.DigitalInput;
+//import edu.wpi.first.wpilibj.CameraServer;
+
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
+import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.SPI.Port;
 
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -22,7 +25,7 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.WristHoming;
 import frc.robot.subsystems.ArmElevator;
 import frc.robot.subsystems.Chassis;
 import frc.robot.subsystems.ExampleSubsystem;
@@ -44,6 +47,7 @@ import frc.robot.subsystems.Pogos;
  * project.
  */
 public class Robot extends TimedRobot {
+  public static boolean isCompbot = true;
   public static Compressor compressor = new Compressor();
   public static ExampleSubsystem m_subsystem = new ExampleSubsystem();
 
@@ -53,14 +57,11 @@ public class Robot extends TimedRobot {
   public static Hand hand = new Hand();
   //public static ShuffleboardTab driveTab = Shuffleboard.getTab("Match Dashboard");
   public static Pogos pogos = new Pogos();
-  
-
 
   public static Pixy2 pixy = new Pixy2(Port.kOnboardCS0);
 
-  public static Chassis drive = new Chassis(); //new ChassisTalonSRX();
+  public static Chassis chassis = new Chassis(); //new ChassisTalonSRX();
   public static PowerDistributionPanel pdp = new PowerDistributionPanel();
-  
   
   public static Intake intake = new Intake();
   public static PassThrough passThrough = new PassThrough();
@@ -68,24 +69,41 @@ public class Robot extends TimedRobot {
 
   Command m_autonomousCommand;
   SendableChooser<Command> m_chooser = new SendableChooser<>();
+  Command wristHoming = new WristHoming();
 
   /**
    * This function is run when the robot is first started up and should be
    * used for any initialization code.
+   * 
+   * Different than a constructor as this is run when SmartDashboard and network functions
+   * are operational.
    */
   @Override
   public void robotInit() {
-    compressor.clearAllPCMStickyFaults();
-    hand.close();
+    //Deal with robot-specific differences
+    // Don't change this code: Instead, change the value in SmartDashboard Preferences to "false".
+    // This ensures that in case of any error, the code defaults to comp bot for competition safety
+    if(!Preferences.getInstance().containsKey("compbot")){
+      Preferences.getInstance().putBoolean("compbot", true); 
+    }
+    isCompbot = Preferences.getInstance().getBoolean("compbot", true);
+    SmartDashboard.putBoolean("Combot?", isCompbot);
+    
 
-    m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
+    armLift.robotInit();
+    chassis.robotInit();
+    hand.robotInit();
+    intake.robotInit();
+    passThrough.robotInit();
+    pogos.robotInit();
+
+    compressor.clearAllPCMStickyFaults();
+
+    // m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
     // chooser.addOption("My Auto", new MyAutoCommand());
-    SmartDashboard.putData("Auto mode", m_chooser);
-    //driveTab.add("Front Camera", CameraServer.getInstance().startAutomaticCapture()); //startAutomaticCapture(int)
-    // driveTab.add("Back Camera", CameraServer.getInstance().startAutomaticCapture());
+    // SmartDashboard.putData("Auto mode", m_chooser);
     CameraServer.getInstance().startAutomaticCapture(0);
     CameraServer.getInstance().startAutomaticCapture(1);
-
   }
 
   /**
@@ -98,17 +116,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
-    //debugging for robot when recieving comp bot
-    /*
-    System.out.println("------------------------------------------------");
-    System.out.println("armHome: " +  armHome.get());
-    System.out.println("elevatorHome: " + elevatorHome.get());
-    System.out.println("wristHome: " + wristHome.get());
-    System.out.println("belly: " + belly.get());
-    System.out.println("sonarL: " + sonarL.getRangeInches());
-    System.out.println("sonarR: " + sonarR.getRangeInches());
-    System.out.println("------------------------------------------------");
-    */
+
+    SmartDashboard.putData(wristHoming);
 
   }
 
@@ -119,7 +128,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void disabledInit() {
-    // System.out.println(pixy.setLamp(false,false));
   }
 
   @Override
@@ -142,6 +150,9 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     m_autonomousCommand = m_chooser.getSelected();
+    if(!armLift.wrist.isHomed()){
+      wristHoming.start();
+    }
 
     /*
      * String autoSelected = SmartDashboard.getString("Auto Selector",
@@ -162,6 +173,8 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousPeriodic() {
     Scheduler.getInstance().run();
+    // Don't do anything special for autonomousPeriodic: Just run teleopPeriodic instead
+    teleopPeriodic();
   }
 
   @Override
@@ -174,8 +187,9 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-
-    // System.out.println(pixy.setLamp(true,false));
+    if(!armLift.wrist.isHomed()){
+      wristHoming.start();
+    }
   }
 
   
@@ -192,6 +206,7 @@ public class Robot extends TimedRobot {
     intake.update();
     passThrough.update();
 
+    pogos.update();
   }
 
   /**

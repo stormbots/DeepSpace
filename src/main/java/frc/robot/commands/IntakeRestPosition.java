@@ -8,7 +8,9 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
+import frc.robot.subsystems.Intake;
 
 /**
  * An example command.  You can replace me with your own command.
@@ -22,8 +24,8 @@ public class IntakeRestPosition extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    Robot.intake.setTargetPosition(Robot.intake.PIVOT_REST);
-    Robot.intake.setRollerPower(0);    
+    Robot.intake.setTargetPosition(Intake.PIVOT_REST);
+    Robot.intake.setRollerPower(0);
   }
 
   // Called repeatedly when this Command is scheduled to run

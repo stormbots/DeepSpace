@@ -7,16 +7,16 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
+import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import frc.robot.Robot;
+import frc.robot.RobotMap;
 import frc.robot.commands.ChassisTeleopDrive;
 
 
@@ -45,14 +45,20 @@ public class Chassis extends Subsystem {
   public Solenoid shifter = new Solenoid(2);
   public Solenoid shifterInverse = new Solenoid(5);
 
+  public Ultrasonic sonarL = new Ultrasonic(RobotMap.UltrasonicLeftPing,RobotMap.UltrasonicLeftEcho);
+  public Ultrasonic sonarR = new Ultrasonic(RobotMap.UltrasonicRightPing,RobotMap.UltrasonicRightEcho);
+
   // Use an Enum to define pnuematic truth values, so that you get good named values 
   // backed by type checking everywhere.
   public enum Gear{
-    HIGH(true),
-    LOW(false);
-    private boolean bool;
-    Gear(boolean bool){this.bool = bool;}
-    public boolean bool(){return bool;};
+    HIGH(true,false),
+    LOW(false,true);
+    private boolean compbot,practicebot;
+    Gear(boolean compbot, boolean practicebot){
+      this.compbot = compbot;
+      this.practicebot = practicebot;
+    }
+    public boolean bool(){return Robot.isCompbot ? this.compbot : this.practicebot;};
   }
 
 
@@ -66,23 +72,6 @@ public class Chassis extends Subsystem {
    * initializes the ramprates and sets the slave motors
    */
   public Chassis(){
-
-    /*
-    motorL.setRampRate(5.0);
-    slaveL1.setRampRate(5.0);
-    slaveL2.setRampRate(5.0);
-    motorR.setRampRate(5.0);
-    slaveR1.setRampRate(5.0);
-    slaveR2.setRampRate(5.0);
-*/
-    //double voltageRampRate = 0.075;
-    // motorL.configOpenloopRamp(voltageRampRate, 30);
-    // slaveL1.configOpenloopRamp(voltageRampRate, 30);
-    // slaveL2.configOpenloopRamp(voltageRampRate, 30);
-    // motorR.configOpenloopRamp(voltageRampRate, 30);
-    // slaveR1.configOpenloopRamp(voltageRampRate, 30);
-    // slaveR2.configOpenloopRamp(voltageRampRate, 30);
-
     // For the CANSparkMax's, we would use the smartCurrentLimit()
     //TODO: Figure out good current limits, and if we should use full linear range or the low cap
     // See http://www.revrobotics.com/content/sw/max/sw-docs/java/com/revrobotics/CANSparkMax.html#setSmartCurrentLimit(int,int,int)
@@ -92,6 +81,8 @@ public class Chassis extends Subsystem {
 
     //In an attempt to budget power across all motors, this is a safe start point that should
     // minimize brownouts
+    //TODO: Make sure we budget appropriately for the number of motors we're running
+    //TODO: Examine how much power we're using and see where it needs to all go
     int stallLimit = 180/4;  // /6;  
     int freeLimit = 220/4;  // /6;
     int limitRPM = 6700/3;
@@ -103,21 +94,31 @@ public class Chassis extends Subsystem {
     motorR2.setSmartCurrentLimit(stallLimit, freeLimit, limitRPM);
 
     double rampRate = 260;
-    motorL0.setRampRate(rampRate);
-    motorL1.setRampRate(rampRate);
-    motorL2.setRampRate(rampRate);
-    motorR0.setRampRate(rampRate);
-    motorR1.setRampRate(rampRate);
-    motorR2.setRampRate(rampRate);
+    motorL0.setOpenLoopRampRate(rampRate);
+    motorL1.setOpenLoopRampRate(rampRate);
+    motorL2.setOpenLoopRampRate(rampRate);
+    motorR0.setOpenLoopRampRate(rampRate);
+    motorR1.setOpenLoopRampRate(rampRate);
+    motorR2.setOpenLoopRampRate(rampRate);
+  }
 
+  /** Runs on robot boot after network/SmartDashboard becomes available */
+  public void robotInit(){
     shift(Gear.LOW);
-    if(Preferences.getInstance().getBoolean("compbot", true)){
-      
+
+    // Setup the ultrasonics
+    sonarL.setEnabled(true);
+    sonarR.setEnabled(true);
+    sonarL.setAutomaticMode(true);
+    sonarR.setAutomaticMode(true);
+    
+
+    if(Robot.isCompbot){
     }
     else{
-      
     }
   }
+  
 
   public void shift(Gear gear){
     shifter.set(gear.bool());

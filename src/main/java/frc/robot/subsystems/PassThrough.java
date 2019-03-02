@@ -14,6 +14,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Robot;
 import frc.robot.commands.PassThroughPower;
 import edu.wpi.first.wpilibj.Preferences;
 
@@ -34,18 +35,20 @@ public class PassThrough extends Subsystem {
 
   public PassThrough() {
 
-    if(Preferences.getInstance().getBoolean("compbot", true)){
+    //Configure Passthrough belt motors
+    beltMotor.configOpenloopRamp(0.1);
+    beltMotor.set(ControlMode.PercentOutput, 0);
+  }
+
+  /** Runs on robot boot after network/SmartDashboard becomes available */
+  public void robotInit(){
+    if(Robot.isCompbot){
       beltMotor.setInverted(true);
     }
     else{
       beltMotor.setInverted(false);
     }
-        //Configure Passthrough belt motors
-    //TODO: Figure if this is needed: beltMotor.setInverted(false);
-    beltMotor.configOpenloopRamp(0.1);
-    beltMotor.set(ControlMode.PercentOutput, 0);
   }
-  
   
 
   @Override
@@ -55,11 +58,11 @@ public class PassThrough extends Subsystem {
   }
 
   public void update() {
-    SmartDashboard.putString("PassthroughCommand", getCurrentCommandName());
+    SmartDashboard.putString("PT/Command", getCurrentCommandName());
     beltMotor.set(ControlMode.PercentOutput,-beltPower);
 
-    SmartDashboard.putNumber("PT Current", beltMotor.getOutputCurrent());
-    SmartDashboard.putNumber("PT Poutput", beltPower);
+    SmartDashboard.putNumber("PT/Current", beltMotor.getOutputCurrent());
+    SmartDashboard.putNumber("PT/Poutput", beltPower);
     
   }
 

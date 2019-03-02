@@ -7,10 +7,15 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.command.Command;
+import com.ctre.phoenix.motorcontrol.ControlMode;
 
-public class ElevatorMax extends Command {
-  public ElevatorMax() {
+import edu.wpi.first.wpilibj.command.Command;
+import frc.robot.Robot;
+
+public class ElevatorHoming extends Command {
+  boolean elevHomed = false;
+  
+  public ElevatorHoming() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
   }
@@ -18,22 +23,32 @@ public class ElevatorMax extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
+    setTimeout(4);
+    Robot.armLift.arm.setAngle(-90);
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
+    if(Robot.armLift.arm.isOnTarget(5)){
+      Robot.armLift.elevator.elevMotor.set(ControlMode.PercentOutput, -0.2);
+    }
+    
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
+    if(isTimedOut()){return true;}
     return false;
   }
 
   // Called once after isFinished returns true
   @Override
   protected void end() {
+    Robot.armLift.elevator.elevMotor.set(ControlMode.PercentOutput, 0);
+    //Robot.armLift.elevator.setMode(Mode.CLOSEDLOOP);
+    elevHomed = true;
   }
 
   // Called when another command which requires one or more of the same
