@@ -73,6 +73,14 @@ public class Arm extends Subsystem {
             armMotor.configPeakCurrentDuration(200, 10); // 200ms
             armMotor.configContinuousCurrentLimit(8, 10); // 30A
             armMotor.enableCurrentLimit(true); // turn it on
+
+            armMotor.configForwardLimitSwitchSource(
+                  LimitSwitchSource.Deactivated, 
+                  LimitSwitchNormal.NormallyOpen);
+            armMotor.configReverseLimitSwitchSource(
+                  LimitSwitchSource.Deactivated, 
+                  LimitSwitchNormal.NormallyOpen);
+
       }
 
       /** Runs on robot boot after network/SmartDashboard becomes available */
