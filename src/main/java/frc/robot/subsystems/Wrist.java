@@ -109,6 +109,7 @@ public class Wrist extends Subsystem {
       public void robotInit(){
             if(Robot.isCompbot){
                   wristMotor.setInverted(true);
+                  kWristFF = 0.11;
             }
             else{
                   pidWrist = new MiniPID(1.0/1350.0*6, 1.0/20000.0, 1.0/100000.0);
@@ -272,8 +273,8 @@ public class Wrist extends Subsystem {
             //if(wristPower > 0 && angleFromArm > MAX_ANGLE_TO_ARM) wristPower = 0;
             //if(wristPower < 0 && angleFromArm < MIN_ANGLE_TO_ARM) wristPower = 0;
 
-            //wristPower = Clamp.clamp(wristPower, -0.2, 0.2);
-
+            // wristPower = Clamp.clamp(wristPower, -0.2, 0.2);
+            // wristPower *= -1;
             wristMotor.set(ControlMode.PercentOutput, wristPower);
 
             //SimpleWidget wp = ArmElevator.armavatorTab.add("Wrist Power", wristPower);

@@ -190,7 +190,7 @@ public class Robot extends TimedRobot {
     hand.update();
     intake.update();
     passThrough.update();
-    pogos.update();
+    //pogos.update();
     chassis.update();
 
     SmartDashboard.putData(pdp);

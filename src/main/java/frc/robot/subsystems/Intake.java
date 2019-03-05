@@ -73,7 +73,7 @@ public class Intake extends Subsystem {
     double kPivotFF = 0; /* SET VIA CONSTRUCTOR/INIT, DO NOT USE */
   //intake on ground is 19.439
   public static final double PIVOT_MIN = 15;
-  public static final double PIVOT_MIN_HAB = 0;
+  public static final double PIVOT_MIN_HAB = 20.5;
   // public static final double PIVOT_MAX = 110.0; //practice bot
   public static       double PIVOT_MAX = 135.0;
   public static final double PIVOT_GRAB_HAB = 0;

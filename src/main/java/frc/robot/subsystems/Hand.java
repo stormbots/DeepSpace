@@ -25,8 +25,8 @@ public class Hand extends Subsystem {
     public Solenoid handB = new Solenoid(7);
 
     public enum Position{
-      OPEN(false,true),
-      CLOSE(true,false);
+      OPEN(true,true),
+      CLOSE(false,false);
       private boolean compbot,practicebot;
       Position(boolean compbot, boolean practicebot){
         this.compbot = compbot;

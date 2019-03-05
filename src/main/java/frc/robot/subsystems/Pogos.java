@@ -7,11 +7,11 @@
 
 package frc.robot.subsystems;
 
-import static com.stormbots.Clamp.clamp;
 import static com.stormbots.closedloop.FB.fb;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.stormbots.Clamp;
 import com.stormbots.Lerp;
 
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -80,6 +80,8 @@ public class Pogos extends Subsystem {
     // outputPower = clamp(outputPower,-0.2,0.2);
     SmartDashboard.putNumber("Pogos/Output Power", outputPower);
     
+    outputPower = Clamp.clamp(outputPower, -0.2, 0.2);
+
     SmartDashboard.putNumber("Pogos/currentPosition", Robot.pogos.pogo.getSelectedSensorPosition());
     pogo.set(ControlMode.PercentOutput, outputPower);
   }

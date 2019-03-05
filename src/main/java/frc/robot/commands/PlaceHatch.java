@@ -22,6 +22,7 @@ public class PlaceHatch extends Command {
     requires(Robot.hand);
     requires(Robot.armLift.wrist);
     requires(Robot.armLift.elevator);
+    requires(Robot.chassis);
   }
 
   // Called just before this Command runs the first time
@@ -41,15 +42,18 @@ public class PlaceHatch extends Command {
     //if hatch3, elevatordown // maybe wait and move wrist up?
 
     //HATCH 3
-    if(Robot.armLift.getPose() == Pose.HATCH_3){
+    if(true  || Robot.armLift.getPose() == Pose.HATCH_3){
       if(currentTime < 0.3){
         Robot.hand.setPosition(Position.CLOSE);
       }
       else if(currentTime < 0.8){
-        Robot.armLift.elevator.setPosition(Pose.HATCH_3.eleHeight()-2);
+        Robot.armLift.elevator.setPosition(Robot.armLift.getPose().eleHeight()-2);
       }
       else if(currentTime < 1){
-        Robot.armLift.wrist.setTargetAngleFromFloor(-90);
+        Robot.chassis.arcadeDrive(-0.2, 0);
+      }
+      else if(currentTime < 1.4){
+        Robot.chassis.arcadeDrive(0, 0);
       }
     }
     //ANY OTHER POSE

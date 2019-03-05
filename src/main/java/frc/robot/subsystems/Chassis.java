@@ -159,6 +159,7 @@ public class Chassis extends Subsystem {
 
     SmartDashboard.putNumber("Chassis/Left Ultrasonic", sonarL.getRangeInches());
     SmartDashboard.putNumber("Chassis/Right Ultrasonic", sonarR.getRangeInches());
+    SmartDashboard.putString("Chassis/CurrentCommand", getCurrentCommandName());
 
     switch(driveMode){
       case DRIVER:
