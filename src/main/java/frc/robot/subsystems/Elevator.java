@@ -8,6 +8,8 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
+import com.ctre.phoenix.motorcontrol.LimitSwitchSource;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.stormbots.Clamp;
 import com.stormbots.Lerp;
@@ -58,6 +60,14 @@ public class Elevator extends Subsystem {
             elevMotor.setSensorPhase(true);
 
             elevMotorF.follow(elevMotor);
+
+            elevMotor.configForwardLimitSwitchSource(
+                  LimitSwitchSource.Deactivated, 
+                  LimitSwitchNormal.NormallyOpen);
+            elevMotor.configReverseLimitSwitchSource(
+                  LimitSwitchSource.Deactivated, 
+                  LimitSwitchNormal.NormallyOpen);
+
       }
       /** Runs on robot boot after network/SmartDashboard becomes available */
       public void robotInit(){
@@ -158,6 +168,7 @@ public class Elevator extends Subsystem {
             SmartDashboard.putNumber("Elevator/Output Total", elevatorPwr);
             SmartDashboard.putNumber("Elevator/Output FF", elevatorFF);
             SmartDashboard.putNumber("Elevator/Output FB", FB.fb(target, currentPos, kElevatorGain));
+            SmartDashboard.putString("Elevator/Command", getCurrentCommandName());
       }
 
       @Override

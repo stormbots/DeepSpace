@@ -42,7 +42,7 @@ public class PlaceHatch extends Command {
     //if hatch3, elevatordown // maybe wait and move wrist up?
 
     //HATCH 3
-    if(true  || Robot.armLift.getPose() == Pose.HATCH_3){
+    if(true || Robot.armLift.getPose() == Pose.HATCH_3){
       if(currentTime < 0.3){
         Robot.hand.setPosition(Position.CLOSE);
       }
@@ -52,7 +52,7 @@ public class PlaceHatch extends Command {
       else if(currentTime < 1){
         Robot.chassis.arcadeDrive(-0.2, 0);
       }
-      else if(currentTime < 1.4){
+      else if(currentTime < 2){
         Robot.chassis.arcadeDrive(0, 0);
       }
     }

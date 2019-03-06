@@ -152,10 +152,10 @@ public class OI {
   
 
 
-  public static double getDriveFwdL() {
+  public static double getDriveForward() {
     //return driveStick.getRawAxis(1);
-    return driveStick.getRawAxis(1);//*Math.abs(driveStick.getRawAxis(1)); // CADEN's drive
-    // make the output "-" for Zeus
+    double j = driveStick.getRawAxis(1); 
+    return j*Math.abs(j);
   }
 
   public static double getDriveFwdR() {
@@ -169,8 +169,8 @@ public class OI {
     // make the output "-" for Zeus
   }
 
-  public static double getDriveSideR() {
-    return driveStick.getRawAxis(2);//*Math.abs(driveStick.getRawAxis(2)); // CADEN's drive
-  // make the output "-" for Zeus
+  public static double getDriveTurn() {
+    double j = driveStick.getRawAxis(2);
+    return j*j*j;
   }
 }

@@ -160,10 +160,12 @@ public class Chassis extends Subsystem {
     SmartDashboard.putNumber("Chassis/Left Ultrasonic", sonarL.getRangeInches());
     SmartDashboard.putNumber("Chassis/Right Ultrasonic", sonarR.getRangeInches());
     SmartDashboard.putString("Chassis/CurrentCommand", getCurrentCommandName());
+    SmartDashboard.putNumber("Chassis/arcadeForward", arcadeForward);
+    SmartDashboard.putNumber("Chassis/arcadeTurn", arcadeTurn);
 
     switch(driveMode){
       case DRIVER:
-        drive.arcadeDrive(arcadeForward, arcadeTurn,true);
+        drive.arcadeDrive(arcadeForward, arcadeTurn,false);
         break;
       case TANKDRIVE:
         drive.tankDrive(tankLeft, tankRight);
