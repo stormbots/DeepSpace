@@ -47,6 +47,9 @@ public class OI {
   public JoystickButton armDown = new JoystickButton(rightStick,6); //Pulls arm in to keep it safe
   public JoystickButton climbSequence = new JoystickButton(rightStick,8);
 
+  //Awaiting Annika's Amazing Approval
+  public JoystickButton hidePosition = new JoystickButton(rightStick, 9);
+
   //Might need this, but moving the arm to grab a ball from the intake may not be possible as a sequence
   public JoystickButton grabCargo = new JoystickButton(rightStick,3); 
 
@@ -59,8 +62,6 @@ public class OI {
   public JoystickButton handSuckIn = new JoystickButton(leftStick,6);
   public JoystickButton handSpitOut = new JoystickButton(leftStick,7);
   public JoystickButton autoLineup = new JoystickButton(leftStick,8);
-
-  //Annika needs to change :)
   public JoystickButton placeHatch = new JoystickButton(leftStick,10);
 
   //NOT PROPERLY ASSIGNED
@@ -84,6 +85,7 @@ public class OI {
     //intakeCargo.whenPressed(new ArmPose(Pose.LOAD_CARGO));
     intakeCargo.whenPressed(new LoadCargoNew());
     //armDown.whenPressed(new ArmPose(Pose.HIDE));
+    hidePosition.whenPressed(new ArmPose(Pose.HIDE));
 
     poseHatch1.whenPressed(new ArmPose(Pose.HATCH_1));
     poseHatch2.whenPressed(new ArmPose(Pose.HATCH_2));
@@ -105,7 +107,7 @@ public class OI {
     // Press+Release creates a "hold" behaviour without special isFinished() conditions
     shifter.whenPressed(new ChassisShift(Gear.HIGH));
     shifter.whenReleased(new ChassisShift(Gear.LOW));
-    climbSequence.whileHeld(new RobotGrabHab(13));
+    climbSequence.whileHeld(new RobotGrabHab3(13));
 
 
   }

@@ -59,6 +59,7 @@ public class LoadCargoNew extends CommandGroup {
     //Exit the loading pose safely
     addSequential(new HandPose(Hand.Position.CLOSE,Hand.HOLD_POWER));
     addSequential(new ArmPose(Pose.LOAD_CARGO_PREP_2));
+    addSequential(new ArmPose(Pose.LOAD_CARGO_PREP));
     addSequential(new ArmPose(Pose.HATCH_1));
 
 
