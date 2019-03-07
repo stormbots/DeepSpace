@@ -43,7 +43,7 @@ public class ArmPose extends Command {
   @Override
   protected void initialize() {
     //Avoid catastrophic pose changes if we're in the robot
-    if(Robot.armLift.pose==Pose.LOAD_CARGO) pose = Pose.LOAD_CARGO_PREP;
+    // if(Robot.armLift.pose==Pose.LOAD_CARGO) pose = Pose.LOAD_CARGO_PREP;
     Robot.armLift.setPose(pose); //TODO: needed to set for dashboard, now or later?
 
     //Arm moves are violent if we exit before it's all the way up, so don't. 

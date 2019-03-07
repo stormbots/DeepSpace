@@ -40,10 +40,10 @@ public class WristHoming extends Command {
   protected void execute() {
     //wait for arm
     if(Robot.armLift.arm.isOnTarget(5)){
-      Robot.armLift.wrist.setPower(-0.2);
+      Robot.armLift.wrist.setPower(-0.3);
     }
     else{
-      Robot.armLift.wrist.setPower(-0.1);
+      Robot.armLift.wrist.setPower(-0.15);
     }
   }
 

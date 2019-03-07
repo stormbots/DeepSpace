@@ -77,7 +77,7 @@ public class ArmElevator extends Subsystem {
       public enum Pose{
             // Elevator bottom pos 41
             // E  A  W 
-            HIDE(41,-90,-90),
+            HIDE(41,-130,-35), //MAR 6 practice bot
 
             STARTUP(41,-90,0), //TODO
             CUSTOM(41,-90,0), //TODO
@@ -93,9 +93,9 @@ public class ArmElevator extends Subsystem {
             LOAD_HATCH(42,-90,0),
             // LOAD_CARGO(42,-59,-150); //ANCIENT practice bot, arm used to be -70, wrist angle was -135
             LOAD_CARGO_PREP(41,-53,0),
-            LOAD_CARGO_PREP_2(41, -33, 0),
+            LOAD_CARGO_PREP_2(41, -53, -166),
             // LOAD_CARGO(41,-53,-150); /MAR04 Works on practice bot. Usually works on Comp bot
-            LOAD_CARGO(41,-69,-166); //MAR04 Should work but untested on comp bot
+            LOAD_CARGO(41,-60,-166-8); //MAR04 Should work but untested on comp bot
             //LOAD_CARGO(41,-67,-156); //MAR05 PRactice bot maybe?
 
             private double eleHeight;
@@ -197,13 +197,16 @@ public class ArmElevator extends Subsystem {
             //     elevator.elevatorHeightRestriction = Elevator.ElevatorPosition.WRIST_SAFETY_LIMIT
             // }
 
-            if(getCurrentCommandName().isBlank() /*&& isOnTarget()*/){
+            if(getCurrentCommandName().isBlank() && isOnTarget()){
                   SmartDashboard.putBoolean("Elevator/ManualPose",true);
                   switch(pose){
                         case LOAD_CARGO_PREP:
-                        case LOAD_CARGO_PREP_2:
-                        case STARTUP:
                         setPose(Pose.HATCH_1);
+                        break;
+                        case LOAD_CARGO_PREP_2:
+                        setPose(Pose.HATCH_1);
+                        break;
+                        // case STARTUP:
                   }
             }
       

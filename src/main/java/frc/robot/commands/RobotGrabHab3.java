@@ -20,14 +20,14 @@ import frc.robot.subsystems.Pogos;
 /**
  * An example command.  You can replace me with your own command.
  */
-public class RobotGrabHab extends Command {
+public class RobotGrabHab3 extends Command {
   // double angle = 0;
   double moveTime;
   Lerp timeToIntakeAngle;
   Lerp timeToPogoPosition;
   double startTime = 0;
 
-  public RobotGrabHab(double moveTime) {
+  public RobotGrabHab3(double moveTime) {
     this.moveTime = moveTime;
     // timeToIntakeAngle = new Lerp(0, moveTime, 110, Intake.PIVOT_MIN_HAB);
     timeToIntakeAngle = new Lerp(0, moveTime, 110, Intake.PIVOT_MIN_HAB);

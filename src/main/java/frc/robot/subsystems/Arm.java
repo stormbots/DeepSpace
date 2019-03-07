@@ -47,7 +47,7 @@ public class Arm extends Subsystem {
       double kArmFF = 0.3; // See RobotInit for practicebot
 
       public static final double MAX_ANGLE = 90.0;
-      public static final double MIN_ANGLE = -90.0;
+      public static       double MIN_ANGLE = -115.0;
 
       @Override
       public void periodic(){
@@ -95,6 +95,7 @@ public class Arm extends Subsystem {
                   // kArmGain = 0.042; //too low 
                   kArmGain = 0.09;
                   armMotor.setInverted(false);
+                  MIN_ANGLE = -115.0;
             }
       }
 

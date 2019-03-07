@@ -18,15 +18,16 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.commands.WristHoming;
+import frc.robot.commandgroups.LoadCargoNew;
+import frc.robot.commands.*;
 import frc.robot.subsystems.ArmElevator;
+import frc.robot.subsystems.ArmElevator.Pose;
 import frc.robot.subsystems.Chassis;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Hand;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.PassThrough;
 import frc.robot.subsystems.Pogos;
-
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -90,6 +91,15 @@ public class Robot extends TimedRobot {
     // SmartDashboard.putData("Auto mode", m_chooser);
     CameraServer.getInstance().startAutomaticCapture(0);
     CameraServer.getInstance().startAutomaticCapture(1);
+
+    //Throw commands on Shuffleboards
+    SmartDashboard.putData("Commands/Hatch 1",new ArmPose(Pose.HATCH_1));
+    SmartDashboard.putData("Commands/Hatch 2",new ArmPose(Pose.HATCH_2));
+    SmartDashboard.putData("Commands/Hatch 3",new ArmPose(Pose.HATCH_3));
+    SmartDashboard.putData("Commands/Hide",new ArmPose(Pose.HIDE));
+    SmartDashboard.putData("Commands/Load Ball Into Hand",new LoadCargoNew());
+    SmartDashboard.putData("Commands/Hab3", new RobotGrabHab3(8));
+    SmartDashboard.putData("Commands/Hab2", new RobotGrabHab2(4));
   }
 
   /**
@@ -102,7 +112,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
-
   }
 
   /**
