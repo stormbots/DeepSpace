@@ -155,7 +155,8 @@ public class OI {
   public static double getDriveForward() {
     //return driveStick.getRawAxis(1);
     double j = driveStick.getRawAxis(1); 
-    return j*Math.abs(j);
+    //return j*Math.abs(j);
+    return j*j*j;
   }
 
   public static double getDriveFwdR() {
@@ -171,6 +172,10 @@ public class OI {
 
   public static double getDriveTurn() {
     double j = driveStick.getRawAxis(2);
-    return j*j*j;
+    // return j*Math.abs(j);
+
+    // return j*j*j;
+    return j*j*j*Math.abs(j);
+
   }
 }

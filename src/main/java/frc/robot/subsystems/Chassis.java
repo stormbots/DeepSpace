@@ -99,8 +99,8 @@ public class Chassis extends Subsystem {
     // minimize brownouts
     //TODO: Make sure we budget appropriately for the number of motors we're running
     //TODO: Examine how much power we're using and see where it needs to all go
-    int stallLimit = 180/4;  // /6;  
-    int freeLimit = 220/4;  // /6;
+    int stallLimit = 180/6;  // /6;  
+    int freeLimit = 220/6;  // /6;
     int limitRPM = 6700/3;
     motorL0.setSmartCurrentLimit(stallLimit, freeLimit, limitRPM);
     motorL1.setSmartCurrentLimit(stallLimit, freeLimit, limitRPM);
