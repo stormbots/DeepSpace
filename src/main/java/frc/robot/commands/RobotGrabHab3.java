@@ -55,7 +55,7 @@ public class RobotGrabHab3 extends Command {
     boolean robotIsUp = currentTime >= moveTime;
 
 
-    if( robotIsUp && Robot.pogos.isFloorDetected() && false){
+    if( robotIsUp && Robot.pogos.isFloorDetected()){
       Robot.pogos.setPosition(Pogos.RETRACTED);
       Robot.intake.setRollerPower(0);
       Robot.chassis.tankDrive(0,0);

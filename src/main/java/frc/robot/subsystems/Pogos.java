@@ -44,7 +44,8 @@ public class Pogos extends Subsystem {
   double outputPower = 0;
 
 
-  public static Lerp toInches = new Lerp(0, 93226, -1, 19);
+  
+  public static Lerp toInches = new Lerp(0, -76859, -1, 19);
 
   public Pogos(){
     System.out.println("Pogo is Initialized");  
@@ -65,6 +66,7 @@ public class Pogos extends Subsystem {
   public void periodic(){
     SmartDashboard.putNumber("Pogos/currentPosition", pogo.getSelectedSensorPosition());
     SmartDashboard.putNumber("Pogos/outputPower", outputPower);
+    SmartDashboard.putBoolean("Pogos/isOverGround", Robot.pogos.isFloorDetected());
   }
 
   public void update(){
@@ -84,11 +86,11 @@ public class Pogos extends Subsystem {
     //if(!SmartDashboard.containsKey("Pogos/outputpower")){SmartDashboard.putNumber("Pogos/outputpower", 0);}
     //outputPower = SmartDashboard.getNumber("Pogos/outputpower", 0);
     //TODO: Remove pogo safety clamp
-    //outputPower = Clamp.clamp(outputPower,-0.2,0.2);
     
-    outputPower = Clamp.clamp(outputPower, -0.2, 0.2);
+    //outputPower = Clamp.clamp(outputPower, -0.2, 0.2);
 
     pogo.set(ControlMode.PercentOutput, outputPower);
+    //pogo.set(ControlMode.PercentOutput, 0.1);
   }
 
   public void setPosition(double position){ // pass in as Inches
@@ -97,7 +99,7 @@ public class Pogos extends Subsystem {
 
   public boolean isFloorDetected(){
     //TODO: Validate switch default vs triggerd state
-    return onHabCenter.get() == false;
+    return onHabCenter.get() == true;
   }
   
   @Override
