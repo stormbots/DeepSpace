@@ -8,6 +8,7 @@
 package frc.robot.commandgroups;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
+import edu.wpi.first.wpilibj.command.WaitCommand;
 import edu.wpi.first.wpilibj.command.WaitForChildren;
 import frc.robot.Robot;
 import frc.robot.commands.ArmPose;
@@ -53,13 +54,15 @@ public class LoadCargoNew extends CommandGroup {
     addParallel(new HandPose(Hand.Position.OPEN,Hand.GRAB_POWER,  Hand.Position.CLOSE,Hand.HOLD_POWER));
 
     //use the TimeOut argument of addSequential to hijack the passthrough command with a max time
-    addSequential(new PassThroughPower(Robot.passThrough.LOAD_BALL_POWER),2);
+    addSequential(new PassThroughPower(Robot.passThrough.LOAD_BALL_POWER),1);
     // addSequential(new WaitCommand(7.0));
 
     //Exit the loading pose safely
-    addSequential(new HandPose(Hand.Position.CLOSE,Hand.HOLD_POWER));
+    addSequential(new HandPose(Hand.Position.CLOSE,Hand.HOLD_POWER+.1));
+    addSequential(new WaitCommand(1/4));
     addSequential(new ArmPose(Pose.LOAD_CARGO_PREP_2));
     addSequential(new ArmPose(Pose.LOAD_CARGO_PREP));
+    addSequential(new HandPose(Hand.Position.CLOSE, Hand.HOLD_POWER));
     addSequential(new ArmPose(Pose.HATCH_1));
 
 

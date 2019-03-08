@@ -86,6 +86,8 @@ public class ArmElevator extends Subsystem {
             CARGO_2(41,+90,0), //not sure elev height, might have to move arm
             CARGO_3(65-3,+90,0),
 
+            CARGO_SHIP(69-4,90,0),
+
             HATCH_1(41,-90,0),
             HATCH_2(69,-90,0),
             HATCH_3(58,+90,0),
@@ -93,9 +95,9 @@ public class ArmElevator extends Subsystem {
             LOAD_HATCH(42,-90,0),
             // LOAD_CARGO(42,-59,-150); //ANCIENT practice bot, arm used to be -70, wrist angle was -135
             LOAD_CARGO_PREP(41,-53,0),
-            LOAD_CARGO_PREP_2(41, -53, -166),
+            LOAD_CARGO_PREP_2(41, -50, -166),
             // LOAD_CARGO(41,-53,-150); /MAR04 Works on practice bot. Usually works on Comp bot
-            LOAD_CARGO(41,-60,-166-8); //MAR04 Should work but untested on comp bot
+            LOAD_CARGO(41,-60,-166-8-6-2); //MAR04 Should work but untested on comp bot
             //LOAD_CARGO(41,-67,-156); //MAR05 PRactice bot maybe?
 
             private double eleHeight;

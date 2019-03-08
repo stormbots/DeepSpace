@@ -104,6 +104,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putData("Commands/Load Ball Into Hand",new LoadCargoNew());
     SmartDashboard.putData("Commands/Hab3", new RobotGrabHab3(8));
     SmartDashboard.putData("Commands/Hab2", new RobotGrabHab2(4));
+    SmartDashboard.putData("Commands/GrabBall", new IntakeGrabBall());
   }
 
   /**

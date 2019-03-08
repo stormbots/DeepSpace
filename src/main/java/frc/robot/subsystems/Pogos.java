@@ -42,9 +42,10 @@ public class Pogos extends Subsystem {
   public double kPogoGainInches = 0.7;
   public double targetPos = 0;
   double outputPower = 0;
-
-
   
+  public static double POGO_GAIN_HAB = 0.02;
+  public static double POGO_GAIN_IDLE = POGO_GAIN_HAB/4;
+
   public static Lerp toInches = new Lerp(0, -76859, -1, 19);
 
   public Pogos(){
@@ -88,7 +89,7 @@ public class Pogos extends Subsystem {
     //TODO: Remove pogo safety clamp
     
     //outputPower = Clamp.clamp(outputPower, -0.2, 0.2);
-
+    
     pogo.set(ControlMode.PercentOutput, outputPower);
     //pogo.set(ControlMode.PercentOutput, 0.1);
   }
@@ -96,10 +97,13 @@ public class Pogos extends Subsystem {
   public void setPosition(double position){ // pass in as Inches
     this.targetPos = toInches.getReverse(position); // turn into ticks
   }
+  public double getPosition(){
+    return toInches.get(pogo.getSelectedSensorPosition());
+  }
 
   public boolean isFloorDetected(){
     //TODO: Validate switch default vs triggerd state
-    return onHabCenter.get() == true;
+    return onHabCenter.get() == false;
   }
   
   @Override

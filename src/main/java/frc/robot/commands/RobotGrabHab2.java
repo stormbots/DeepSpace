@@ -13,12 +13,12 @@ import com.stormbots.Lerp;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
-import frc.robot.subsystems.Chassis.Mode;
+import frc.robot.subsystems.ArmElevator.Pose;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Pogos;
 
 /**
- * An example command.  You can replace me with your own command.
+ * An example command. You can replace me with your own command.
  */
 public class RobotGrabHab2 extends Command {
   // double angle = 0;
@@ -36,6 +36,12 @@ public class RobotGrabHab2 extends Command {
     requires(Robot.intake);
     requires(Robot.pogos);
     requires(Robot.chassis);
+    requires(Robot.armLift.arm);
+    requires(Robot.armLift.wrist);
+    requires(Robot.armLift.elevator);
+    requires(Robot.armLift);
+
+    
   }
 
   // Called just before this Command runs the first time
@@ -44,30 +50,34 @@ public class RobotGrabHab2 extends Command {
     startTime = Timer.getFPGATimestamp();
     System.out.println("RobotGrabHab has initialized");
     Robot.intake.setMode(Intake.Mode.HABLIFT);
-    Robot.chassis.setMode(Mode.TANKDRIVE);
+    Robot.armLift.setPose(Pose.HIDE);
+    Robot.pogos.kPogoGain = Pogos.POGO_GAIN_HAB;
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    double currentTime = Timer.getFPGATimestamp() - startTime;
-    currentTime = Clamp.clamp(currentTime, 0, moveTime);
-    boolean robotIsUp = currentTime >= moveTime;
+    double runTime = Timer.getFPGATimestamp() - startTime;
+    double moveCurrentTime = Clamp.clamp(runTime, 0, moveTime);
+    boolean robotIsUp = moveCurrentTime >= moveTime;
 
 
-    if( robotIsUp && Robot.pogos.isFloorDetected()){
+    if( robotIsUp && Robot.pogos.isFloorDetected() && runTime > moveCurrentTime + 2){
       Robot.pogos.setPosition(Pogos.RETRACTED);
       Robot.intake.setRollerPower(0);
-      Robot.chassis.tankDrive(0,0);
+      Robot.chassis.arcadeDrive(0.2,0);
+      // setTimeout(startTime+2);
+      // setTimeout(2);
     }
     else if(robotIsUp) {
+      Robot.pogos.setPosition(Pogos.DEPLOY_HAB_2);
       Robot.intake.setRollerPower(1); // make a constant when time permits
-      Robot.chassis.tankDrive(-0.1,-0.1);
+      Robot.chassis.arcadeDrive(0.3,0);
     }
     else{
-      Robot.intake.setTargetPosition(timeToIntakeAngle.get(currentTime));
-      Robot.pogos.setPosition(timeToPogoPosition.get(currentTime));
-      Robot.chassis.tankDrive(0, 0);
+      Robot.intake.setTargetPosition(timeToIntakeAngle.get(moveCurrentTime));
+      Robot.pogos.setPosition(timeToPogoPosition.get(moveCurrentTime));
+      Robot.chassis.arcadeDrive(0, 0);
       }
 
       
@@ -88,21 +98,19 @@ public class RobotGrabHab2 extends Command {
     // NOTE:  NEED TO BE ABSOLUTELY SURE BEFORE ALLOWING THIS INTO THE CODE !!!!!!!!!!!!!!
     //Robot.pogos.retractPogos();
 
-    Robot.chassis.tankDrive(0, 0);
+    Robot.chassis.arcadeDrive(0, 0);
     Robot.pogos.setPosition(Pogos.RETRACTED);
-    Robot.chassis.setMode(Mode.DRIVER);
     Robot.intake.setMode(Intake.Mode.CLOSEDLOOP);
     System.out.println("RobotGrabHab has ended");
+    Robot.pogos.kPogoGain = Pogos.POGO_GAIN_IDLE;
+
   }
 
   // Called when another command which requires one or more of the same
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
-    Robot.chassis.tankDrive(0, 0);
-    Robot.pogos.setPosition(Pogos.RETRACTED);
-    Robot.chassis.setMode(Mode.DRIVER);
-    Robot.intake.setMode(Intake.Mode.CLOSEDLOOP);
+    end();
     System.out.println("RobotGrabHab has been interrupted");
     
     // NOTE:  DO NOT allow the pogos to retract, or we will topple over the edge and destroy the robot

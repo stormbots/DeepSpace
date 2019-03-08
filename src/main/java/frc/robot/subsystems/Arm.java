@@ -88,6 +88,8 @@ public class Arm extends Subsystem {
       public void robotInit(){
             if(Robot.isCompbot){
                   armMotor.setInverted(true);
+                  kArmGain = 0.045;
+                  kArmFF = 0.4;
             }
             else{
                   kArmFF = 0.5;

@@ -22,7 +22,7 @@ public class IntakeGrabBall extends Command {
   public IntakeGrabBall() {
     // Use requires() here to declare subsystem dependencies
     requires(Robot.intake);
-    //requires(Robot.passThrough);//TODO ask dan about the passthrough vs intake grab ball
+    requires(Robot.passThrough);//TODO ask dan about the passthrough vs intake grab ball
   }
 
   // Called just before this Command runs the first time
@@ -38,7 +38,7 @@ public class IntakeGrabBall extends Command {
 
     Robot.intake.setTargetPosition(Intake.PIVOT_GRAB_CARGO);
     Robot.intake.setRollerPower(Intake.ROLLER_GRAB_CARGO);
-    //Robot.passThrough.setPower(PassThrough.GRAB_BALL_POWER);//TODO ask dan about intake vs passthrough
+    Robot.passThrough.setPower(PassThrough.GRAB_BALL_POWER);//TODO ask dan about intake vs passthrough
   }
 
   // Make this return true when this Command no longer needs to run execute()
