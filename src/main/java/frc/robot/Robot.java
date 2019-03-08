@@ -89,11 +89,15 @@ public class Robot extends TimedRobot {
     // m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
     // chooser.addOption("My Auto", new MyAutoCommand());
     // SmartDashboard.putData("Auto mode", m_chooser);
+
+    
+
     CameraServer.getInstance().startAutomaticCapture(0);
     CameraServer.getInstance().startAutomaticCapture(1);
 
     //Throw commands on Shuffleboards
     SmartDashboard.putData("Commands/Hatch 1",new ArmPose(Pose.HATCH_1));
+    SmartDashboard.putString("Chassis/Pixy Version", pixy.getVersion().toString());
     SmartDashboard.putData("Commands/Hatch 2",new ArmPose(Pose.HATCH_2));
     SmartDashboard.putData("Commands/Hatch 3",new ArmPose(Pose.HATCH_3));
     SmartDashboard.putData("Commands/Hide",new ArmPose(Pose.HIDE));
