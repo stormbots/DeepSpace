@@ -52,9 +52,6 @@ public class OI {
   public JoystickButton cargoShip = new JoystickButton(rightStick, 10);
   public JoystickButton grabCargo = new JoystickButton(rightStick,3); 
 
-  //approve
-  public JoystickButton defenseMode = new JoystickButton(rightStick,11);
-
 
   //Left
   public JoystickButton poseHatch1 = new JoystickButton(leftStick,4);
@@ -68,7 +65,7 @@ public class OI {
   public JoystickButton homeIntake = new JoystickButton(leftStick,11);
 
 
-  public JoystickButton hidePosition = new JoystickButton(leftStick, 3);
+  public JoystickButton defenseMode = new JoystickButton(leftStick, 3);
 
   //NOT PROPERLY ASSIGNED
   public JoystickButton pixyfollower = new JoystickButton(driveStick, 5);
@@ -91,7 +88,7 @@ public class OI {
     //intakeCargo.whenPressed(new ArmPose(Pose.LOAD_CARGO));
     intakeCargo.whenPressed(new LoadCargoNew());
     //armDown.whenPressed(new ArmPose(Pose.HIDE));
-    hidePosition.whenPressed(new ArmPose(Pose.HIDE));
+    defenseMode.whenPressed(new DefenseMode());
 
     cargoShip.whenPressed(new ArmPose(Pose.CARGO_SHIP));
 

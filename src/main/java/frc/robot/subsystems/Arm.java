@@ -94,8 +94,8 @@ public class Arm extends Subsystem {
       public void robotInit(){
             if(Robot.isCompbot){
                   armMotor.setInverted(true);
-                  kArmGain = 0.05;
-                  kArmFF = 0.7;
+                  kArmGain = 0.10;
+                  kArmFF = 0.5;
             }
             else{
                   kArmFF = 0.5;
@@ -171,7 +171,7 @@ public class Arm extends Subsystem {
                               kArmFF*Math.cos(Math.toRadians(currentArmPos)
                               );
 
-                        // armPower += wristPower*-0.9;
+                        armPower += wristPower*-0.9;
 
                         SmartDashboard.putNumber("Arm/Output FB", FB.fb(targetArmPos, currentArmPos, kArmGain));
                         SmartDashboard.putNumber("Arm/Output FF",  kArmFF*Math.cos(Math.toRadians(currentArmPos)));
