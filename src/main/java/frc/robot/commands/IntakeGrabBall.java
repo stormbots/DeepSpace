@@ -38,7 +38,7 @@ public class IntakeGrabBall extends Command {
 
     Robot.intake.setTargetPosition(Intake.PIVOT_GRAB_CARGO);
     Robot.intake.setRollerPower(Intake.ROLLER_GRAB_CARGO);
-    Robot.passThrough.setPower(PassThrough.GRAB_BALL_POWER);//TODO ask dan about intake vs passthrough
+    Robot.passThrough.setPower(0.1);//TODO ask dan about intake vs passthrough
   }
 
   // Make this return true when this Command no longer needs to run execute()

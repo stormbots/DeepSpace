@@ -48,11 +48,7 @@ public class OI {
   public JoystickButton climbSequenceHab3 = new JoystickButton(rightStick,8);
   public JoystickButton climbSequenceHab2 = new JoystickButton(rightStick,9);
 
-  //Awaiting Annika's Amazing Approval
-  public JoystickButton hidePosition = new JoystickButton(leftStick, 3);
-  public JoystickButton cargoShip = new JoystickButton(leftStick, 10);
-
-  //Might need this, but moving the arm to grab a ball from the intake may not be possible as a sequence
+  public JoystickButton cargoShip = new JoystickButton(rightStick, 10);
   public JoystickButton grabCargo = new JoystickButton(rightStick,3); 
 
   //Left
@@ -64,6 +60,8 @@ public class OI {
   public JoystickButton handSpitOut = new JoystickButton(leftStick,7);
   public JoystickButton autoLineup = new JoystickButton(leftStick,8);
   public JoystickButton placeHatch = new JoystickButton(leftStick,10);
+
+  public JoystickButton hidePosition = new JoystickButton(leftStick, 3);
 
   //NOT PROPERLY ASSIGNED
   public JoystickButton pixyfollower = new JoystickButton(driveStick, 5);
@@ -180,7 +178,14 @@ public class OI {
     // return j*Math.abs(j);
 
     // return j*j*j;
-    return j*j*j*Math.abs(j);
+
+    if(driveStick.getRawButtonPressed(5)){
+      // return j*Math.abs(j*j*j*j)*0.5;
+      return j*j*j*0.5;
+    }
+    else{
+      return j*j*j*Math.abs(j);
+    }
 
   }
 }

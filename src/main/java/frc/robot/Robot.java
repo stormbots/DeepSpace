@@ -97,14 +97,18 @@ public class Robot extends TimedRobot {
 
     //Throw commands on Shuffleboards
     SmartDashboard.putData("Commands/Hatch 1",new ArmPose(Pose.HATCH_1));
-    SmartDashboard.putString("Chassis/Pixy Version", pixy.getVersion().toString());
     SmartDashboard.putData("Commands/Hatch 2",new ArmPose(Pose.HATCH_2));
     SmartDashboard.putData("Commands/Hatch 3",new ArmPose(Pose.HATCH_3));
     SmartDashboard.putData("Commands/Hide",new ArmPose(Pose.HIDE));
-    SmartDashboard.putData("Commands/Load Ball Into Hand",new LoadCargoNew());
     SmartDashboard.putData("Commands/Hab3", new RobotGrabHab3(8));
     SmartDashboard.putData("Commands/Hab2", new RobotGrabHab2(4));
+    SmartDashboard.putData("Commands/ExitHab", new RobotExitHab2());
+    SmartDashboard.putData("Commands/CargoShip", new ArmPose(Pose.CARGO_SHIP));
+    SmartDashboard.putData("Commands/Load Ball Into Hand",new LoadCargoNew());
     SmartDashboard.putData("Commands/GrabBall", new IntakeGrabBall());
+    
+    SmartDashboard.putString("Chassis/Pixy Version", pixy.getVersion().toString());
+    SmartDashboard.putData("pdp", pdp);
   }
 
   /**

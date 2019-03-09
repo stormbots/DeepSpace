@@ -49,10 +49,13 @@ public class Arm extends Subsystem {
       public static final double MAX_ANGLE = 90.0;
       public static       double MIN_ANGLE = -115.0;
 
+      boolean lastSwitch = false;
+
       @Override
       public void periodic(){
             SmartDashboard.putString("Arm/Command", getCurrentCommandName());
             SmartDashboard.putData("Arm/Position", gyro.set(getArmAngle()));
+            SmartDashboard.putBoolean("Arm/LimitSwitch", isLimitPressed());
       }
 
       public Arm() {
@@ -121,6 +124,7 @@ public class Arm extends Subsystem {
       public double getArmAngle(){
             return armToDegrees.get(armMotor.getSelectedSensorPosition());
       }
+
       public boolean isOnTarget(double tolerance){
             return Clamp.bounded( getArmAngle(), targetArmPos-tolerance, targetArmPos+tolerance);
       }
@@ -129,6 +133,16 @@ public class Arm extends Subsystem {
             setAngle(pose.armAngle());
       }
 
+      public void setEncoderAngle(double angle){
+            armMotor.setSelectedSensorPosition((int)armToDegrees.getReverse(angle));
+      }
+
+      public boolean isLimitPressed(){      
+            if(armMotor.getSensorCollection().isRevLimitSwitchClosed()){
+                  return true;
+            }
+            return false;
+      }
     
 
       public void update(){
@@ -174,6 +188,15 @@ public class Arm extends Subsystem {
                   break;
 
             }
+
+            //if switch is pressed && lastSwitch was not pressed
+                  //know we're at angle X
+            //lastswitch = switch
+            if(isLimitPressed() && lastSwitch==false){
+                  // setEncoderAngle(-90);
+            }
+            lastSwitch = isLimitPressed();
+
 
             //Check for soft limits
             if(armPower > 0 && currentArmPos > MAX_ANGLE) armPower = 0;

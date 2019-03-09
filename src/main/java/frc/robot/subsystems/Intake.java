@@ -72,7 +72,7 @@ public class Intake extends Subsystem {
     double kPivotGainHab = 0;  /* SET VIA CONSTRUCTOR/INIT, DO NOT USE */
     double kPivotFF = 0; /* SET VIA CONSTRUCTOR/INIT, DO NOT USE */
   //intake on ground is 19.439
-  public static final double PIVOT_MIN = 15;
+  public static final double PIVOT_MIN = 20;
   public static final double PIVOT_MIN_HAB = 20.5+5;
   // public static final double PIVOT_MAX = 110.0; //practice bot
   public static       double PIVOT_MAX = 135.0;
@@ -94,7 +94,7 @@ public class Intake extends Subsystem {
 
     kPivotFF = 0.09;
     kPivotGain = 0.08; //see RobotInit note
-    kPivotGainHab = 0.095+0.015;
+    kPivotGainHab = 0.095+0.015+0.01;
 
     //TODO: Increase current restrictions after limit and motor checks
     //pivotMotor.setSmartCurrentLimit(5, 10, 6700/3);
@@ -132,7 +132,7 @@ public class Intake extends Subsystem {
     double currentPosition = getAngle();  
 
     //Check Soft Limits
-    targetPosition = clamp(targetPosition,PIVOT_MIN_HAB,PIVOT_MAX);
+    targetPosition = clamp(targetPosition,PIVOT_MIN,PIVOT_MAX);
 
     switch(mode){
       case MANUAL:
@@ -156,9 +156,9 @@ public class Intake extends Subsystem {
     // outputFilter.put(pivotPower);
     // pivotPower = outputFilter.get();
 
-    //TODO Do we need to check check physical limits of motion?
     //Position block should fix it unless we're oscillating wildly
-    //if(pivotPower < 0  && currentPosition < PIVOT_MIN) { pivotPower = 0;}
+    // if(pivotPower < 0  && currentPosition < PIVOT_MIN) { pivotPower = 0;}
+    // if(pivotPower > 0  && currentPosition > PIVOT_MAX) { pivotPower = 0;}
     
     SmartDashboard.putNumber("Intake/Current Position(final)",getAngle());
     SmartDashboard.putNumber("Intake/Output Power",pivotPower);
@@ -203,6 +203,9 @@ public class Intake extends Subsystem {
 
   public void setRollerPower(double newPower){
     rollerPower = newPower;
+  }
+  public void setIntakePower(double newPower){
+    pivotPower = newPower;
   }
 
   public void teleopInit() {

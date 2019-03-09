@@ -38,15 +38,19 @@ public class Pogos extends Subsystem {
   public static final double RETRACTED = -1;
   public static double DEPLOY_HAB_2 = 6; 
   public static double DEPLOY_HAB_3 = 19; // is the inches from the ground 
-  public double kPogoGain = 0.02;
   public double kPogoGainInches = 0.7;
   public double targetPos = 0;
   double outputPower = 0;
   
   public static double POGO_GAIN_HAB = 0.02;
   public static double POGO_GAIN_IDLE = POGO_GAIN_HAB/4;
+  public double kPogoGain = POGO_GAIN_IDLE;
 
   public static Lerp toInches = new Lerp(0, -76859, -1, 19);
+
+
+  public enum Mode {CLOSEDLOOP,MANUAL};
+  private Mode mode = Mode.CLOSEDLOOP;
 
   public Pogos(){
     System.out.println("Pogo is Initialized");  
@@ -70,6 +74,7 @@ public class Pogos extends Subsystem {
     SmartDashboard.putBoolean("Pogos/isOverGround", Robot.pogos.isFloorDetected());
   }
 
+
   public void update(){
     //TODO: Pogos should, as a safety, retract pogos if nothing is using them
     //if(this.getCurrentCommand() == null) targetPos = 0; //might 
@@ -78,8 +83,13 @@ public class Pogos extends Subsystem {
     //TODO: we should clamp the targetPos to within the bounds of the system, just in case
     // Note, that since we're being lazy about this and using ticks, we need to be aware that 
     // DEPLOYED might be negative, and so we'd have to check for that as part of our clamp process
-
-    outputPower = fb(targetPos, pogo.getSelectedSensorPosition(0), kPogoGain);
+    switch(mode){
+      case CLOSEDLOOP:
+      outputPower = fb(targetPos, pogo.getSelectedSensorPosition(0), kPogoGain);
+      break;
+      case MANUAL:
+      break;
+    }
     //Not varigied... but math says that it should work
     // double outputPower = fb(targetPos, toInches.get(pogo.getSelectedSensorPosition(0)), kPogoGainInches);
 
@@ -89,7 +99,6 @@ public class Pogos extends Subsystem {
     //TODO: Remove pogo safety clamp
     
     //outputPower = Clamp.clamp(outputPower, -0.2, 0.2);
-    
     pogo.set(ControlMode.PercentOutput, outputPower);
     //pogo.set(ControlMode.PercentOutput, 0.1);
   }
@@ -106,6 +115,13 @@ public class Pogos extends Subsystem {
     return onHabCenter.get() == false;
   }
   
+  public void setPower(double power){
+    outputPower = power;
+  }
+
+  public void setMode(Mode mode){
+    this.mode = mode ;
+  }
   @Override
   public void initDefaultCommand() {
     // Set the default command for a subsystem here.
