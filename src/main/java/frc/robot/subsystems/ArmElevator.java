@@ -77,7 +77,8 @@ public class ArmElevator extends Subsystem {
       public enum Pose{
             // Elevator bottom pos 41
             // E  A  W 
-            HIDE(41,-130,-35), //MAR 6 practice bot
+            HIDE(41,-110 - 5,-90-90), //MAR 6 practice bot
+            // HOMING(),
 
             STARTUP(41,-90,0), //TODO
             CUSTOM(41,-90,0), //TODO
@@ -94,10 +95,10 @@ public class ArmElevator extends Subsystem {
 
             LOAD_HATCH(42,-90,0),
             // LOAD_CARGO(42,-59,-150); //ANCIENT practice bot, arm used to be -70, wrist angle was -135
-            LOAD_CARGO_PREP(45,-53+5+10,0),
-            LOAD_CARGO_PREP_2(45, -50+5+10, -166),
+            LOAD_CARGO_PREP(45,-53+10,0),
+            LOAD_CARGO_PREP_2(45, -50+10, -166),
             // LOAD_CARGO(41,-53,-150); /MAR04 Works on practice bot. Usually works on Comp bot
-            LOAD_CARGO(41,-65 - 10,-161 + 10); //MAR04 Should work but untested on comp bot
+            LOAD_CARGO(41,-65 - 10,-161 + 10-10); //MAR04 Should work but untested on comp bot
             //LOAD_CARGO(41,-67,-156); //MAR05 PRactice bot maybe?
 
             private double eleHeight;
@@ -123,6 +124,14 @@ public class ArmElevator extends Subsystem {
             wrist.set(pose);
             arm.set(pose);
       }
+
+      public void setPose(double eleHeight, double armAngle, double wristAngle){
+            this.pose = Pose.CUSTOM;
+            elevator.setPosition(eleHeight);
+            wrist.setTargetAngleFromFloor(wristAngle);
+            arm.setAngle(armAngle);
+      }
+
       public Pose getPose(){
             return this.pose;
       }
@@ -132,7 +141,7 @@ public class ArmElevator extends Subsystem {
                   && wrist.isOnTarget(wristTolerance)
                   && arm.isOnTarget(armTolerance);
       }
-      public boolean isOnTarget(){ return isOnTarget(2,5,5); } 
+      public boolean isOnTarget(){ return isOnTarget(2,7,7); } 
 
 
       public Mode getMode(){
@@ -199,14 +208,14 @@ public class ArmElevator extends Subsystem {
             //     elevator.elevatorHeightRestriction = Elevator.ElevatorPosition.WRIST_SAFETY_LIMIT
             // }
 
-            if(getCurrentCommandName().isBlank() && isOnTarget()){
+            if(getCurrentCommandName().isBlank() && isOnTarget(2,10,10)){
                   SmartDashboard.putBoolean("Elevator/ManualPose",true);
                   switch(pose){
                         case LOAD_CARGO_PREP:
                         setPose(Pose.HATCH_1);
                         break;
                         case LOAD_CARGO_PREP_2:
-                        setPose(Pose.HATCH_1);
+                        setPose(Pose.LOAD_CARGO_PREP);
                         break;
                         // case STARTUP:
                   }
@@ -214,9 +223,9 @@ public class ArmElevator extends Subsystem {
       
 
             //Run all the updates
-            elevator.update();
-            arm.update();
             wrist.update(arm.getArmAngle());
+            elevator.update();
+            arm.update(wrist.wristPower);
       }
 
 	@Override

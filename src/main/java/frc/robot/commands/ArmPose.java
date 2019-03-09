@@ -26,6 +26,28 @@ public class ArmPose extends Command {
   double armStart;
   double currentTime;
 
+  double targetArm = 0;
+  double targetWrist = 0; 
+  double targetEle = 0;
+
+  public ArmPose(double eleHeight, double armAngle, double wristAngle){
+    this.pose = Pose.CUSTOM;
+    // Use requires() here to declare subsystem dependencies
+    // eg. requires(chassis);
+    // These line can't be instantiated by robot, doesn't like nested subsystems?
+    requires(Robot.armLift);
+    requires(Robot.armLift.elevator);
+    requires(Robot.armLift.wrist);
+    requires(Robot.armLift.arm);
+    currentTime = 0;
+    setTimeout(2*moveTime);
+
+    targetArm = armAngle;
+    targetWrist = wristAngle; 
+    targetEle = eleHeight;
+  
+  }
+
   public ArmPose(Pose pose) {
     this.pose = pose;
     // Use requires() here to declare subsystem dependencies
@@ -37,6 +59,9 @@ public class ArmPose extends Command {
     requires(Robot.armLift.arm);
     currentTime = 0;
     setTimeout(2*moveTime);
+    targetArm = pose.armAngle();
+    targetWrist = pose.wristAngle();
+    targetEle = pose.eleHeight();
   }
 
   // Called just before this Command runs the first time
@@ -57,11 +82,11 @@ public class ArmPose extends Command {
 
     startTime = Timer.getFPGATimestamp();
 
-    timeToArmAngle = new Lerp(0,moveTime, Robot.armLift.arm.getArmAngle(), pose.armAngle());
+    timeToArmAngle = new Lerp(0,moveTime, Robot.armLift.arm.getArmAngle(), targetArm);
 
-    timeToElevatorHeight = new Lerp(0,moveTime, Robot.armLift.elevator.getPosition(), pose.eleHeight());
+    timeToElevatorHeight = new Lerp(0,moveTime, Robot.armLift.elevator.getPosition(), targetEle);
 
-    timeToWristAngle = new Lerp(0, moveTime, Robot.armLift.wrist.getWristAngleFromFloor(), pose.wristAngle());
+    timeToWristAngle = new Lerp(0, moveTime, Robot.armLift.wrist.getWristAngleFromFloor(), targetWrist);
     }
 
   // Called repeatedly when this Command is scheduled to run

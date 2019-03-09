@@ -8,6 +8,7 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.Solenoid;
@@ -109,13 +110,21 @@ public class Chassis extends Subsystem {
     motorR1.setSmartCurrentLimit(stallLimit, freeLimit, limitRPM);
     motorR2.setSmartCurrentLimit(stallLimit, freeLimit, limitRPM);
 
-    double rampRate = 260;
+    double rampRate = 0.1;
     motorL0.setOpenLoopRampRate(rampRate);
     motorL1.setOpenLoopRampRate(rampRate);
     motorL2.setOpenLoopRampRate(rampRate);
     motorR0.setOpenLoopRampRate(rampRate);
     motorR1.setOpenLoopRampRate(rampRate);
     motorR2.setOpenLoopRampRate(rampRate);
+
+    motorL0.setIdleMode(IdleMode.kBrake);
+    motorL1.setIdleMode(IdleMode.kBrake);
+    motorL2.setIdleMode(IdleMode.kBrake);
+    motorR0.setIdleMode(IdleMode.kBrake);
+    motorR1.setIdleMode(IdleMode.kBrake);
+    motorR2.setIdleMode(IdleMode.kBrake);
+
   }
 
   /** Runs on robot boot after network/SmartDashboard becomes available */

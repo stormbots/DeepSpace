@@ -14,6 +14,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.stormbots.Lerp;
 import com.stormbots.closedloop.FB;
@@ -96,6 +97,8 @@ public class Intake extends Subsystem {
     kPivotGain = 0.08; //see RobotInit note
     kPivotGainHab = 0.095+0.015+0.01;
 
+    pivotMotor.setIdleMode(IdleMode.kBrake);
+
     //TODO: Increase current restrictions after limit and motor checks
     //pivotMotor.setSmartCurrentLimit(5, 10, 6700/3);
     pivotMotor.set(0);
@@ -145,6 +148,7 @@ public class Intake extends Subsystem {
       case CLOSEDLOOP:
       
         //run feedback function
+        if(targetPosition >= 120){targetPosition += 20;}
         pivotPower = FB.fb(targetPosition, currentPosition, kPivotGain)
          + Math.cos(currentPosition*(Math.PI/180.0 ))*kPivotFF;
         break;
@@ -162,6 +166,8 @@ public class Intake extends Subsystem {
     
     SmartDashboard.putNumber("Intake/Current Position(final)",getAngle());
     SmartDashboard.putNumber("Intake/Output Power",pivotPower);
+    SmartDashboard.putNumber("Intake/Target after increment",targetPosition);
+
 
 
     //set output power
@@ -212,6 +218,8 @@ public class Intake extends Subsystem {
     outputFilter.clear();
   }
 
-  
+  public void setHomed(){
+    pivotMotor.getEncoder().setPosition(0);
+  }
 
 }

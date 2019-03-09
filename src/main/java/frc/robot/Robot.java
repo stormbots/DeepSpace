@@ -105,7 +105,10 @@ public class Robot extends TimedRobot {
     SmartDashboard.putData("Commands/ExitHab", new RobotExitHab2());
     SmartDashboard.putData("Commands/CargoShip", new ArmPose(Pose.CARGO_SHIP));
     SmartDashboard.putData("Commands/Load Ball Into Hand",new LoadCargoNew());
+
     SmartDashboard.putData("Commands/GrabBall", new IntakeGrabBall());
+    SmartDashboard.putData("Commands/Home Intake", new IntakeHoming());
+
     
     SmartDashboard.putString("Chassis/Pixy Version", pixy.getVersion().toString());
     SmartDashboard.putData("pdp", pdp);

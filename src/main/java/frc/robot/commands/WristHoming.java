@@ -30,8 +30,8 @@ public class WristHoming extends Command {
   protected void initialize() {
     Robot.armLift.wrist.setMode(Mode.MANUAL);
     setTimeout(2);
-    Robot.intake.setTargetPosition(90);
-    Robot.armLift.arm.set(Pose.LOAD_CARGO_PREP);
+    Robot.armLift.arm.set(Pose.HATCH_1);
+    Robot.armLift.elevator.set(Pose.CARGO_1);
     Robot.hand.setPosition(frc.robot.subsystems.Hand.Position.CLOSE);
   }
 
@@ -40,10 +40,10 @@ public class WristHoming extends Command {
   protected void execute() {
     //wait for arm
     if(Robot.armLift.arm.isOnTarget(5)){
-      Robot.armLift.wrist.setPower(-0.3);
+      Robot.armLift.wrist.setPower(0.3);
     }
     else{
-      Robot.armLift.wrist.setPower(-0.15);
+      Robot.armLift.wrist.setPower(0.15);
     }
   }
 
@@ -61,10 +61,10 @@ public class WristHoming extends Command {
   // Called once after isFinished returns true
   @Override
   protected void end() {
-    Robot.armLift.wrist.setHomedReversed();
+    Robot.armLift.wrist.setHomedForward();
     Robot.armLift.wrist.setPower(0);
     Robot.armLift.wrist.setMode(Mode.CLOSEDLOOP);
-    Robot.armLift.arm.set(Pose.LOAD_CARGO_PREP);
+    Robot.armLift.elevator.set(Pose.HATCH_1);
     
   }
 

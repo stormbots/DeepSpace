@@ -11,6 +11,7 @@ import com.stormbots.Lerp;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
+import frc.robot.commandgroups.DefenseMode;
 import frc.robot.commandgroups.LoadCargoNew;
 import frc.robot.subsystems.Hand;
 import frc.robot.subsystems.Hand.*;
@@ -51,6 +52,10 @@ public class OI {
   public JoystickButton cargoShip = new JoystickButton(rightStick, 10);
   public JoystickButton grabCargo = new JoystickButton(rightStick,3); 
 
+  //approve
+  public JoystickButton defenseMode = new JoystickButton(rightStick,11);
+
+
   //Left
   public JoystickButton poseHatch1 = new JoystickButton(leftStick,4);
   public JoystickButton poseHatch2 = new JoystickButton(leftStick,2);
@@ -60,6 +65,8 @@ public class OI {
   public JoystickButton handSpitOut = new JoystickButton(leftStick,7);
   public JoystickButton autoLineup = new JoystickButton(leftStick,8);
   public JoystickButton placeHatch = new JoystickButton(leftStick,10);
+  public JoystickButton homeIntake = new JoystickButton(leftStick,11);
+
 
   public JoystickButton hidePosition = new JoystickButton(leftStick, 3);
 
@@ -93,6 +100,9 @@ public class OI {
     poseHatch3.whenPressed(new ArmPose(Pose.HATCH_3));
     //loadHatch.whenPressed(new ArmPose(Pose.LOAD_HATCH));
     placeHatch.whenPressed(new PlaceHatch());
+
+    homeIntake.whileHeld(new IntakeHoming());
+    defenseMode.whenPressed(new DefenseMode());
 
     //autoLineup.whileHeld(new ChassisPixyDrive());
 

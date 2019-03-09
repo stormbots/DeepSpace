@@ -49,6 +49,7 @@ public class LoadCargoNew extends CommandGroup {
     //start up the passthrough
 
     //   //if on target ()
+    addSequential(new WaitCommand(0.1));
     addSequential(new ArmPose(Pose.LOAD_CARGO));
     //Open the hand now, with a fallback to close and hold the ball if interrupted 
     addParallel(new HandPose(Hand.Position.OPEN,Hand.GRAB_POWER,  Hand.Position.CLOSE,Hand.HOLD_POWER));

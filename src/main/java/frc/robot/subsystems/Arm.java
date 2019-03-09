@@ -15,9 +15,11 @@ import com.stormbots.Clamp;
 import com.stormbots.Lerp;
 import com.stormbots.closedloop.FB;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
+import frc.robot.RobotMap;
 import frc.robot.subsystems.ArmElevator.Mode;
 import frc.robot.subsystems.ArmElevator.Pose;
 
@@ -28,6 +30,7 @@ public class Arm extends Subsystem {
       // Put methods for controlling this subsystem
       // here. Call these from Commands.
       public TalonSRX armMotor = new TalonSRX(12);
+      public DigitalInput armLimit = new DigitalInput(RobotMap.ArmLimitSwitch);
 
       FakeGyro gyro = new FakeGyro();
 
@@ -91,8 +94,8 @@ public class Arm extends Subsystem {
       public void robotInit(){
             if(Robot.isCompbot){
                   armMotor.setInverted(true);
-                  kArmGain = 0.045;
-                  kArmFF = 0.4;
+                  kArmGain = 0.05;
+                  kArmFF = 0.7;
             }
             else{
                   kArmFF = 0.5;
@@ -137,15 +140,16 @@ public class Arm extends Subsystem {
             armMotor.setSelectedSensorPosition((int)armToDegrees.getReverse(angle));
       }
 
-      public boolean isLimitPressed(){      
-            if(armMotor.getSensorCollection().isRevLimitSwitchClosed()){
-                  return true;
-            }
-            return false;
+      public boolean isLimitPressed(){
+            return armLimit.get() == false;
+      }
+
+      public void setPower(double power){
+            armPower = power;
       }
     
 
-      public void update(){
+      public void update(double wristPower){
             currentArmPos = getArmAngle();
             // Create a shadow variable in local scope to avoid incorrectly altering our target
             // This is needed as we may have to constrain the target due to dynamic influences,
@@ -167,8 +171,11 @@ public class Arm extends Subsystem {
                               kArmFF*Math.cos(Math.toRadians(currentArmPos)
                               );
 
+                        // armPower += wristPower*-0.9;
+
                         SmartDashboard.putNumber("Arm/Output FB", FB.fb(targetArmPos, currentArmPos, kArmGain));
                         SmartDashboard.putNumber("Arm/Output FF",  kArmFF*Math.cos(Math.toRadians(currentArmPos)));
+                        SmartDashboard.putNumber("Arm/Output Wrist FF",  wristPower*-0.9);
 
                   break;
 
@@ -192,8 +199,8 @@ public class Arm extends Subsystem {
             //if switch is pressed && lastSwitch was not pressed
                   //know we're at angle X
             //lastswitch = switch
-            if(isLimitPressed() && lastSwitch==false){
-                  // setEncoderAngle(-90);
+            if(isLimitPressed() != lastSwitch){
+                  setEncoderAngle(-87);
             }
             lastSwitch = isLimitPressed();
 
