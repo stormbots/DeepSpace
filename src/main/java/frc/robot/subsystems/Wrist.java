@@ -56,7 +56,7 @@ public class Wrist extends Subsystem {
       double maxAngleToArm = 90.0;
       double minAngleToArm = -90.0;
       boolean isHomed = false;
-      public static double HOME_OUTPUT_POWER_MIN = 0.16;
+      public static double HOME_OUTPUT_POWER_MIN = 0.09;
       Pose wristPose = Pose.STARTUP;
 
       @Override

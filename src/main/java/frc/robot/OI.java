@@ -11,6 +11,7 @@ import com.stormbots.Lerp;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commandgroups.DefenseMode;
 import frc.robot.commandgroups.LoadCargoNew;
 import frc.robot.subsystems.Hand;
@@ -182,17 +183,15 @@ public class OI {
 
   public static double getDriveTurn() {
     double j = driveStick.getRawAxis(2);
-    // return j*Math.abs(j);
 
-    // return j*j*j;
+    j = j*j*j;
 
-    if(driveStick.getRawButtonPressed(5)){
-      // return j*Math.abs(j*j*j*j)*0.5;
-      return j*j*j*0.5;
-    }
-    else{
-      return j*j*j*Math.abs(j);
+    if(driveStick.getRawButtonPressed(5)){      
+      j *=.5;
     }
 
+    SmartDashboard.putNumber("Chassis/drice stick", j);
+    return j;
+    
   }
 }
