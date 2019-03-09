@@ -94,8 +94,8 @@ public class ArmElevator extends Subsystem {
 
             LOAD_HATCH(42,-90,0),
             // LOAD_CARGO(42,-59,-150); //ANCIENT practice bot, arm used to be -70, wrist angle was -135
-            LOAD_CARGO_PREP(45,-53+5,0),
-            LOAD_CARGO_PREP_2(45, -50+5, -166),
+            LOAD_CARGO_PREP(45,-53+5+10,0),
+            LOAD_CARGO_PREP_2(45, -50+5+10, -166),
             // LOAD_CARGO(41,-53,-150); /MAR04 Works on practice bot. Usually works on Comp bot
             LOAD_CARGO(41,-65 - 10,-161 + 10); //MAR04 Should work but untested on comp bot
             //LOAD_CARGO(41,-67,-156); //MAR05 PRactice bot maybe?
