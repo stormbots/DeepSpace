@@ -122,6 +122,11 @@ public class Pogos extends Subsystem {
   public void setMode(Mode mode){
     this.mode = mode ;
   }
+
+  public boolean isOnTarget(double tolerance){
+    return Clamp.bounded(getPosition(),targetPos-tolerance,targetPos+tolerance);
+  }
+
   @Override
   public void initDefaultCommand() {
     // Set the default command for a subsystem here.

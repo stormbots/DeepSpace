@@ -18,8 +18,15 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.commandgroups.HatchPickup;
 import frc.robot.commandgroups.LoadCargoNew;
-import frc.robot.commands.*;
+import frc.robot.commands.ArmPose;
+import frc.robot.commands.IntakeGrabBall;
+import frc.robot.commands.IntakeHoming;
+import frc.robot.commands.RobotExitHab2;
+import frc.robot.commands.RobotGrabHab2;
+import frc.robot.commands.RobotGrabHab3;
+import frc.robot.commands.WristHoming;
 import frc.robot.subsystems.ArmElevator;
 import frc.robot.subsystems.ArmElevator.Pose;
 import frc.robot.subsystems.Chassis;
@@ -105,11 +112,11 @@ public class Robot extends TimedRobot {
     SmartDashboard.putData("Commands/ExitHab", new RobotExitHab2());
     SmartDashboard.putData("Commands/CargoShip", new ArmPose(Pose.CARGO_SHIP));
     SmartDashboard.putData("Commands/Load Ball Into Hand",new LoadCargoNew());
+    SmartDashboard.putData("Commands/Place Hatch", new HatchPickup());
 
     SmartDashboard.putData("Commands/GrabBall", new IntakeGrabBall());
     SmartDashboard.putData("Commands/Home Intake", new IntakeHoming());
 
-    
     SmartDashboard.putString("Chassis/Pixy Version", pixy.getVersion().toString());
     SmartDashboard.putData("pdp", pdp);
   }

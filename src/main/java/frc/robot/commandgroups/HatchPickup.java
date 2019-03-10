@@ -8,19 +8,16 @@
 package frc.robot.commandgroups;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
-import frc.robot.commands.ArmHoming;
 import frc.robot.commands.ArmPose;
 import frc.robot.commands.HandPose;
-import frc.robot.commands.PassThroughPower;
 import frc.robot.subsystems.ArmElevator.Pose;
-import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.Hand;
+import frc.robot.subsystems.Hand.Position;
 
-public class DefenseMode extends CommandGroup {
+public class HatchPickup extends CommandGroup {
   /**
    * Add your docs here.
    */
-  public DefenseMode() {
+  public HatchPickup() {
     // Add Commands here:
     // e.g. addSequential(new Command1());
     // addSequential(new Command2());
@@ -37,10 +34,7 @@ public class DefenseMode extends CommandGroup {
     // e.g. if Command1 requires chassis, and Command2 requires arm,
     // a CommandGroup containing them would require both the chassis and the
     // arm.
-    addParallel(new PassThroughPower(-0.3),2);
-    addParallel(new HandPose(Hand.Position.CLOSE,Hand.EJECT_POWER,  Hand.Position.CLOSE,Hand.OFF),0.2);
-    addSequential(new ArmPose(Elevator.MIN_HEIGHT,-80.0,-90.0-30));
-    addSequential(new ArmPose(Pose.HIDE));
-    addSequential(new ArmHoming());
+    addSequential(new HandPose(Position.OPEN, 0));
+    addSequential(new ArmPose(Pose.HATCH_1.eleHeight()+5, -90.0, 0.0));
   }
 }

@@ -76,9 +76,9 @@ public class Arm extends Subsystem {
             //Configure are current restrictions
             //TODO: Set much higher. These limits are really low for bringup safety. 
             //https://www.chiefdelphi.com/t/talon-srx-current-limiting-behaviour/164074
-            armMotor.configPeakCurrentLimit(10, 10); // 35 A 
+            armMotor.configPeakCurrentLimit(40, 10); // 35 A 
             armMotor.configPeakCurrentDuration(200, 10); // 200ms
-            armMotor.configContinuousCurrentLimit(8, 10); // 30A
+            armMotor.configContinuousCurrentLimit(20, 10); // 30A
             armMotor.enableCurrentLimit(true); // turn it on
 
             armMotor.configForwardLimitSwitchSource(
