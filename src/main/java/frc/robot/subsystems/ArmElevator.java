@@ -32,7 +32,7 @@ public class ArmElevator extends Subsystem {
             SmartDashboard.putNumber("Wrist/Target Angle", pose.wristAngle);
 
             SmartDashboard.putNumber("Arm/Current Angle", arm.getArmAngle());
-            SmartDashboard.putNumber("Arm/Encoder", arm.armMotor.getSelectedSensorPosition());
+            SmartDashboard.putNumber("Arm/Encoder", arm.armEncoder.getPosition());
             SmartDashboard.putNumber("Arm/Target Angle", pose.armAngle);
 
             SmartDashboard.putNumber("Elevator/Target Height", pose.eleHeight);

@@ -22,7 +22,7 @@ import frc.robot.subsystems.Chassis.Gear;
 // import frc.robot.subsystems.ArmElevator;
 // import frc.robot.subsystems.ArmElevator.Pose;
 import frc.robot.commands.*;
-
+ 
 /**
  * This class is the glue that binds the controls on the physical operator
  * interface to the commands and command groups that allow control of the robot.
@@ -190,7 +190,7 @@ public class OI {
       j *=.5;
     }
 
-    SmartDashboard.putNumber("Chassis/drice stick", j);
+    SmartDashboard.putNumber("Chassis/drive stick", j);
     return j;
     
   }
