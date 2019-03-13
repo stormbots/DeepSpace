@@ -48,6 +48,7 @@ public class Arm extends Subsystem {
       
       // double kArmFF = 0.3;
       double kArmFF = 0.3; // See RobotInit for practicebot
+      double kWristCounterFF = 0.9; // See RobotInit for practicebot
 
       public static final double MAX_ANGLE = 90.0;
       public static       double MIN_ANGLE = -115.0;
@@ -98,10 +99,11 @@ public class Arm extends Subsystem {
                   kArmFF = 0.5;
             }
             else{
+                  kWristCounterFF = 0.9;
                   kArmFF = 0.5;
                   // kArmGain = 0.1;//too high
                   // kArmGain = 0.042; //too low 
-                  kArmGain = 0.09;
+                  kArmGain = 0.12;
                   armMotor.setInverted(false);
                   MIN_ANGLE = -115.0;
             }
@@ -171,11 +173,11 @@ public class Arm extends Subsystem {
                               kArmFF*Math.cos(Math.toRadians(currentArmPos)
                               );
 
-                        armPower += wristPower*-0.9;
+                        armPower += wristPower*-kWristCounterFF;
 
                         SmartDashboard.putNumber("Arm/Output FB", FB.fb(targetArmPos, currentArmPos, kArmGain));
                         SmartDashboard.putNumber("Arm/Output FF",  kArmFF*Math.cos(Math.toRadians(currentArmPos)));
-                        SmartDashboard.putNumber("Arm/Output Wrist FF",  wristPower*-0.9);
+                        SmartDashboard.putNumber("Arm/Output Wrist FF",  wristPower*-kWristCounterFF);
 
                   break;
 
