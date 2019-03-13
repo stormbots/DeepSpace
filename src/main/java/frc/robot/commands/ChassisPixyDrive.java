@@ -48,8 +48,8 @@ public class ChassisPixyDrive extends Command {
     double endX = x2;
     double endY = y2;
 
-    shortSidePower = 0.5*startY;
-    longSidePower = 0.5*startY + 2.0*Math.abs(startX);
+    shortSidePower = 0.25*startY;
+    longSidePower = 0.25*startY + 0.4*Math.abs(startX);
   }
 
   private void followAugmentedCloseLine(double x1, double y1, double x2, double y2) {
@@ -71,8 +71,8 @@ public class ChassisPixyDrive extends Command {
     newX = clamp(newX, -1, 1);
     newY = clamp(newY, 0, 1);
 
-    shortSidePower = 0.5*newY;
-    longSidePower = 0.5*newY + 2.0*Math.abs(newX);
+    shortSidePower = 0.25*newY;
+    longSidePower = 0.25*newY + 0.5*Math.abs(newX);
   }
 
   // Called repeatedly when this Command is scheduled to run
@@ -99,17 +99,17 @@ public class ChassisPixyDrive extends Command {
     line.normalizeBottom();
 
     //followRawCloseLine(line.x0, line.y0, line.x1, line.y1);
-    followAugmentedCloseLine(line.x0, line.y0, line.x1, line.y1);
+    followRawCloseLine(line.x0, line.y0, line.x1, line.y1);
 
-    longSidePower = clamp(longSidePower, -1, 1);
-    shortSidePower = clamp(shortSidePower, -1, 1);
+    longSidePower = -clamp(longSidePower, -1, 1);
+    shortSidePower = -clamp(shortSidePower, -1, 1);
     
 
-    if((Robot.chassis.sonarL.getRangeInches() + Robot.chassis.sonarR.getRangeInches()) / 2 < 6) {
-      Robot.chassis.tankDrive(0.2, 0.2);
-    }
-    else if(Math.sqrt(Math.pow(line.x0-line.x1, 2) + Math.pow(line.y0-line.y1, 2)) < 0.1) {
-      Robot.chassis.tankDrive(0.2, 0.2);
+    //if((Robot.chassis.sonarL.getRangeInches() + Robot.chassis.sonarR.getRangeInches()) / 2 < 6) {
+    //  Robot.chassis.tankDrive(-0.2, -0.2);
+    //} else
+    if(Math.sqrt(Math.pow(line.x0-line.x1, 2) + Math.pow(line.y0-line.y1, 2)) < 0.1) {
+      Robot.chassis.tankDrive(-0.2, -0.2);
     }
     else {
       if(line.x0 > 0) {
