@@ -72,6 +72,7 @@ public class Elevator extends Subsystem {
       /** Runs on robot boot after network/SmartDashboard becomes available */
       public void robotInit(){
             if(Robot.isCompbot){
+                  kElevatorGain = 0.08;
             }
             else{
                   elevatorFF = 0.3;
