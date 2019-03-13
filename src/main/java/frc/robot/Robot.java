@@ -163,6 +163,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
+    chassis.reset();
     m_autonomousCommand = m_chooser.getSelected();
     if(!armLift.wrist.isHomed()){
       wristHoming.start();
@@ -199,7 +200,8 @@ public class Robot extends TimedRobot {
     // this line or comment it out.
 
     intake.teleopInit();
-    
+    chassis.reset();
+
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }

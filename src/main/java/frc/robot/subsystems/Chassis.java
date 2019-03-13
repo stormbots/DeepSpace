@@ -7,10 +7,14 @@
 
 package frc.robot.subsystems;
 
+import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.stormbots.Clamp;
+import com.revrobotics.ControlType;
 
+import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.Ultrasonic;
@@ -36,6 +40,9 @@ public class Chassis extends Subsystem {
   public CANSparkMax motorR1 = new CANSparkMax(5, MotorType.kBrushless);
   public CANSparkMax motorR2 = new CANSparkMax(6, MotorType.kBrushless);
   // */
+
+  CANPIDController pidControllerL = motorL0.getPIDController();
+  CANPIDController pidControllerR = motorR0.getPIDController();
 
   public SpeedControllerGroup motorsLeft = new SpeedControllerGroup(motorL0, motorL1, motorL2);
   public SpeedControllerGroup motorsRight = new SpeedControllerGroup(motorR0, motorR1, motorR2);
@@ -89,6 +96,53 @@ public class Chassis extends Subsystem {
    * initializes the ramprates and sets the slave motors
    */
   public Chassis(){
+
+    // PID coefficients
+    double kP = 5e-5; 
+    double kI = 0;
+    double kD = 0; 
+    double kIz = 0; 
+    double kFF = 0.000156; 
+    double kMaxOutput = 1; 
+    double kMinOutput = -1;
+    double maxRPM = 5700;
+    double minVel = 0;
+    double allowedErr = 0;
+
+    // Smart Motion Coefficients
+    double maxVel = 5700; // rpm
+    double maxAcc = 3200;
+    
+    // set PID coefficients FOR THE LEFT
+    pidControllerL.setP(kP);
+    pidControllerL.setI(kI);
+    pidControllerL.setD(kD);
+    pidControllerL.setIZone(kIz);
+    pidControllerL.setFF(kFF);
+    pidControllerL.setOutputRange(kMinOutput, kMaxOutput);
+    
+    // set PID coefficients FOR THE RIGHT
+    pidControllerR.setP(kP);
+    pidControllerR.setI(kI);
+    pidControllerR.setD(kD);
+    pidControllerR.setIZone(kIz);
+    pidControllerR.setFF(kFF);
+    pidControllerR.setOutputRange(kMinOutput, kMaxOutput);
+    
+    int smartMotionSlot = 0;
+
+    pidControllerL.setSmartMotionMaxVelocity(maxVel, smartMotionSlot);
+    pidControllerL.setSmartMotionMinOutputVelocity(-maxVel, smartMotionSlot);
+    pidControllerL.setSmartMotionMaxAccel(maxAcc, smartMotionSlot);
+    pidControllerL.setSmartMotionAllowedClosedLoopError(allowedErr, smartMotionSlot);
+
+    pidControllerR.setSmartMotionMaxVelocity(maxVel, smartMotionSlot);
+    pidControllerR.setSmartMotionMinOutputVelocity(-maxVel, smartMotionSlot);
+    pidControllerR.setSmartMotionMaxAccel(maxAcc, smartMotionSlot);
+    pidControllerR.setSmartMotionAllowedClosedLoopError(allowedErr, smartMotionSlot);
+
+
+
     // For the CANSparkMax's, we would use the smartCurrentLimit()
     //TODO: Figure out good current limits, and if we should use full linear range or the low cap
     // See http://www.revrobotics.com/content/sw/max/sw-docs/java/com/revrobotics/CANSparkMax.html#setSmartCurrentLimit(int,int,int)
@@ -118,13 +172,28 @@ public class Chassis extends Subsystem {
     motorR1.setOpenLoopRampRate(rampRate);
     motorR2.setOpenLoopRampRate(rampRate);
 
-    motorL0.setIdleMode(IdleMode.kBrake);
+    motorL0.setIdleMode(IdleMode.kCoast);
     motorL1.setIdleMode(IdleMode.kBrake);
-    motorL2.setIdleMode(IdleMode.kBrake);
-    motorR0.setIdleMode(IdleMode.kBrake);
+    motorL2.setIdleMode(IdleMode.kCoast);
+    motorR0.setIdleMode(IdleMode.kCoast);
     motorR1.setIdleMode(IdleMode.kBrake);
-    motorR2.setIdleMode(IdleMode.kBrake);
+    motorR2.setIdleMode(IdleMode.kCoast);
 
+    motorL1.follow(motorL0);
+    motorL2.follow(motorL0);
+    motorR1.follow(motorR0);
+    motorR2.follow(motorR0);
+
+  }
+
+  public void reset() {
+    motorL0.getEncoder().setPosition(0);
+    motorL1.getEncoder().setPosition(0);
+    motorL2.getEncoder().setPosition(0);
+    motorR0.getEncoder().setPosition(0);
+    motorR1.getEncoder().setPosition(0);
+    motorR2.getEncoder().setPosition(0);
+    //TODO SET TARGET TO 0 AS WELL
   }
 
   /** Runs on robot boot after network/SmartDashboard becomes available */
@@ -136,7 +205,6 @@ public class Chassis extends Subsystem {
     sonarR.setEnabled(true);
     sonarL.setAutomaticMode(true);
     sonarR.setAutomaticMode(true);
-    
 
     if(Robot.isCompbot){
     }
@@ -172,13 +240,62 @@ public class Chassis extends Subsystem {
     SmartDashboard.putNumber("Chassis/arcadeForward", arcadeForward);
     SmartDashboard.putNumber("Chassis/arcadeTurn", arcadeTurn);
 
+    //pidControllerL.setReference(JoystickValue, ControlType.kSmartVelocity);
+    //pidControllerR.setReference(JoystickValue, ControlType.kSmartVelocity);
+
+
     switch(driveMode){
       case DRIVER:
-        drive.arcadeDrive(arcadeForward, arcadeTurn,false);
+        //arcadeDriveOverload(arcadeForward, arcadeTurn);
+        drive.arcadeDrive(arcadeForward, arcadeTurn, false);
         break;
       case TANKDRIVE:
         drive.tankDrive(tankLeft, tankRight);
         break;
     }
+  }
+
+
+  private void arcadeDriveOverload(double xSpeed, double zRotation){
+    double leftMotorOutput;
+    double rightMotorOutput;
+
+    double maxInput = Math.copySign(Math.max(Math.abs(xSpeed), Math.abs(zRotation)), xSpeed);
+
+    if (xSpeed >= 0.0) {
+      // First quadrant, else second quadrant
+      if (zRotation >= 0.0) {
+        leftMotorOutput = maxInput;
+        rightMotorOutput = xSpeed - zRotation;
+      } else {
+        leftMotorOutput = xSpeed + zRotation;
+        rightMotorOutput = maxInput;
+      }
+    } else {
+      // Third quadrant, else fourth quadrant
+      if (zRotation >= 0.0) {
+        leftMotorOutput = xSpeed + zRotation;
+        rightMotorOutput = maxInput;
+      } else {
+        leftMotorOutput = maxInput;
+        rightMotorOutput = xSpeed - zRotation;
+      }
+    }
+
+    double leftSidePower = leftMotorOutput;
+    double rightSidePower = rightMotorOutput * -1;
+    double maximumRPM = 5700;
+
+    SmartDashboard.putNumber("Chassis/Left Side Joystick", leftSidePower);
+    SmartDashboard.putNumber("Chassis/Left Side Speed", leftSidePower*maximumRPM);
+
+    pidControllerL.setReference(leftSidePower*maximumRPM, ControlType.kSmartVelocity);
+    pidControllerR.setReference(rightSidePower*maximumRPM, ControlType.kSmartVelocity);
+
+  }
+
+  public void periodic(){
+    SmartDashboard.putNumber("Chassis/Output actual Left", motorL0.getAppliedOutput());
+    SmartDashboard.putNumber("Chassis/Output actual Right", motorR0.getAppliedOutput());
   }
 }
