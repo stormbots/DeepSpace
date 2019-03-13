@@ -48,8 +48,8 @@ public class ChassisPixyDrive extends Command {
     double endX = x2;
     double endY = y2;
 
-    shortSidePower = 0.5*startY;
-    longSidePower = 0.5*startY + 2.0*Math.abs(startX);
+    shortSidePower = 0.2*startY;
+    longSidePower = 0.2*startY + 0.05*Math.abs(startX);
   }
 
   private void followAugmentedCloseLine(double x1, double y1, double x2, double y2) {
@@ -71,8 +71,8 @@ public class ChassisPixyDrive extends Command {
     newX = clamp(newX, -1, 1);
     newY = clamp(newY, 0, 1);
 
-    shortSidePower = 0.5*newY;
-    longSidePower = 0.5*newY + 2.0*Math.abs(newX);
+    shortSidePower = 0.2*newY;
+    longSidePower = 0.2*newY + 0.5*Math.abs(newX);
   }
 
   // Called repeatedly when this Command is scheduled to run

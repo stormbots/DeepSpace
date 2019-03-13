@@ -186,9 +186,9 @@ public class OI {
 
     j = j*j*j;
 
-    if(driveStick.getRawButtonPressed(5)){      
-      j *=.5;
-    }
+    // if(driveStick.getRawButtonPressed(5)){      
+    //   j *=.5;
+    // }
 
     SmartDashboard.putNumber("Chassis/drice stick", j);
     return j;
