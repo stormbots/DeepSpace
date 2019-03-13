@@ -111,7 +111,7 @@ public class Chassis extends Subsystem {
 
     // Smart Motion Coefficients
     double maxVel = 5700; // rpm
-    double maxAcc = 3200;
+    double maxAcc = 2900;
     
     // set PID coefficients FOR THE LEFT
     pidControllerL.setP(kP);
@@ -246,8 +246,8 @@ public class Chassis extends Subsystem {
 
     switch(driveMode){
       case DRIVER:
-        //arcadeDriveOverload(arcadeForward, arcadeTurn);
-        drive.arcadeDrive(arcadeForward, arcadeTurn, false);
+        arcadeDriveOverload(arcadeForward, arcadeTurn);
+        //drive.arcadeDrive(arcadeForward, arcadeTurn, false);
         break;
       case TANKDRIVE:
         drive.tankDrive(tankLeft, tankRight);
