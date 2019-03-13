@@ -10,7 +10,10 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
 import com.ctre.phoenix.motorcontrol.LimitSwitchSource;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.revrobotics.CANEncoder;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.IdleMode;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.stormbots.Clamp;
 import com.stormbots.Lerp;
 import com.stormbots.closedloop.FB;
@@ -29,7 +32,9 @@ import frc.robot.subsystems.ArmElevator.Pose;
 public class Arm extends Subsystem {
       // Put methods for controlling this subsystem
       // here. Call these from Commands.
-      public TalonSRX armMotor = new TalonSRX(12);
+      // public TalonSRX armMotor = new TalonSRX(12);
+      public CANSparkMax armMotor = new CANSparkMax(12, MotorType.kBrushless);
+      public CANEncoder armEncoder = new CANEncoder(armMotor);
       public DigitalInput armLimit = new DigitalInput(RobotMap.ArmLimitSwitch);
 
       FakeGyro gyro = new FakeGyro();
@@ -42,13 +47,11 @@ public class Arm extends Subsystem {
       double armAngle = 0.0;
 
       // double kArmGain = 0.027;
-      double kArmGain = 0.035; //comp bot
-      
+      double kArmGain; 
+      double kWristFF;
 
-      
       // double kArmFF = 0.3;
-      double kArmFF = 0.3; // See RobotInit for practicebot
-      double kWristCounterFF = 0.9; // See RobotInit for practicebot
+      double kArmFF;
 
       public static final double MAX_ANGLE = 90.0;
       public static       double MIN_ANGLE = -115.0;
@@ -71,23 +74,16 @@ public class Arm extends Subsystem {
             //as a test mode thing, we could potentially reset this using
             //current limited motors to force it back into nominal position
 
-            armMotor.setSensorPhase(true);
-            armMotor.configOpenloopRamp(0.2); 
+            // armMotor.configOpenloopRamp(0.2); 
+            armMotor.setOpenLoopRampRate(0.1);
 
-            //Configure are current restrictions
+            //configure are current restrictions
             //TODO: Set much higher. These limits are really low for bringup safety. 
             //https://www.chiefdelphi.com/t/talon-srx-current-limiting-behaviour/164074
-            armMotor.configPeakCurrentLimit(40, 10); // 35 A 
-            armMotor.configPeakCurrentDuration(200, 10); // 200ms
-            armMotor.configContinuousCurrentLimit(20, 10); // 30A
-            armMotor.enableCurrentLimit(true); // turn it on
 
-            armMotor.configForwardLimitSwitchSource(
-                  LimitSwitchSource.Deactivated, 
-                  LimitSwitchNormal.NormallyOpen);
-            armMotor.configReverseLimitSwitchSource(
-                  LimitSwitchSource.Deactivated, 
-                  LimitSwitchNormal.NormallyOpen);
+            armMotor.setSmartCurrentLimit(30, 10, 5700/10);
+
+            armMotor.setIdleMode(IdleMode.kCoast);
 
       }
 
@@ -95,22 +91,24 @@ public class Arm extends Subsystem {
       public void robotInit(){
             if(Robot.isCompbot){
                   armMotor.setInverted(true);
-                  kArmGain = 0.10;
-                  kArmFF = 0.5;
+                  kArmGain = 0.025;
+                  kArmFF = 0.2; 
+                  kWristFF = 0.0;
             }
             else{
-                  kWristCounterFF = 0.9;
+                  kWristFF = 0.9;
                   kArmFF = 0.5;
                   // kArmGain = 0.1;//too high
                   // kArmGain = 0.042; //too low 
-                  kArmGain = 0.12;
-                  armMotor.setInverted(false);
+                  kArmGain = 0.09;
+                  // armMotor.setInverted(false);
                   MIN_ANGLE = -115.0;
+                  kWristFF = 0.9;
             }
       }
 
       /** Specified by 4096 ticks per rotation, with a 54:18 gear ratio */
-      public Lerp armToDegrees = new Lerp(0, 3112.0, -90, 0);
+      public Lerp armToDegrees = new Lerp(0, 93, -90, 90);
 
       private Mode mode = Mode.CLOSEDLOOP;
       
@@ -127,7 +125,8 @@ public class Arm extends Subsystem {
       }
 
       public double getArmAngle(){
-            return armToDegrees.get(armMotor.getSelectedSensorPosition());
+            return armToDegrees.get(armEncoder.getPosition());
+            
       }
 
       public boolean isOnTarget(double tolerance){
@@ -139,7 +138,7 @@ public class Arm extends Subsystem {
       }
 
       public void setEncoderAngle(double angle){
-            armMotor.setSelectedSensorPosition((int)armToDegrees.getReverse(angle));
+            armEncoder.setPosition((int)armToDegrees.getReverse(angle));
       }
 
       public boolean isLimitPressed(){
@@ -173,11 +172,11 @@ public class Arm extends Subsystem {
                               kArmFF*Math.cos(Math.toRadians(currentArmPos)
                               );
 
-                        armPower += wristPower*-kWristCounterFF;
+                        armPower += wristPower*-kWristFF;
 
                         SmartDashboard.putNumber("Arm/Output FB", FB.fb(targetArmPos, currentArmPos, kArmGain));
                         SmartDashboard.putNumber("Arm/Output FF",  kArmFF*Math.cos(Math.toRadians(currentArmPos)));
-                        SmartDashboard.putNumber("Arm/Output Wrist FF",  wristPower*-kWristCounterFF);
+                        SmartDashboard.putNumber("Arm/Output Wrist FF",  wristPower*-kWristFF);
 
                   break;
 
@@ -210,12 +209,12 @@ public class Arm extends Subsystem {
             //Check for soft limits
             if(armPower > 0 && currentArmPos > MAX_ANGLE) armPower = 0;
             if(armPower < 0 && currentArmPos < MIN_ANGLE) armPower = 0;
-            // armPower = Clamp.clamp(armPower, -0.2, 0.2);
-            armMotor.set(ControlMode.PercentOutput, armPower);
+            // armPower = Clamp.clamp(armPower, -0.05, 0.05);
+
+            armMotor.set(armPower);
             SmartDashboard.putNumber("Arm/Output Total", armPower);
             SmartDashboard.putNumber("Arm/Amps", armMotor.getOutputCurrent());
       }
-
 
       @Override
       public void initDefaultCommand() {

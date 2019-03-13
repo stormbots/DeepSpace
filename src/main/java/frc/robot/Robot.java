@@ -22,6 +22,7 @@ import frc.robot.commandgroups.HatchPickup;
 import frc.robot.commandgroups.LoadCargoNew;
 import frc.robot.commandgroups.LoadCargo_v2;
 import frc.robot.commands.ArmPose;
+import frc.robot.commands.ChassisPixyDrive;
 import frc.robot.commands.IntakeGrabBall;
 import frc.robot.commands.IntakeHoming;
 import frc.robot.commands.RobotExitHab2;
@@ -107,6 +108,10 @@ public class Robot extends TimedRobot {
     SmartDashboard.putData("Commands/Hatch 1",new ArmPose(Pose.HATCH_1));
     SmartDashboard.putData("Commands/Hatch 2",new ArmPose(Pose.HATCH_2));
     SmartDashboard.putData("Commands/Hatch 3",new ArmPose(Pose.HATCH_3));
+    SmartDashboard.putData("Commands/Cargo 1",new ArmPose(Pose.CARGO_1));
+    SmartDashboard.putData("Commands/Cargo 2",new ArmPose(Pose.CARGO_2));
+    SmartDashboard.putData("Commands/Cargo 3",new ArmPose(Pose.CARGO_3));
+
     SmartDashboard.putData("Commands/Hide",new ArmPose(Pose.HIDE));
     SmartDashboard.putData("Commands/Hab3", new RobotGrabHab3(8));
     SmartDashboard.putData("Commands/Hab2", new RobotGrabHab2(4));
@@ -122,6 +127,8 @@ public class Robot extends TimedRobot {
 
     SmartDashboard.putString("Chassis/Pixy Version", pixy.getVersion().toString());
     SmartDashboard.putData("pdp", pdp);
+    SmartDashboard.putData("Chassis/Start Pixy", new ChassisPixyDrive());
+  
   }
 
   /**
@@ -221,8 +228,8 @@ public class Robot extends TimedRobot {
 
     armLift.update();
     hand.update();
-    intake.update();
-    passThrough.update();
+    // intake.update();
+    // passThrough.update();
     pogos.update();
     chassis.update();
 
