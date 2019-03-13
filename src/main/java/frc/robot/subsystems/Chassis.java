@@ -63,11 +63,12 @@ public class Chassis extends Subsystem {
   double tankLeft = 0;
   double tankRight = 0;
 
-  private Mode driveMode = Mode.DRIVER;
+  private Mode driveMode = Mode.ARCADEDRIVE;
 
   // Use an Enum to select a Differentail Drive type
   public enum Mode{
-    DRIVER,
+    ARCADEDRIVE,
+    FOCUSDRIVE,
     TANKDRIVE
   }
 
@@ -164,7 +165,7 @@ public class Chassis extends Subsystem {
     motorR1.setSmartCurrentLimit(stallLimit, freeLimit, limitRPM);
     motorR2.setSmartCurrentLimit(stallLimit, freeLimit, limitRPM);
 
-    double rampRate = 0.1;
+    double rampRate = 0.2;
     motorL0.setOpenLoopRampRate(rampRate);
     motorL1.setOpenLoopRampRate(rampRate);
     motorL2.setOpenLoopRampRate(rampRate);
@@ -172,11 +173,11 @@ public class Chassis extends Subsystem {
     motorR1.setOpenLoopRampRate(rampRate);
     motorR2.setOpenLoopRampRate(rampRate);
 
-    motorL0.setIdleMode(IdleMode.kCoast);
-    motorL1.setIdleMode(IdleMode.kBrake);
+    motorL0.setIdleMode(IdleMode.kBrake);
+    motorL1.setIdleMode(IdleMode.kCoast);
     motorL2.setIdleMode(IdleMode.kCoast);
-    motorR0.setIdleMode(IdleMode.kCoast);
-    motorR1.setIdleMode(IdleMode.kBrake);
+    motorR0.setIdleMode(IdleMode.kBrake);
+    motorR1.setIdleMode(IdleMode.kCoast);
     motorR2.setIdleMode(IdleMode.kCoast);
 
     motorL1.follow(motorL0);
@@ -245,9 +246,12 @@ public class Chassis extends Subsystem {
 
 
     switch(driveMode){
-      case DRIVER:
-        arcadeDriveOverload(arcadeForward, arcadeTurn);
-        //drive.arcadeDrive(arcadeForward, arcadeTurn, false);
+      case ARCADEDRIVE:
+        //arcadeDriveOverload(arcadeForward, arcadeTurn);
+        drive.arcadeDrive(arcadeForward, arcadeTurn*0.8, false);
+        break;
+      case FOCUSDRIVE:
+        drive.curvatureDrive(arcadeForward,arcadeTurn,false);
         break;
       case TANKDRIVE:
         drive.tankDrive(tankLeft, tankRight);

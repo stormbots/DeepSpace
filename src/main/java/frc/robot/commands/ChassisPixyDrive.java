@@ -133,7 +133,7 @@ public class ChassisPixyDrive extends Command {
   // Called once after isFinished returns true
   @Override
   protected void end() {
-    Robot.chassis.setMode(Mode.DRIVER);
+    Robot.chassis.setMode(Mode.ARCADEDRIVE);
     Robot.pixy.setLamp(false, false);
 
   }
@@ -142,7 +142,7 @@ public class ChassisPixyDrive extends Command {
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
-    Robot.chassis.setMode(Mode.DRIVER);
+    Robot.chassis.setMode(Mode.ARCADEDRIVE);
     Robot.pixy.setLamp(false, false);
   }
 }

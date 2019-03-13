@@ -34,7 +34,7 @@ public class ChassisTeleopDrive extends Command {
   protected void initialize() {
     //set mode back to manual
     System.out.println("ChassisTeleopDrive execute is running");
-    Robot.chassis.setMode(Mode.DRIVER);
+    Robot.chassis.setMode(Mode.ARCADEDRIVE);
 
     startTime = Timer.getFPGATimestamp();
   }
@@ -44,6 +44,13 @@ public class ChassisTeleopDrive extends Command {
   protected void execute() {
     
     Robot.chassis.arcadeDrive(OI.getDriveForward(), -OI.getDriveTurn());// Caden's Arcade 
+
+    if(OI.driveStick.getRawButton(8)) {
+      Robot.chassis.setMode(Mode.FOCUSDRIVE);
+    }
+    else {
+      Robot.chassis.setMode(Mode.ARCADEDRIVE);
+    }
 
     
     //Robot.chassis.arcadeDrive(0.4, 0);
