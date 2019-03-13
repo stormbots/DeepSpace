@@ -67,15 +67,17 @@ public class ArmPose extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
+    Robot.armLift.setPose(pose); //TODO: needed to set for dashboard, now or later?
+
     //Avoid catastrophic pose changes if we're in the robot
     if(Robot.armLift.pose==Pose.HIDE){
-      pose = Pose.CUSTOM;
+      Robot.armLift.setPose(Pose.CUSTOM);
       targetArm = -90+20;
-      targetWrist = -90-30; 
-      targetEle = 41;
+      targetWrist = -90; 
+      targetEle = 41+4;
     }
 
-    Robot.armLift.setPose(pose); //TODO: needed to set for dashboard, now or later?
+    
 
     //Arm moves are violent if we exit before it's all the way up, so don't. 
     double armDelta = pose.armAngle() - Robot.armLift.arm.getArmAngle(); 

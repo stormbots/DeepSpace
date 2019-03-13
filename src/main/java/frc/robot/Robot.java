@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commandgroups.HatchPickup;
 import frc.robot.commandgroups.LoadCargoNew;
+import frc.robot.commandgroups.LoadCargo_v2;
 import frc.robot.commands.ArmPose;
 import frc.robot.commands.IntakeGrabBall;
 import frc.robot.commands.IntakeHoming;
@@ -113,6 +114,8 @@ public class Robot extends TimedRobot {
     SmartDashboard.putData("Commands/CargoShip", new ArmPose(Pose.CARGO_SHIP));
     SmartDashboard.putData("Commands/Load Ball Into Hand",new LoadCargoNew());
     SmartDashboard.putData("Commands/Place Hatch", new HatchPickup());
+
+    SmartDashboard.putData("Commands/Load Ball V2",new LoadCargo_v2());
 
     SmartDashboard.putData("Commands/GrabBall", new IntakeGrabBall());
     SmartDashboard.putData("Commands/Home Intake", new IntakeHoming());
@@ -222,6 +225,8 @@ public class Robot extends TimedRobot {
     chassis.update();
 
     SmartDashboard.putData(pdp);
+
+    SmartDashboard.putString("Chassis/Pixy Version", pixy.getVersion().toString());
   }
 
   /**
