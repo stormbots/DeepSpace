@@ -112,10 +112,10 @@ public class ChassisPixyDrive extends Command {
       Robot.chassis.tankDrive(-0.2, -0.2);
     }
     else {
-      if(line.x0 > 0) {
+      if(line.x0 < 0) {
         Robot.chassis.tankDrive(shortSidePower, longSidePower);
       }
-      else if(line.x0 < 0) {
+      else if(line.x0 > 0) {
         Robot.chassis.tankDrive(longSidePower, shortSidePower);
       }
       else {
