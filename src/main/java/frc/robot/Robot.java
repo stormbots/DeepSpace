@@ -228,8 +228,8 @@ public class Robot extends TimedRobot {
 
     armLift.update();
     hand.update();
-    // intake.update();
-    // passThrough.update();
+    intake.update();
+    passThrough.update();
     pogos.update();
     chassis.update();
 
