@@ -49,7 +49,7 @@ public class Hand extends Subsystem {
     public double rollerPower = 0.0;
   
     public static final double GRAB_POWER = .5;
-    public static final double HOLD_POWER = .1;
+    public static final double HOLD_POWER = .2;
     public static final double EJECT_POWER = -0.5;
     public static final double OFF = .0;
     
