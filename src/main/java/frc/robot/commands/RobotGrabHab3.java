@@ -68,7 +68,7 @@ public class RobotGrabHab3 extends Command {
     if( robotIsUp && Robot.pogos.isFloorDetected() && runTime > moveCurrentTime + 2){
       Robot.pogos.setPosition(Pogos.RETRACTED);
       Robot.intake.setRollerPower(0);
-      Robot.chassis.arcadeDrive(0.0,0);
+      Robot.chassis.arcadeDrive(0.15,0);
       Robot.intake.setTargetPosition(Intake.PIVOT_GRAB_HAB_3);
       // setTimeout(startTime+2);
       // setTimeout(2);
