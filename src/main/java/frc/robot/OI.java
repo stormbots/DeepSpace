@@ -7,21 +7,27 @@
 
 package frc.robot;
 
-import com.stormbots.Lerp;
-
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commandgroups.DefenseMode;
-import frc.robot.commandgroups.LoadCargoNew;
-import frc.robot.subsystems.Hand;
-import frc.robot.subsystems.Hand.*;
-import frc.robot.subsystems.ArmElevator.Pose;
-import frc.robot.subsystems.Chassis.Gear;
+import frc.robot.commandgroups.LoadCargo_v2;
 // import frc.robot.commands.ArmPose;
 // import frc.robot.subsystems.ArmElevator;
 // import frc.robot.subsystems.ArmElevator.Pose;
-import frc.robot.commands.*;
+import frc.robot.commands.ArmPose;
+import frc.robot.commands.ChassisPixyDrive;
+import frc.robot.commands.ChassisShift;
+import frc.robot.commands.HandPose;
+import frc.robot.commands.IntakeGrabBall;
+import frc.robot.commands.IntakeHoming;
+import frc.robot.commands.PlaceHatch;
+import frc.robot.commands.RobotGrabHab2_v2;
+import frc.robot.commands.RobotGrabHab3_v2;
+import frc.robot.subsystems.ArmElevator.Pose;
+import frc.robot.subsystems.Chassis.Gear;// import frc.robot.commands.ArmPose;// import frc.robot.subsystems.ArmElevator;// import frc.robot.subsystems.ArmElevator.Pose;
+import frc.robot.subsystems.Hand;
+import frc.robot.subsystems.Hand.Position;
  
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -87,7 +93,7 @@ public class OI {
     poseCargo2.whenPressed(new ArmPose(Pose.CARGO_2));
     poseCargo3.whenPressed(new ArmPose(Pose.CARGO_3));
     //intakeCargo.whenPressed(new ArmPose(Pose.LOAD_CARGO));
-    intakeCargo.whenPressed(new LoadCargoNew());
+    intakeCargo.whenPressed(new LoadCargo_v2());
     //armDown.whenPressed(new ArmPose(Pose.HIDE));
     defenseMode.whenPressed(new DefenseMode());
 
@@ -116,7 +122,7 @@ public class OI {
     // Press+Release creates a "hold" behaviour without special isFinished() conditions
     shifter.whenPressed(new ChassisShift(Gear.HIGH));
     shifter.whenReleased(new ChassisShift(Gear.LOW));
-    climbSequenceHab3.whenPressed(new RobotGrabHab3(8));
+    climbSequenceHab3.whenPressed(new RobotGrabHab3_v2(8));
     climbSequenceHab2.whenPressed(new RobotGrabHab2_v2(4));
 
   }
@@ -167,7 +173,7 @@ public class OI {
     //return driveStick.getRawAxis(1);
     double j = driveStick.getRawAxis(1); 
     //return j*Math.abs(j);
-    return j*j*j;
+    return j;//*j*j;
   }
 
   public static double getDriveFwdR() {

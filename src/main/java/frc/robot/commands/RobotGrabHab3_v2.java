@@ -14,24 +14,25 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 import frc.robot.subsystems.ArmElevator.Pose;
+import frc.robot.subsystems.Chassis.Mode;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Pogos;
 
 /**
  * An example command. You can replace me with your own command.
  */
-public class RobotGrabHab2_v2 extends Command {
+public class RobotGrabHab3_v2 extends Command {
   // double angle = 0;
   double moveTime;
   Lerp timeToIntakeAngle;
   Lerp timeToPogoPosition;
   double startTime = 0;
 
-  public RobotGrabHab2_v2(double moveTime) {
+  public RobotGrabHab3_v2(double moveTime) {
     this.moveTime = moveTime;
     // timeToIntakeAngle = new Lerp(0, moveTime, 110, Intake.PIVOT_MIN_HAB);
-    timeToIntakeAngle = new Lerp(0, moveTime, 45, Intake.PIVOT_GRAB_HAB_2);
-    timeToPogoPosition = new Lerp(0, moveTime, Pogos.RETRACTED, Pogos.DEPLOY_HAB_2);
+    timeToIntakeAngle = new Lerp(0, moveTime, 45, Intake.PIVOT_GRAB_HAB_3);
+    timeToPogoPosition = new Lerp(0, moveTime, Pogos.RETRACTED, Pogos.DEPLOY_HAB_3);
     // Use requires() here to declare subsystem dependencies
     requires(Robot.intake);
     requires(Robot.pogos);
@@ -49,6 +50,11 @@ public class RobotGrabHab2_v2 extends Command {
   protected void initialize() {
     startTime = Timer.getFPGATimestamp();
     System.out.println("RobotGrabHab has initialized");
+
+    // TankDrive Adaptations
+    //Robot.chassis.setMode(Mode.TANKDRIVE);
+    //Robot.chassis.tankDrive(0, 0);
+
     Robot.intake.setMode(Intake.Mode.HABLIFT);
     Robot.armLift.setPose(Pose.HATCH_1);
     Robot.pogos.kPogoGain = Pogos.POGO_GAIN_HAB;
@@ -65,12 +71,13 @@ public class RobotGrabHab2_v2 extends Command {
       //gain elevation
       Robot.intake.setTargetPosition(timeToIntakeAngle.get(moveCurrentTime));
       Robot.pogos.setPosition(timeToPogoPosition.get(moveCurrentTime));
+      //Robot.chassis.tankDrive(0, 0);
       Robot.chassis.arcadeDrive(0, 0);
     }
     else if(runTime < moveTime + 2){
-
       // All the way up
       Robot.intake.setRollerPower(1); // make a constant when time permits
+      //Robot.chassis.tankDrive(0.3*0.8, 0.3*0.8);
       Robot.chassis.arcadeDrive(0.3,0);  
     }
     else if(runTime < moveTime + 4){
@@ -78,20 +85,25 @@ public class RobotGrabHab2_v2 extends Command {
       Robot.intake.setTargetPosition(Intake.PIVOT_REST);
       Robot.intake.setRollerPower(0);
       Robot.pogos.setPosition(Pogos.RETRACTED);
+      //Robot.chassis.tankDrive(0, 0);
       Robot.chassis.arcadeDrive(0, 0);
     }
-    else if(runTime < moveTime + 4 + 2){
+    else if(runTime < moveTime + 4 + 2 + 2){
       //move forward
-      Robot.chassis.arcadeDrive(0.2,0);  
+      //Robot.chassis.tankDrive(0.2*0.8, 0.2*0.8);
+      Robot.chassis.arcadeDrive(0.2,0); 
 
     }
-    else if(runTime < moveTime + 4 + 2 + 1 + 1){
+    else if(runTime < moveTime + 4 + 2 + 1 + 1 + 1){
       //stop chassis
+      //Robot.chassis.tankDrive(0, 0);
       Robot.chassis.arcadeDrive(0, 0);
 
     }
     else{
       //finished
+
+      //Robot.chassis.tankDrive(0, 0);
       Robot.chassis.arcadeDrive(0, 0);
 
     }
@@ -112,6 +124,10 @@ public class RobotGrabHab2_v2 extends Command {
     // NOTE:  NEED TO BE ABSOLUTELY SURE BEFORE ALLOWING THIS INTO THE CODE !!!!!!!!!!!!!!
     //Robot.pogos.retractPogos();
 
+    // TankDrive Adaptations
+    //Robot.chassis.tankDrive(0, 0);
+    //Robot.chassis.setMode(Mode.ARCADEDRIVE);
+
     Robot.chassis.arcadeDrive(0, 0);
     Robot.pogos.setPosition(Pogos.RETRACTED);
     Robot.intake.setMode(Intake.Mode.CLOSEDLOOP);
@@ -129,4 +145,5 @@ public class RobotGrabHab2_v2 extends Command {
     
     // NOTE:  DO NOT allow the pogos to retract, or we will topple over the edge and destroy the robot
   }
+  
 }

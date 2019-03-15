@@ -27,6 +27,7 @@ import frc.robot.commands.IntakeGrabBall;
 import frc.robot.commands.RobotGrabHab2;
 import frc.robot.commands.RobotGrabHab2_v2;
 import frc.robot.commands.RobotGrabHab3;
+import frc.robot.commands.RobotGrabHab3_v2;
 import frc.robot.commands.WristHoming;
 import frc.robot.subsystems.ArmElevator;
 import frc.robot.subsystems.ArmElevator.Pose;
@@ -84,6 +85,7 @@ public class Robot extends TimedRobot {
     isCompbot = Preferences.getInstance().getBoolean("compbot", true);
     SmartDashboard.putBoolean("Combot?", isCompbot);
     
+    LiveWindow.disableAllTelemetry();
 
     armLift.robotInit();
     chassis.robotInit();
@@ -122,6 +124,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putData("Commands/Load Ball Into Hand",new LoadCargoNew());
     // SmartDashboard.putData("Commands/Place Hatch", new HatchPickup());
     SmartDashboard.putData("Commands/NEW Hab2", new RobotGrabHab2_v2(4));
+    SmartDashboard.putData("Commands/NEW Hab3", new RobotGrabHab3_v2(8));
 
     SmartDashboard.putData("Commands/Load Ball V2",new LoadCargo_v2());
 
@@ -212,7 +215,7 @@ public class Robot extends TimedRobot {
 
     intake.teleopInit();
     chassis.reset();
-    LiveWindow.disableAllTelemetry();
+    // LiveWindow.disableAllTelemetry();
 
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();

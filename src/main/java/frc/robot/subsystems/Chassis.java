@@ -248,9 +248,13 @@ public class Chassis extends Subsystem {
     switch(driveMode){
       case ARCADEDRIVE:
         //arcadeDriveOverload(arcadeForward, arcadeTurn);
-        drive.arcadeDrive(arcadeForward, arcadeTurn*0.8, false);
+
+        // arcadeForward = Math.max(lerp(arcadeForward, 0, 0.65, 0, 0.3), Math.pow(arcadeForward, 3));
+
+        drive.arcadeDrive(arcadeForward*0.8, arcadeTurn*0.8, false);
         break;
       case FOCUSDRIVE:
+      
         drive.curvatureDrive(arcadeForward,arcadeTurn,false);
         break;
       case TANKDRIVE:

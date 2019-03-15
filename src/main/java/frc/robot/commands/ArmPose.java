@@ -66,7 +66,7 @@ public class ArmPose extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    Robot.armLift.setPose(pose); //TODO: needed to set for dashboard, now or later?
+    //TODO: needed to set for dashboard, now or later?
 
     //Avoid catastrophic pose changes if we're in the robot
     if(Robot.armLift.pose==Pose.HIDE){
@@ -74,6 +74,8 @@ public class ArmPose extends Command {
       targetArm = -90+20;
       targetWrist = -90; 
       targetEle = 41+4;
+    } else {
+      Robot.armLift.setPose(pose);
     }
 
     

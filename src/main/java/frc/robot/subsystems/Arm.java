@@ -90,11 +90,12 @@ public class Arm extends Subsystem {
       /** Runs on robot boot after network/SmartDashboard becomes available */
       public void robotInit(){
             if(Robot.isCompbot){
+
                   armMotor.setInverted(true);
                   kArmGain = 0.025;
                   kArmFF = 0.2; 
-                  // kWristFF = 0.05;
-                  kWristFF = 0.0;
+                  kWristFF = 0.02;
+                  // kWristFF = 0.0;
             }
             else{
                   kWristFF = 0.9;
