@@ -93,6 +93,7 @@ public class Arm extends Subsystem {
                   armMotor.setInverted(true);
                   kArmGain = 0.025;
                   kArmFF = 0.2; 
+                  // kWristFF = 0.05;
                   kWristFF = 0.0;
             }
             else{
@@ -199,7 +200,9 @@ public class Arm extends Subsystem {
             //if switch is pressed && lastSwitch was not pressed
                   //know we're at angle X
             //lastswitch = switch
-            if(isLimitPressed() != lastSwitch){
+            //TODO: check on old load to make sure it's consistent and non-breaking;
+            if(isLimitPressed() != lastSwitch){ //old "working version"
+            // if(isLimitPressed() != lastSwitch && lastSwitch == true){ //should fix for slop
                   setEncoderAngle(-87);
             }
             lastSwitch = isLimitPressed();

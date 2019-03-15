@@ -12,7 +12,6 @@ import com.stormbots.Lerp;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.command.TimedCommand;
 import frc.robot.Robot;
 import frc.robot.subsystems.ArmElevator.Pose;
 
@@ -122,7 +121,12 @@ public class ArmPose extends Command {
   // Called once after isFinished returns true
   @Override
   protected void end() {
-    Robot.armLift.setPose(pose);
+    if(Robot.armLift.pose == Pose.CUSTOM){
+      Robot.armLift.setPose(targetEle, targetArm, targetWrist);
+    }
+    else{
+      Robot.armLift.setPose(pose);
+     }
   }
 
   // Called when another command which requires one or more of the same

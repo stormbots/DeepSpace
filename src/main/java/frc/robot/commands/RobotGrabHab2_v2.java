@@ -73,21 +73,26 @@ public class RobotGrabHab2_v2 extends Command {
       Robot.chassis.arcadeDrive(0.3,0);  
     }
     else if(runTime < moveTime + 4){
-      //on hab, move intake up, pogos still down for safety
+      //on hab, move intake up, pogos move up
       Robot.intake.setTargetPosition(Intake.PIVOT_REST);
       Robot.intake.setRollerPower(0);
-    }
-    else if(runTime < moveTime + 4 + 8){
-      //on hab, pogos hitting the hab wall
       Robot.pogos.setPosition(Pogos.RETRACTED);
       Robot.chassis.arcadeDrive(0, 0);
     }
-    else if(runTime < moveTime + 4 + 8 +1){
-      //pogos up, forward slightly
-      Robot.chassis.arcadeDrive(0.3,0);  
+    else if(runTime < moveTime + 4 + 2){
+      //move forward
+      Robot.chassis.arcadeDrive(0.2,0);  
+
+    }
+    else if(runTime < moveTime + 4 + 2 + 1){
+      //stop chassis
+      Robot.chassis.arcadeDrive(0, 0);
+
     }
     else{
       //finished
+      Robot.chassis.arcadeDrive(0, 0);
+
     }
   }
 

@@ -10,6 +10,7 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 import frc.robot.subsystems.ArmElevator.Mode;
+import frc.robot.subsystems.ArmElevator.Pose;
 
 public class ArmHoming extends Command {
   public ArmHoming() {
@@ -43,6 +44,7 @@ public class ArmHoming extends Command {
   @Override
   protected void end() {
     Robot.armLift.arm.setMode(Mode.CLOSEDLOOP);
+    Robot.armLift.arm.set(Pose.HATCH_1);
   }
 
   // Called when another command which requires one or more of the same

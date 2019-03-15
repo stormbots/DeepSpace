@@ -117,7 +117,7 @@ public class OI {
     shifter.whenPressed(new ChassisShift(Gear.HIGH));
     shifter.whenReleased(new ChassisShift(Gear.LOW));
     climbSequenceHab3.whenPressed(new RobotGrabHab3(8));
-    climbSequenceHab2.whenPressed(new RobotGrabHab2(4));
+    climbSequenceHab2.whenPressed(new RobotGrabHab2_v2(4));
 
   }
   

@@ -16,17 +16,16 @@ import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
+import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.commandgroups.HatchPickup;
 import frc.robot.commandgroups.LoadCargoNew;
 import frc.robot.commandgroups.LoadCargo_v2;
 import frc.robot.commands.ArmPose;
 import frc.robot.commands.ChassisPixyDrive;
 import frc.robot.commands.IntakeGrabBall;
-import frc.robot.commands.IntakeHoming;
-import frc.robot.commands.RobotExitHab2;
 import frc.robot.commands.RobotGrabHab2;
+import frc.robot.commands.RobotGrabHab2_v2;
 import frc.robot.commands.RobotGrabHab3;
 import frc.robot.commands.WristHoming;
 import frc.robot.subsystems.ArmElevator;
@@ -105,25 +104,29 @@ public class Robot extends TimedRobot {
     CameraServer.getInstance().startAutomaticCapture(1);
 
     //Throw commands on Shuffleboards
+
+    //Commented out adjusted for better runtime
+
     SmartDashboard.putData("Commands/Hatch 1",new ArmPose(Pose.HATCH_1));
-    SmartDashboard.putData("Commands/Hatch 2",new ArmPose(Pose.HATCH_2));
+    // SmartDashboard.putData("Commands/Hatch 2",new ArmPose(Pose.HATCH_2));
     SmartDashboard.putData("Commands/Hatch 3",new ArmPose(Pose.HATCH_3));
-    SmartDashboard.putData("Commands/Cargo 1",new ArmPose(Pose.CARGO_1));
+    // SmartDashboard.putData("Commands/Cargo 1",new ArmPose(Pose.CARGO_1));
     SmartDashboard.putData("Commands/Cargo 2",new ArmPose(Pose.CARGO_2));
-    SmartDashboard.putData("Commands/Cargo 3",new ArmPose(Pose.CARGO_3));
+    // SmartDashboard.putData("Commands/Cargo 3",new ArmPose(Pose.CARGO_3));
 
     SmartDashboard.putData("Commands/Hide",new ArmPose(Pose.HIDE));
     SmartDashboard.putData("Commands/Hab3", new RobotGrabHab3(8));
     SmartDashboard.putData("Commands/Hab2", new RobotGrabHab2(4));
-    SmartDashboard.putData("Commands/ExitHab", new RobotExitHab2());
-    SmartDashboard.putData("Commands/CargoShip", new ArmPose(Pose.CARGO_SHIP));
+    // SmartDashboard.putData("Commands/ExitHab", new RobotExitHab2());
+    // SmartDashboard.putData("Commands/CargoShip", new ArmPose(Pose.CARGO_SHIP));
     SmartDashboard.putData("Commands/Load Ball Into Hand",new LoadCargoNew());
-    SmartDashboard.putData("Commands/Place Hatch", new HatchPickup());
+    // SmartDashboard.putData("Commands/Place Hatch", new HatchPickup());
+    SmartDashboard.putData("Commands/NEW Hab2", new RobotGrabHab2_v2(4));
 
     SmartDashboard.putData("Commands/Load Ball V2",new LoadCargo_v2());
 
     SmartDashboard.putData("Commands/GrabBall", new IntakeGrabBall());
-    SmartDashboard.putData("Commands/Home Intake", new IntakeHoming());
+    // SmartDashboard.putData("Commands/Home Intake", new IntakeHoming());
 
     SmartDashboard.putString("Chassis/Pixy Version", pixy.getVersion().toString());
     SmartDashboard.putData("pdp", pdp);
@@ -175,6 +178,7 @@ public class Robot extends TimedRobot {
     if(!armLift.wrist.isHomed()){
       wristHoming.start();
     }
+    //armLift.setPose(armLift.elevator.getPosition(),armLift.arm.getArmAngle(),armLift.wrist.getWristAngleFromFloor());
 
     /*
      * String autoSelected = SmartDashboard.getString("Auto Selector",
@@ -208,6 +212,7 @@ public class Robot extends TimedRobot {
 
     intake.teleopInit();
     chassis.reset();
+    LiveWindow.disableAllTelemetry();
 
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
@@ -216,6 +221,8 @@ public class Robot extends TimedRobot {
       wristHoming.start();
     }
 
+    //armLift.setPose(armLift.elevator.getPosition(),armLift.arm.getArmAngle(),armLift.wrist.getWristAngleFromFloor());
+    //This causes our wrist to drop after homing
   }
 
   
@@ -243,7 +250,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void testPeriodic() {
-
+    compressor.setClosedLoopControl(true);
   }
 
 }
