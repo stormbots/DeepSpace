@@ -17,13 +17,13 @@ import frc.robot.subsystems.ArmElevator.Pose;
 
 public class ArmPose extends Command {
   Pose pose;
-  double moveTime = 0.5;
+  double moveTime = 0.7; //NOTE: Overwritten in init to handle long arm moves
   double startTime = 0;
   Lerp timeToArmAngle;
   Lerp timeToElevatorHeight;
   Lerp timeToWristAngle;
   double armStart;
-  double currentTime;
+  double currentTime = 0;
 
   double targetArm = 0;
   double targetWrist = 0; 
@@ -38,8 +38,6 @@ public class ArmPose extends Command {
     requires(Robot.armLift.elevator);
     requires(Robot.armLift.wrist);
     requires(Robot.armLift.arm);
-    currentTime = 0;
-    setTimeout(2*moveTime);
 
     targetArm = armAngle;
     targetWrist = wristAngle; 
@@ -56,8 +54,7 @@ public class ArmPose extends Command {
     requires(Robot.armLift.elevator);
     requires(Robot.armLift.wrist);
     requires(Robot.armLift.arm);
-    currentTime = 0;
-    setTimeout(2*moveTime);
+
     targetArm = pose.armAngle();
     targetWrist = pose.wristAngle();
     targetEle = pose.eleHeight();
@@ -66,24 +63,11 @@ public class ArmPose extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    //TODO: needed to set for dashboard, now or later?
-
-    //Avoid catastrophic pose changes if we're in the robot
+    //NOTE: Setting without the setter so our smartDashboard shows the target pose,
+    // but without setting the targetPositions for the systems which is what the setter does
+    // This avoids some gnarly glitching where it causes the setpoint to "jump"
+    Robot.armLift.pose = this.pose; 
     
-    if(Robot.armLift.pose==Pose.HIDE){
-      Robot.armLift.setPose(Pose.CUSTOM);
-      targetArm = -90+20;
-      targetWrist = -90; 
-      targetEle = 41+4;
-    } 
-    else {  
-      setTimeout(2*moveTime);
-      Robot.armLift.setPose(pose);
-      targetArm = pose.armAngle();
-      targetWrist = pose.wristAngle();
-      targetEle = pose.eleHeight();
-    }
-
     //Arm moves are violent if we exit before it's all the way up, so don't. 
     double armDelta = pose.armAngle() - Robot.armLift.arm.getArmAngle(); 
     if(armDelta > 90){
@@ -92,6 +76,7 @@ public class ArmPose extends Command {
     else if(armDelta < -90){
         moveTime = 1.2 ;
     }
+    setTimeout(2*moveTime);
 
     startTime = Timer.getFPGATimestamp();
 
@@ -127,7 +112,8 @@ public class ArmPose extends Command {
   // Called once after isFinished returns true
   @Override
   protected void end() {
-    if(Robot.armLift.pose == Pose.CUSTOM){
+    //Make sure that we set the 
+    if(this.pose == Pose.CUSTOM){
       Robot.armLift.setPose(targetEle, targetArm, targetWrist);
     }
     else{
