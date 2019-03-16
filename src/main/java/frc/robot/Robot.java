@@ -19,10 +19,13 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.commandgroups.DefenseModeDisengage;
+import frc.robot.commandgroups.DefenseModeEngage;
 import frc.robot.commandgroups.LoadCargoNew;
 import frc.robot.commandgroups.LoadCargo_v2;
 import frc.robot.commands.ArmPose;
 import frc.robot.commands.ChassisPixyDrive;
+import frc.robot.commands.DefenseModeSwitcher;
 import frc.robot.commands.IntakeGrabBall;
 import frc.robot.commands.RobotGrabHab2;
 import frc.robot.commands.RobotGrabHab2_v2;
@@ -115,6 +118,9 @@ public class Robot extends TimedRobot {
     SmartDashboard.putData("Commands/Cargo 1",new ArmPose(Pose.CARGO_1));
     SmartDashboard.putData("Commands/Cargo 2",new ArmPose(Pose.CARGO_2));
     SmartDashboard.putData("Commands/Cargo 3",new ArmPose(Pose.CARGO_3));
+    SmartDashboard.putData("Commands/DefenseMode Engage",new DefenseModeEngage());
+    SmartDashboard.putData("Commands/DefenseMode Disengage",new DefenseModeDisengage());
+    SmartDashboard.putData("Commands/DefenseModeToggle",new DefenseModeSwitcher());
 
     SmartDashboard.putData("Commands/Hide",new ArmPose(Pose.HIDE));
     SmartDashboard.putData("Commands/Hab3", new RobotGrabHab3(8));
@@ -244,8 +250,6 @@ public class Robot extends TimedRobot {
     chassis.update();
 
     SmartDashboard.putData(pdp);
-
-    SmartDashboard.putString("Chassis/Pixy Version", pixy.getVersion().toString());
   }
 
   /**
@@ -253,6 +257,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void testPeriodic() {
+    SmartDashboard.putString("Chassis/Pixy Version", pixy.getVersion().toString());
     compressor.setClosedLoopControl(true);
   }
 
