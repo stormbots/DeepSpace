@@ -93,6 +93,9 @@ public class ArmElevator extends Subsystem {
             HATCH_2(69,-90,0),
             HATCH_3(58,+90,0),
 
+            HIDE_1(41+4,-80.0 + 10, 0),
+            HIDE_2(41+4,-80.0 + 10,-90.0-30),
+
             LOAD_HATCH(42,-90,0),
             // LOAD_CARGO(42,-59,-150); //ANCIENT practice bot, arm used to be -70, wrist angle was -135
             LOAD_CARGO_PREP(45,-53+10,0),

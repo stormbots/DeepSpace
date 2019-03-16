@@ -110,11 +110,11 @@ public class Robot extends TimedRobot {
     //Commented out adjusted for better runtime
 
     SmartDashboard.putData("Commands/Hatch 1",new ArmPose(Pose.HATCH_1));
-    // SmartDashboard.putData("Commands/Hatch 2",new ArmPose(Pose.HATCH_2));
+    SmartDashboard.putData("Commands/Hatch 2",new ArmPose(Pose.HATCH_2));
     SmartDashboard.putData("Commands/Hatch 3",new ArmPose(Pose.HATCH_3));
-    // SmartDashboard.putData("Commands/Cargo 1",new ArmPose(Pose.CARGO_1));
+    SmartDashboard.putData("Commands/Cargo 1",new ArmPose(Pose.CARGO_1));
     SmartDashboard.putData("Commands/Cargo 2",new ArmPose(Pose.CARGO_2));
-    // SmartDashboard.putData("Commands/Cargo 3",new ArmPose(Pose.CARGO_3));
+    SmartDashboard.putData("Commands/Cargo 3",new ArmPose(Pose.CARGO_3));
 
     SmartDashboard.putData("Commands/Hide",new ArmPose(Pose.HIDE));
     SmartDashboard.putData("Commands/Hab3", new RobotGrabHab3(8));

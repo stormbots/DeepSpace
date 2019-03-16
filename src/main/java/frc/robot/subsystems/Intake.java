@@ -79,7 +79,7 @@ public class Intake extends Subsystem {
   public static       double PIVOT_MAX = 135.0;
   public static final double PIVOT_GRAB_HAB_2 = 20;
   public static final double PIVOT_GRAB_HAB_3 = 20;
-  public static final double PIVOT_REST = PIVOT_MAX-5;
+  public static final double PIVOT_REST = PIVOT_MAX-1;
   public static final double PIVOT_GRAB_CARGO = 71.5; //was 61.5, 76.5
   public static final double ROLLER_GRAB_CARGO = 1.0;
   // public static final double ROLLER_GRAB_POWER = 0;
@@ -148,7 +148,7 @@ public class Intake extends Subsystem {
       case CLOSEDLOOP:
       
         //run feedback function
-        if(targetPosition >= 120){targetPosition += 20;}
+        if(targetPosition >= 120){targetPosition += 5;}
         pivotPower = FB.fb(targetPosition, currentPosition, kPivotGain)
          + Math.cos(currentPosition*(Math.PI/180.0 ))*kPivotFF;
         break;
