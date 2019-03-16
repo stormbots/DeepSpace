@@ -83,6 +83,9 @@ public class RobotGrabHab3_v2 extends Command {
     else if(runTime < moveTime + 4){
       //on hab, move intake up, pogos move up
       Robot.intake.setTargetPosition(Intake.PIVOT_REST);
+      //TODO: This should probably be here to reduce oscillation and system damage
+      // Robot.intake.setMode(Intake.Mode.CLOSEDLOOP);
+  
       Robot.intake.setRollerPower(0);
       Robot.pogos.setPosition(Pogos.RETRACTED);
       //Robot.chassis.tankDrive(0, 0);
@@ -92,12 +95,13 @@ public class RobotGrabHab3_v2 extends Command {
       //move forward
       //Robot.chassis.tankDrive(0.2*0.8, 0.2*0.8);
       Robot.chassis.arcadeDrive(0.2,0); 
-
     }
     else if(runTime < moveTime + 4 + 2 + 1 + 1 + 1){
       //stop chassis
       //Robot.chassis.tankDrive(0, 0);
       Robot.chassis.arcadeDrive(0, 0);
+      //TODO: This should probably be here to reduce oscillation and system damage
+      // Robot.pogos.kPogoGain = Pogos.POGO_GAIN_IDLE;
 
     }
     else{
