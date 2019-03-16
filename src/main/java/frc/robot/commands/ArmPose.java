@@ -69,16 +69,20 @@ public class ArmPose extends Command {
     //TODO: needed to set for dashboard, now or later?
 
     //Avoid catastrophic pose changes if we're in the robot
+    
     if(Robot.armLift.pose==Pose.HIDE){
       Robot.armLift.setPose(Pose.CUSTOM);
       targetArm = -90+20;
       targetWrist = -90; 
       targetEle = 41+4;
-    } else {
+    } 
+    else {  
+      setTimeout(2*moveTime);
       Robot.armLift.setPose(pose);
+      targetArm = pose.armAngle();
+      targetWrist = pose.wristAngle();
+      targetEle = pose.eleHeight();
     }
-
-    
 
     //Arm moves are violent if we exit before it's all the way up, so don't. 
     double armDelta = pose.armAngle() - Robot.armLift.arm.getArmAngle(); 
