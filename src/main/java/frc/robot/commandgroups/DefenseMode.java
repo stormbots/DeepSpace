@@ -41,6 +41,7 @@ public class DefenseMode extends CommandGroup {
     addParallel(new PassThroughPower(-0.3),2);
     addParallel(new HandPose(Hand.Position.CLOSE,Hand.EJECT_POWER,  Hand.Position.CLOSE,Hand.OFF),0.2);
     // addParallel(new IntakeHoming());
+    //                        E     A     W
     addSequential(new ArmPose(41+4,-80.0 + 10, 0));
     addSequential(new ArmPose(41+4,-80.0 + 10,-90.0-30));
     addSequential(new ArmPose(Pose.HIDE));
