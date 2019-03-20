@@ -94,7 +94,7 @@ public class Arm extends Subsystem {
                   armMotor.setInverted(true);
                   kArmGain = 0.025;
                   kArmFF = 0.2; 
-                  kWristFF = 0.01; // was 0.02
+                  kWristFF = 0.02; // was 0.02
                   // kWristFF = 0.0;
             }
             else{

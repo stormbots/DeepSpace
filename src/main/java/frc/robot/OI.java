@@ -18,6 +18,7 @@ import frc.robot.commandgroups.LoadCargo_v2;
 import frc.robot.commands.ArmPose;
 import frc.robot.commands.ChassisPixyDrive;
 import frc.robot.commands.ChassisShift;
+import frc.robot.commands.DefenseModeSwitcher;
 import frc.robot.commands.HandPose;
 import frc.robot.commands.IntakeGrabBall;
 import frc.robot.commands.IntakeHoming;
@@ -106,7 +107,7 @@ public class OI {
     placeHatch.whenPressed(new PlaceHatch());
 
     homeIntake.whileHeld(new IntakeHoming());
-    defenseMode.whenPressed(new DefenseMode());
+    defenseMode.whenPressed(new DefenseModeSwitcher());
 
     //autoLineup.whileHeld(new ChassisPixyDrive());
 

@@ -42,7 +42,7 @@ public class PlaceHatch extends Command {
     //if hatch3, elevatordown // maybe wait and move wrist up?
 
     //HATCH 3
-    if(true || Robot.armLift.getPose() == Pose.HATCH_3){
+    if(Robot.armLift.getPose() == Pose.HATCH_3){
       if(currentTime < 0.3){
         Robot.hand.setPosition(Position.CLOSE);
       }
@@ -62,12 +62,15 @@ public class PlaceHatch extends Command {
         Robot.hand.setPosition(Position.CLOSE);
       }
       else if(currentTime < 0.8){
+        
         if(Robot.armLift.getPose() == Pose.HATCH_2){
           Robot.armLift.wrist.setTargetAngleFromFloor(-45);
+          Robot.armLift.elevator.setPosition(Robot.armLift.getPose().eleHeight()-2);
         }
         else{
-        Robot.armLift.wrist.setTargetAngleFromFloor(-90);
+        Robot.armLift.wrist.setTargetAngleFromFloor(-10);
         }
+      
       }
     }
   }
