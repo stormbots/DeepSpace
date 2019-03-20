@@ -9,9 +9,12 @@ package frc.robot.commands;
 
 import static com.stormbots.Lerp.lerp;
 
+import com.stormbots.filter.SimpleMovingAverage;
+
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.LimeLight;
 /**
  * An example command.  You can replace me with your own command.
@@ -55,7 +58,9 @@ public class LimelightTurning extends Command {
 
     // proportional for the turning adjustment used to lower the angle to close to 0
     double pTurnAdjust;
-
+    // might be able to get rid of outliers and calculate average effectively, hwever it may effect the 
+    // frames on the limelight too much -- not tested yet 
+    SimpleMovingAverage simpleMovingAverage; 
   }
 
   // Called repeatedly when this Command is scheduled to run
@@ -70,19 +75,22 @@ public class LimelightTurning extends Command {
     double[] camtran = NetworkTable.getTable("limelight").getNumberArray("camtran", new double[6]);
     double z = camtran[2];
 
-    // need to get rid of outliers 
-
+    //should calculate a mean for z and get rid of some noise in the data
+    SimpleMovingAverage simpleMovingAverage = new SimpleMovingAverage(2);
+    simpleMovingAverage.put(z);
+    
     // Average, calculated on a 4 iteration basis and used to make the jittery z value 
     // taken from 3D compute more accurate.
+    /*
     double sum = 0.0;
     for(int i = 0; i < 4; i++) {
       double value = z;
       sum += value;
     }
     double zAverage = sum / 4;
-
+    */
     // lerps the range of the limelight (0" - 65")
-    double distancePowerMod = lerp(zAverage, 0, 65, 0, 1); 
+    double distancePowerMod = lerp(simpleMovingAverage.get(), 0, 65, 0, 1); 
 
     // makes sure that the power of the drive does not exceed its limit
     if (distancePowerMod > 1){
@@ -90,7 +98,7 @@ public class LimelightTurning extends Command {
     }
 
     // makes us drive, should turn and then move forward in the same function
-    Robot.drive.driver.tankDrive((0.5 * distancePowerMod) + (turnAdjust * pTurnAdjust - 6), (0.5 * distancePowerMod) - (turnAdjust * pTurnAdjust - 6));
+    Robot.chassis.driver.tankDrive((0.5 * distancePowerMod) + (turnAdjust * pTurnAdjust - 6), (0.5 * distancePowerMod) - (turnAdjust * pTurnAdjust - 6));
     // 6 is our offest in inches from the center of the robot to our limelight
 
   }
@@ -103,16 +111,11 @@ public class LimelightTurning extends Command {
     double[] camtran = NetworkTable.getTable("limelight").getNumberArray("camtran", new double[6]);
     double z = camtran[2];
 
-    // calculates average for telling us when to stop
-    double sum = 0.0;
-    for(int i = 0; i < 4; i++) {
-      double value = z;
-      sum += value;
-    }
-    double zAverage = sum / 4;
+    //should calculate a mean for z and get rid of some noise in the data
+    SimpleMovingAverage simpleMovingAverage = new SimpleMovingAverage(2);
 
     // tells us to stop when we get close enough to the target
-    if (zAverage <= 18 ) { //measured in inches 
+    if (simpleMovingAverage.get() <= 18 ) { //measured in inches 
       return true;
     }
     else {
@@ -125,6 +128,8 @@ public class LimelightTurning extends Command {
   protected void end() {
     // sets the limelight's camera mode to camera mode
     NetworkTable.getTable("limelight").putNumber("camMode", 1);
+    SimpleMovingAverage simpleMovingAverage = new SimpleMovingAverage(2);
+    simpleMovingAverage.clear();
   }
 
   // Called when another command which requires one or more of the same
