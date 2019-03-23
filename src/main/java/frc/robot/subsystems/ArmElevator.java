@@ -102,6 +102,7 @@ public class ArmElevator extends Subsystem {
             LOAD_CARGO_PREP_2(45, -50+10, -166),
             // LOAD_CARGO(41,-53,-150); /MAR04 Works on practice bot. Usually works on Comp bot
             LOAD_CARGO(41,-65 - 10,-161 + 10-10); //MAR04 Should work but untested on comp bot
+            //LOAD_CARBO(41, -75, -150)
             //LOAD_CARGO(41,-67,-156); //MAR05 PRactice bot maybe?
 
             private double eleHeight;
