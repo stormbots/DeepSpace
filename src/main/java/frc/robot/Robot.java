@@ -21,8 +21,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commandgroups.DefenseModeDisengage;
 import frc.robot.commandgroups.DefenseModeEngage;
+import frc.robot.commandgroups.DefenseMode_v2;
 import frc.robot.commandgroups.LoadCargoNew;
 import frc.robot.commandgroups.LoadCargo_v2;
+import frc.robot.commandgroups.LoadCargo_v3;
 import frc.robot.commands.ArmPose;
 import frc.robot.commands.ChassisPixyDrive;
 import frc.robot.commands.DefenseModeSwitcher;
@@ -54,7 +56,8 @@ public class Robot extends TimedRobot {
   public static ExampleSubsystem m_subsystem = new ExampleSubsystem();
   public static ArmElevator armLift = new ArmElevator();
   public static Hand hand = new Hand();
-  //public static ShuffleboardTab driveTab = Shuffleboard.getTab("Match Dashboard");
+  // public static ShuffleboardTab driveTab = Shuffleboard.getTab("Match
+  // Dashboard");
   public static Pogos pogos = new Pogos();
 
   public static Pixy2 pixy = new Pixy2(Port.kOnboardCS0);
@@ -141,6 +144,11 @@ public class Robot extends TimedRobot {
     SmartDashboard.putData("pdp", pdp);
     SmartDashboard.putData("Chassis/Start Pixy", new ChassisPixyDrive());
   
+    SmartDashboard.putData("Commands/DefenseMode_v2", new DefenseMode_v2());
+    SmartDashboard.putData("Commands/LoadCargo_v3", new LoadCargo_v3());
+    //SmartDashboard.putData("Commands/DefenseMode_v2", new DefenseMode_v2());
+    
+
   }
 
   /**

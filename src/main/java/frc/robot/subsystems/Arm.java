@@ -82,6 +82,7 @@ public class Arm extends Subsystem {
             //https://www.chiefdelphi.com/t/talon-srx-current-limiting-behaviour/164074
 
             armMotor.setSmartCurrentLimit(30, 10, 5700/10);
+            //armMotor.setSmartCurrentLimit(6, 6, 5700/10);//TODO REMOVE ME THIS IS FOR TESTING ONLY
 
             armMotor.setIdleMode(IdleMode.kCoast);
 
@@ -98,14 +99,11 @@ public class Arm extends Subsystem {
                   // kWristFF = 0.0;
             }
             else{
-                  kWristFF = 0.9;
-                  kArmFF = 0.5;
-                  // kArmGain = 0.1;//too high
-                  // kArmGain = 0.042; //too low 
-                  kArmGain = 0.09;
-                  // armMotor.setInverted(false);
+                  kArmGain = 0.025;
+                  kArmFF = 0.2; 
+                  kWristFF = 0.03;
+                  // kWristFF = 0.0;
                   MIN_ANGLE = -115.0;
-                  kWristFF = 0.9;
             }
       }
 

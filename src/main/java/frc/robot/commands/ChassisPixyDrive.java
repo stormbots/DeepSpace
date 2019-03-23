@@ -13,6 +13,7 @@ import static com.stormbots.Lerp.lerp;
 import com.stormbots.devices.pixy2.Line;
 
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.subsystems.Chassis.Mode;
 
@@ -110,16 +111,28 @@ public class ChassisPixyDrive extends Command {
     //} else
     if(Math.sqrt(Math.pow(line.x0-line.x1, 2) + Math.pow(line.y0-line.y1, 2)) < 0.1) {
       Robot.chassis.tankDrive(-0.2, -0.2);
+      SmartDashboard.putNumber("Chassis/LeftPixyPower", 0);
+      SmartDashboard.putNumber("Chassis/RightPixyPower", 0);
+      SmartDashboard.putNumber("Chassis/biasToRight", 0);
     }
     else {
       if(line.x0 < 0) {
         Robot.chassis.tankDrive(shortSidePower, longSidePower);
+        SmartDashboard.putNumber("Chassis/LeftPixyPower", shortSidePower);
+        SmartDashboard.putNumber("Chassis/RightPixyPower", longSidePower);
+        SmartDashboard.putNumber("Chassis/biasToRight", shortSidePower-longSidePower);
       }
       else if(line.x0 > 0) {
         Robot.chassis.tankDrive(longSidePower, shortSidePower);
+        SmartDashboard.putNumber("Chassis/LeftPixyPower", longSidePower);
+        SmartDashboard.putNumber("Chassis/RightPixyPower", shortSidePower);
+        SmartDashboard.putNumber("Chassis/biasToRight", longSidePower-shortSidePower);
       }
       else {
         Robot.chassis.tankDrive(shortSidePower, shortSidePower);
+        SmartDashboard.putNumber("Chassis/LeftPixyPower", shortSidePower);
+        SmartDashboard.putNumber("Chassis/RightPixyPower", shortSidePower);
+        SmartDashboard.putNumber("Chassis/biasToRight", 0);
       }
     }
   }

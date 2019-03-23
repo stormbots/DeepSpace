@@ -13,6 +13,7 @@ import com.ctre.phoenix.motorcontrol.LimitSwitchSource;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.stormbots.Clamp;
 import com.stormbots.Lerp;
+import static com.stormbots.Lerp.lerp;
 import com.stormbots.closedloop.FB;
 
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -38,7 +39,8 @@ public class Elevator extends Subsystem {
       //Elevator has two positions that need to be programmed in supposedly
       public static final double MAX_HEIGHT = 69;
       public static final double MIN_HEIGHT = 41;
-      double elevatorHeightRestriction = MAX_HEIGHT;
+      double elevatorHeightRestrictionMin = MIN_HEIGHT;
+      double elevatorHeightRestrictionMax = MAX_HEIGHT;
       double elevatorTargetHeight = 0;
       double currentPos = 0;
       // add more positions for lvl 1,2,3 of cargo and hatches
@@ -98,6 +100,7 @@ public class Elevator extends Subsystem {
 
       /** Convert ticks to the positional height of the arm pivot, in inches */
       public double getPosition(){
+            // return elevatorTargetHeight;
             return elevToInches.get(elevMotor.getSelectedSensorPosition(0));
       }
 
@@ -113,7 +116,7 @@ public class Elevator extends Subsystem {
             return Clamp.bounded( getPosition(), elevatorTargetHeight-tolerance, elevatorTargetHeight+tolerance);
       }
 
-      public void update(){
+      public void update(double wristAngle){
             
             currentPos = getPosition();
             //Use a local target copy to avoid modifying our long term target
@@ -125,10 +128,26 @@ public class Elevator extends Subsystem {
                   break;
 
                   case CLOSEDLOOP:
+
+
+                        if(wristAngle <= -20 && wristAngle >= -140) {
+                              elevatorHeightRestrictionMin = MIN_HEIGHT+(4 * Math.sin(lerp(wristAngle, -140, -20, 0, Math.PI)));
+                        }
+                        else elevatorHeightRestrictionMin = MIN_HEIGHT;
+
+                        if(wristAngle <= -100) {
+                              //TODO: We need to measure this, and we can probably just set it to the actual height
+                              //as a fixed value
+                              // elevatorHeightRestrictionMax = MIN_HEIGHT+(7 * Math.sin(lerp(wristAngle, -180, -100, 0, Math.PI)));
+                              elevatorHeightRestrictionMax = MIN_HEIGHT + 3;
+                        }
+                        else elevatorHeightRestrictionMax = MAX_HEIGHT;
+
+
                         //Restrict our height based on physical limits
                         target = Clamp.clamp(target, MIN_HEIGHT, MAX_HEIGHT);
                         //Restrict our height based on current pose constraints
-                        target = Clamp.clamp(target, MIN_HEIGHT, elevatorHeightRestriction);
+                        target = Clamp.clamp(target, elevatorHeightRestrictionMin, elevatorHeightRestrictionMax);
 
                         elevatorPwr = FB.fb(target, currentPos, kElevatorGain);
                         if(elevatorPwr > 0) elevatorPwr += elevatorFF;
@@ -166,6 +185,7 @@ public class Elevator extends Subsystem {
 
             //ArmElevator.armavatorTab.add("Elevator Power", elevatorPwr);
             //ArmElevator.armavatorTab.add("Limit Touched", elevLimit.get());
+            SmartDashboard.putNumber("Elevator/Constrained Height", target);
             SmartDashboard.putNumber("Elevator/Output Total", elevatorPwr);
             SmartDashboard.putNumber("Elevator/Output FF", elevatorFF);
             SmartDashboard.putNumber("Elevator/Output FB", FB.fb(target, currentPos, kElevatorGain));

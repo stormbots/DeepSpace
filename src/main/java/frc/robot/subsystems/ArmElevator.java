@@ -227,7 +227,7 @@ public class ArmElevator extends Subsystem {
 
             //Run all the updates
             wrist.update(arm.getArmAngle());
-            elevator.update();
+            elevator.update(wrist.getWristAngleFromFloor());
             arm.update(wrist.wristPower);
       }
 
