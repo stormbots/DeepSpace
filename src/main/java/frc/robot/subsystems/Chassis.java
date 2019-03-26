@@ -156,7 +156,7 @@ public class Chassis extends Subsystem {
     //TODO: Make sure we budget appropriately for the number of motors we're running
     //TODO: Examine how much power we're using and see where it needs to all go
     int stallLimit = 160/6;  // /6;  
-    int freeLimit = 180/6;  // /6;
+    int freeLimit = 180/6;  // 180/6;
     int limitRPM = 6700/3;
     motorL0.setSmartCurrentLimit(stallLimit, freeLimit, limitRPM);
     motorL1.setSmartCurrentLimit(stallLimit, freeLimit, limitRPM);
@@ -240,6 +240,11 @@ public class Chassis extends Subsystem {
     SmartDashboard.putString("Chassis/CurrentCommand", getCurrentCommandName());
     SmartDashboard.putNumber("Chassis/arcadeForward", arcadeForward);
     SmartDashboard.putNumber("Chassis/arcadeTurn", arcadeTurn);
+    SmartDashboard.putNumber("Chassis/Left0 RPM", motorL0.getEncoder().getVelocity());
+    SmartDashboard.putNumber("Chassis/Left1 RPM", motorL1.getEncoder().getVelocity());
+    SmartDashboard.putNumber("Chassis/Left2 RPM", motorL2.getEncoder().getVelocity());
+
+
 
     //pidControllerL.setReference(JoystickValue, ControlType.kSmartVelocity);
     //pidControllerR.setReference(JoystickValue, ControlType.kSmartVelocity);

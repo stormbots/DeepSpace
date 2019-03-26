@@ -52,7 +52,7 @@ public class LoadCargo_v3 extends CommandGroup {
     //   //if on target ()
     addSequential(new WaitCommand(0.1));
     // addSequential(new ArmPose(Pose.LOAD_CARGO)); // too bad! don't change though, current code relies on it
-    addSequential(new ArmPose(41,-85,-170)); //replacement load cargo
+    addSequential(new ArmPose(41,-85+5,-170)); //replacement load cargo
     
 
     // //Open the hand now, with a fallback to close and hold the ball if interrupted 
@@ -65,6 +65,11 @@ public class LoadCargo_v3 extends CommandGroup {
 
     addSequential(new WaitCommand(0.1));
 
+    addSequential(new ArmPose(41+2+2,-85+5+7,-170));
+    
+    //TODO Do not leave in!!!
+    addSequential(new WaitCommand(0.1));
+
     // // //Exit the loading pose safely (OLD CODE)
     // addSequential(new ArmPose(41+4+3+2,-85+10+15,-170));
     // addSequential(new ArmPose(41+4+3+2,-85+10+15,-90-10)); //-70
@@ -72,9 +77,11 @@ public class LoadCargo_v3 extends CommandGroup {
     // addSequential(new ArmPose(41,-100,0));
 
     // Exit
-    addParallel(new PassThroughPower(-1), 0.5);
+    
+    addParallel(new PassThroughPower(1), 0.5);
     addSequential(new ArmPose(Pose.HATCH_1));
-
+    addSequential(new WaitCommand(0.5));
+    addSequential(new PassThroughPower(-1), 0.5);
 
 
     //old for reference

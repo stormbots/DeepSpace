@@ -49,8 +49,19 @@ public class ChassisPixyDrive extends Command {
     double endX = x2;
     double endY = y2;
 
-    shortSidePower = 0.25*startY;
-    longSidePower = 0.25*startY + 0.4*Math.abs(startX);
+    if(y2 > y1) { 
+      double startXstaged = startX;
+      startX = endX;
+      endX = startXstaged;
+    }
+
+    // Old -- known to be wrong
+    shortSidePower = 0.3;
+    longSidePower = 0.3 + 0.7*Math.abs(startX);
+
+    // // new -- unknown to be wrong
+    // shortSidePower = 1 - Math.abs(startX);
+    // longSidePower = 1;
   }
 
   private void followAugmentedCloseLine(double x1, double y1, double x2, double y2) {
@@ -80,6 +91,8 @@ public class ChassisPixyDrive extends Command {
   @Override
   protected void execute() {
 
+    double distance = (Robot.chassis.sonarL.getRangeInches() + Robot.chassis.sonarR.getRangeInches()) / 2.0;
+
     Line[] lines = Robot.pixy.getMainFeatures(0,1);
 
     cyclesSinceLastLine++;
@@ -88,7 +101,7 @@ public class ChassisPixyDrive extends Command {
       cyclesSinceLastLine = 0;
       line = lines[0];
     }
-    if(cyclesSinceLastLine > 10){
+    if(cyclesSinceLastLine > 5){
       //chassis speed  = 0
       //Robot.chassis.tankDrive(0.4, 0.4);
       return ;
@@ -99,42 +112,43 @@ public class ChassisPixyDrive extends Command {
     System.out.println(line + "   " + cyclesSinceLastLine);
     line.normalizeBottom();
 
-    //followRawCloseLine(line.x0, line.y0, line.x1, line.y1);
+    //followAugmentedCloseLine(line.x0, line.y0, line.x1, line.y1);
     followRawCloseLine(line.x0, line.y0, line.x1, line.y1);
 
     longSidePower = -clamp(longSidePower, -1, 1);
     shortSidePower = -clamp(shortSidePower, -1, 1);
     
+    double leftPixyPower = 0;
+    double rightPixyPower = 0;
 
-    //if((Robot.chassis.sonarL.getRangeInches() + Robot.chassis.sonarR.getRangeInches()) / 2 < 6) {
-    //  Robot.chassis.tankDrive(-0.2, -0.2);
-    //} else
-    if(Math.sqrt(Math.pow(line.x0-line.x1, 2) + Math.pow(line.y0-line.y1, 2)) < 0.1) {
-      Robot.chassis.tankDrive(-0.2, -0.2);
-      SmartDashboard.putNumber("Chassis/LeftPixyPower", 0);
-      SmartDashboard.putNumber("Chassis/RightPixyPower", 0);
-      SmartDashboard.putNumber("Chassis/biasToRight", 0);
+    if(line.x0 < 0) {
+      leftPixyPower = shortSidePower;
+      rightPixyPower = longSidePower;
+    }
+    else if(line.x0 > 0) {
+      leftPixyPower = longSidePower;
+      rightPixyPower = shortSidePower;
     }
     else {
-      if(line.x0 < 0) {
-        Robot.chassis.tankDrive(shortSidePower, longSidePower);
-        SmartDashboard.putNumber("Chassis/LeftPixyPower", shortSidePower);
-        SmartDashboard.putNumber("Chassis/RightPixyPower", longSidePower);
-        SmartDashboard.putNumber("Chassis/biasToRight", shortSidePower-longSidePower);
-      }
-      else if(line.x0 > 0) {
-        Robot.chassis.tankDrive(longSidePower, shortSidePower);
-        SmartDashboard.putNumber("Chassis/LeftPixyPower", longSidePower);
-        SmartDashboard.putNumber("Chassis/RightPixyPower", shortSidePower);
-        SmartDashboard.putNumber("Chassis/biasToRight", longSidePower-shortSidePower);
-      }
-      else {
-        Robot.chassis.tankDrive(shortSidePower, shortSidePower);
-        SmartDashboard.putNumber("Chassis/LeftPixyPower", shortSidePower);
-        SmartDashboard.putNumber("Chassis/RightPixyPower", shortSidePower);
-        SmartDashboard.putNumber("Chassis/biasToRight", 0);
-      }
+      leftPixyPower = shortSidePower;
+      rightPixyPower = shortSidePower;
     }
+    
+    // if(distance <= 4) {
+    //   leftPixyPower = 0;
+    //   rightPixyPower = 0;  
+    // } else
+    if(Math.sqrt(Math.pow(line.x0-line.x1, 2) + Math.pow(line.y0-line.y1, 2)) < 0.1) {
+      leftPixyPower = -0.2;
+      rightPixyPower = -0.2;  
+    }
+
+    Robot.chassis.tankDrive(leftPixyPower, rightPixyPower);
+
+    SmartDashboard.putNumber("Chassis/LeftPixyPower", leftPixyPower);
+    SmartDashboard.putNumber("Chassis/RightPixyPower", rightPixyPower);
+    SmartDashboard.putNumber("Chassis/biasToRight", leftPixyPower-rightPixyPower);
+
   }
 
   // Make this return true when this Command no longer needs to run execute()

@@ -10,8 +10,8 @@ package frc.robot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.commandgroups.DefenseMode;
-import frc.robot.commandgroups.LoadCargo_v2;
+import frc.robot.commandgroups.DefenseMode_v2;
+import frc.robot.commandgroups.LoadCargo_v3;
 // import frc.robot.commands.ArmPose;
 // import frc.robot.subsystems.ArmElevator;
 // import frc.robot.subsystems.ArmElevator.Pose;
@@ -94,9 +94,9 @@ public class OI {
     poseCargo2.whenPressed(new ArmPose(Pose.CARGO_2));
     poseCargo3.whenPressed(new ArmPose(Pose.CARGO_3));
     //intakeCargo.whenPressed(new ArmPose(Pose.LOAD_CARGO));
-    intakeCargo.whenPressed(new LoadCargo_v2());
+    intakeCargo.whenPressed(new LoadCargo_v3());
     //armDown.whenPressed(new ArmPose(Pose.HIDE));
-    defenseMode.whenPressed(new DefenseMode());
+    defenseMode.whenPressed(new DefenseMode_v2());
 
     cargoShip.whenPressed(new ArmPose(Pose.CARGO_SHIP));
 
@@ -107,7 +107,7 @@ public class OI {
     placeHatch.whenPressed(new PlaceHatch());
 
     homeIntake.whileHeld(new IntakeHoming());
-    defenseMode.whenPressed(new DefenseModeSwitcher());
+    defenseMode.whenPressed(new DefenseModeSwitcher()); // WE MIGHT NOT NEED THIS
 
     //autoLineup.whileHeld(new ChassisPixyDrive());
 

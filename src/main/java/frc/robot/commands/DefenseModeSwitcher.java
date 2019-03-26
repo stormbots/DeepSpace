@@ -10,15 +10,15 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import frc.robot.Robot;
-import frc.robot.commandgroups.DefenseModeDisengage;
-import frc.robot.commandgroups.DefenseModeEngage;
+import frc.robot.commandgroups.DefenseModeDisengage_v2;
+import frc.robot.commandgroups.DefenseModeEngage_v2;
 import frc.robot.subsystems.ArmElevator.Mode;
 import frc.robot.subsystems.ArmElevator.Pose;
 
 public class DefenseModeSwitcher extends Command {
 
-  CommandGroup engage = new DefenseModeEngage();
-  CommandGroup disengage = new DefenseModeDisengage();
+  CommandGroup engage = new DefenseModeEngage_v2();
+  CommandGroup disengage = new DefenseModeDisengage_v2();
 
   boolean engaged = true; 
   public DefenseModeSwitcher() {

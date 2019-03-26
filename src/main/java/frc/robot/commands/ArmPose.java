@@ -74,7 +74,7 @@ public class ArmPose extends Command {
       moveTime = 0.7;
     }
     else if(armDelta < -90){
-        moveTime = 1.2 ;
+        moveTime = 0.7 ;
     }
     setTimeout(2*moveTime);
 

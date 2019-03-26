@@ -116,7 +116,7 @@ public class Elevator extends Subsystem {
             return Clamp.bounded( getPosition(), elevatorTargetHeight-tolerance, elevatorTargetHeight+tolerance);
       }
 
-      public void update(double wristAngle){
+      public void update(double wristCurrentAngle, double wristTargetAngle){
             
             currentPos = getPosition();
             //Use a local target copy to avoid modifying our long term target
@@ -129,20 +129,41 @@ public class Elevator extends Subsystem {
 
                   case CLOSEDLOOP:
 
+                        double elevatorHeightRestrictionCurrentMin = 0;
+                        double elevatorHeightRestrictionCurrentMax = 0;
+                        double elevatorHeightRestrictionTargetMin = 0;
+                        double elevatorHeightRestrictionTargetMax = 0;
 
-                        if(wristAngle <= -20 && wristAngle >= -140) {
-                              elevatorHeightRestrictionMin = MIN_HEIGHT+(4 * Math.sin(lerp(wristAngle, -140, -20, 0, Math.PI)));
+                        if(wristCurrentAngle <= -20 && wristCurrentAngle >= -140) {
+                              elevatorHeightRestrictionCurrentMin = MIN_HEIGHT+(6 * Math.sin(lerp(wristCurrentAngle, -140, -20, 0, Math.PI)));
                         }
-                        else elevatorHeightRestrictionMin = MIN_HEIGHT;
+                        else elevatorHeightRestrictionCurrentMin = MIN_HEIGHT;
 
-                        if(wristAngle <= -100) {
+                        if(wristCurrentAngle <= -100) {
                               //TODO: We need to measure this, and we can probably just set it to the actual height
                               //as a fixed value
                               // elevatorHeightRestrictionMax = MIN_HEIGHT+(7 * Math.sin(lerp(wristAngle, -180, -100, 0, Math.PI)));
-                              elevatorHeightRestrictionMax = MIN_HEIGHT + 3;
+                              elevatorHeightRestrictionCurrentMax = MIN_HEIGHT + 4;
                         }
-                        else elevatorHeightRestrictionMax = MAX_HEIGHT;
+                        else elevatorHeightRestrictionCurrentMax = MAX_HEIGHT;
 
+
+                        if(wristTargetAngle <= -20 && wristTargetAngle >= -140) {
+                              elevatorHeightRestrictionTargetMin = MIN_HEIGHT+(6 * Math.sin(lerp(wristTargetAngle, -140, -20, 0, Math.PI)));
+                        }
+                        else elevatorHeightRestrictionTargetMin = MIN_HEIGHT;
+
+                        if(wristTargetAngle <= -100) {
+                              //TODO: We need to measure this, and we can probably just set it to the actual height
+                              //as a fixed value
+                              // elevatorHeightRestrictionMax = MIN_HEIGHT+(7 * Math.sin(lerp(wristAngle, -180, -100, 0, Math.PI)));
+                              elevatorHeightRestrictionTargetMax = MIN_HEIGHT + 4;
+                        }
+                        else elevatorHeightRestrictionTargetMax = MAX_HEIGHT;
+
+
+                        elevatorHeightRestrictionMin = Math.max(elevatorHeightRestrictionCurrentMin, elevatorHeightRestrictionTargetMin);
+                        elevatorHeightRestrictionMax = Math.min(elevatorHeightRestrictionCurrentMax, elevatorHeightRestrictionTargetMax);
 
                         //Restrict our height based on physical limits
                         target = Clamp.clamp(target, MIN_HEIGHT, MAX_HEIGHT);
