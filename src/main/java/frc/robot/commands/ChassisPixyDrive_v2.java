@@ -20,16 +20,25 @@ import frc.robot.subsystems.Chassis.Mode;
 /**
  * An example command.  You can replace me with your own command.
  */
-public class ChassisPixyDrive extends Command {
+public class ChassisPixyDrive_v2 extends Command {
 
   boolean areWeBroken = false;
   Line line = new Line();
   int cyclesSinceLastLine = 100;
 
-  double shortSidePower = 0;
-  double longSidePower = 0;
+  double leftPixyPower = 0;
+  double rightPixyPower = 0;
 
-  public ChassisPixyDrive() {
+  public enum EntrySide{
+    LEFT,
+    RIGHT,
+    NA
+  }
+
+  EntrySide entrySide = EntrySide.NA;
+
+
+  public ChassisPixyDrive_v2() {
     // Use requires() here to declare subsystem dependencies
     requires(Robot.chassis);
 
@@ -43,38 +52,13 @@ public class ChassisPixyDrive extends Command {
     Robot.chassis.setMode(Mode.TANKDRIVE);
   }
 
-
-  private void followAugmentedCloseLine(double x1, double y1, double x2, double y2) {
-    double startX = x1;
-    double startY = y1;
-    double endX = x2;
-    double endY = y2;
-
-    double startXq1 = lerp(startX, -1, 1, 0, 1);
-    double endXq1 = lerp(endX, -1, 1, 0, 1);
-
-    double k = 10.0; // needs some fixing
-
-    double newX = -(endXq1 - startXq1) * k + startXq1;
-    double newY = -(endY - startY) * k + startY;
-
-    newX = lerp(newX, 0, 1, -1, 1);
-
-    newX = clamp(newX, -1, 1);
-    newY = clamp(newY, 0, 1);
-
-    shortSidePower = 0.3 - 0.3*Math.sqrt(Math.abs(startX));
-    longSidePower = 0.3 + 0.7*Math.sqrt(Math.abs(startX));
-  }
-
-
   private void followRawCloseLine(double x1, double y1, double x2, double y2) {
     double startX = x1;
     double startY = y1;
     double endX = x2;
     double endY = y2;
 
-    if(y2 > y1) { 
+    if(y2 < y1) { 
       double startXstaged = startX;
       double startYstaged = startY;
       startX = endX;
@@ -83,24 +67,30 @@ public class ChassisPixyDrive extends Command {
       endY = startY;
     }
 
-    boolean approachFromRight = startX <= endX;
-
-    double modifier = (approachFromRight? -1 : 1);
-
-    if(startY <= 0.1 && startX <= (0.4 * (approachFromRight? -1 : 1)) ) {
-      // shortSidePower = 0.2 - 0.8*Math.abs(startX);
-      // longSidePower = 0.2 + 0.8*Math.abs(startX);
-      shortSidePower = -Math.abs(startX);
-      longSidePower = Math.abs(startX);
+    if(startX <= endX-0.1) {
+      entrySide = EntrySide.RIGHT;
+    }
+    else if(startX >= endX+0.1) {
+      entrySide = EntrySide.LEFT;
     }
     else {
-      shortSidePower = 0.4;
-      longSidePower = 0.4;
+      entrySide = EntrySide.NA;
     }
 
-    // The Problem Child
-    shortSidePower = 0.3 - 0.4*Math.abs(startX);
-    longSidePower = 0.3 + 0.4*Math.abs(startX);
+    if(startY <= 0.1) {
+      if(entrySide == EntrySide.RIGHT) {
+        leftPixyPower = 0.6;
+        rightPixyPower = 0.1;
+      }
+      if(entrySide == EntrySide.LEFT) {
+        leftPixyPower = 0.1;
+        rightPixyPower = 0.6;
+      }
+      if(entrySide == EntrySide.RIGHT) {
+        leftPixyPower = 0.4;
+        rightPixyPower = 0.4;
+      }
+    }
   }
 
   // Called repeatedly when this Command is scheduled to run
@@ -118,9 +108,6 @@ public class ChassisPixyDrive extends Command {
       line = lines[0];
     }
     if(cyclesSinceLastLine > 5){
-      //chassis speed  = 0
-      //shortSidePower = 0.6*shortSidePower;
-      //Robot.chassis.tankDrive(shortSidePower, shortSidePower);
       Robot.chassis.tankDrive(-0.3, -0.3);
       return ;
     }
@@ -133,33 +120,8 @@ public class ChassisPixyDrive extends Command {
     //followAugmentedCloseLine(line.x0, line.y0, line.x1, line.y1);
     followRawCloseLine(line.x0, line.y0, line.x1, line.y1);
 
-    longSidePower = -clamp(longSidePower, -1, 1);
-    shortSidePower = -clamp(shortSidePower, -1, 1);
-    
-    double leftPixyPower = 0;
-    double rightPixyPower = 0;
-
-    if(line.x0 < 0) {
-      leftPixyPower = shortSidePower;
-      rightPixyPower = longSidePower;
-    }
-    else if(line.x0 > 0) {
-      leftPixyPower = longSidePower;
-      rightPixyPower = shortSidePower;
-    }
-    else {
-      leftPixyPower = shortSidePower;
-      rightPixyPower = shortSidePower;
-    }
-    
-    // if(distance <= 4) {
-    //   leftPixyPower = 0;
-    //   rightPixyPower = 0;  
-    // } else
-    // if(Math.sqrt(Math.pow(line.x1-line.x0, 2) + Math.pow(line.y1-line.y0, 2)) < 0.1) {
-    //   leftPixyPower = -0.2;
-    //   rightPixyPower = -0.2;  
-    // }
+    leftPixyPower = -clamp(leftPixyPower, -1, 1);
+    rightPixyPower = -clamp(rightPixyPower, -1, 1);
 
     Robot.chassis.tankDrive(leftPixyPower, rightPixyPower);
 
