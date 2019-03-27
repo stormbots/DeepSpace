@@ -43,15 +43,14 @@ public class LoadCargo_v3 extends CommandGroup {
     addSequential(new HandPose(Hand.Position.CLOSE, Hand.EJECT_POWER));
     //Start up the passthrough slowly
     addParallel(new IntakeSetPosition(100));
-    addParallel(new ArmPose(41+4,-75,-80));
+    // addParallel(new ArmPose(41+4,-75,-80));
     //wait for both poses to be where they need to
     addSequential(new WaitForChildren());
     addSequential(new HandPose(Hand.Position.CLOSE,0));
     //start up the passthrough
 
     //   //if on target ()
-    addSequential(new WaitCommand(0.1));
-    // addSequential(new ArmPose(Pose.LOAD_CARGO)); // too bad! don't change though, current code relies on it
+    // addSequential(new WaitCommand(0.05));
     addSequential(new ArmPose(41,-85+5,-170)); //replacement load cargo
     
 
@@ -59,28 +58,28 @@ public class LoadCargo_v3 extends CommandGroup {
     addParallel(new HandPose(Hand.Position.OPEN,Hand.GRAB_POWER,  Hand.Position.CLOSE,Hand.HOLD_POWER));
 
     // //use the TimeOut argument of addSequential to hijack the passthrough command with a max time
-    addSequential(new WaitCommand(0.1));
+    addSequential(new WaitCommand(0.05));
     addSequential(new PassThroughPower(PassThrough.LOAD_BALL_POWER),1.5);
     addSequential(new HandPose(Hand.Position.CLOSE,Hand.HOLD_POWER));
 
-    addSequential(new WaitCommand(0.1));
+    // addSequential(new WaitCommand(0.05));
 
-    addSequential(new ArmPose(41+2+2,-85+5+7,-170));
+    addSequential(new ArmPose(41+2+2+2+2,-85+5+7,-170)); //move elevator up+arm out to avoid the bar
+    addSequential(new ArmPose(41+2+2+2+2,-85+5+7,0)); //wrist move out
+
+    addSequential(new WaitCommand(0.1));
     
     //TODO Do not leave in!!!
-    addSequential(new WaitCommand(0.1));
+    // addSequential(new WaitCommand(0.05));
 
-    // // //Exit the loading pose safely (OLD CODE)
-    // addSequential(new ArmPose(41+4+3+2,-85+10+15,-170));
-    // addSequential(new ArmPose(41+4+3+2,-85+10+15,-90-10)); //-70
-    // addParallel(new PassThroughPower(-1), 0.5);
-    // addSequential(new ArmPose(41,-100,0));
 
     // Exit
     
-    addParallel(new PassThroughPower(1), 0.5);
+    addParallel(new PassThroughPower(1), 0.5); //make sure we don't snag ball on rollers
     addSequential(new ArmPose(Pose.HATCH_1));
-    addSequential(new WaitCommand(0.5));
+
+    //ball is free, but make sure we try to reseat the ball on a failure
+    addSequential(new WaitCommand(0.25));
     addSequential(new PassThroughPower(-1), 0.5);
 
 

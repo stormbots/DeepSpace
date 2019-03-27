@@ -168,7 +168,7 @@ public class Arm extends Subsystem {
 
                         targetArmPos = Clamp.clamp(targetArmPos, MIN_ANGLE, MAX_ANGLE);
 
-                        armPower = FB.fb(targetArmPos, currentArmPos, kArmGain);
+                        armPower = FB.fb(targetArmPos, currentArmPos, kArmGain)*3.0;
 
                         if(armPower >0 )  armPower += kArmFF*Math.cos(Math.toRadians(currentArmPos));
                         armPower += wristPower*-kWristFF;

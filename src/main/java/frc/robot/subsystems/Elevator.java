@@ -15,6 +15,7 @@ import com.stormbots.Clamp;
 import com.stormbots.Lerp;
 import static com.stormbots.Lerp.lerp;
 import com.stormbots.closedloop.FB;
+import com.stormbots.interp.SinCurve;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.command.Subsystem;
@@ -75,6 +76,8 @@ public class Elevator extends Subsystem {
       public void robotInit(){
             if(Robot.isCompbot){
                   kElevatorGain = 0.08;
+                  kElevatorGain = 0.07;
+                  elevatorFF = 0.1;
             }
             else{
                   elevatorFF = 0.3;
@@ -130,26 +133,26 @@ public class Elevator extends Subsystem {
                   case CLOSEDLOOP:
 
                         double elevatorHeightRestrictionCurrentMin = 0;
-                        double elevatorHeightRestrictionCurrentMax = 0;
+                        double elevatorHeightRestrictionCurrentMax = MAX_HEIGHT;
                         double elevatorHeightRestrictionTargetMin = 0;
-                        double elevatorHeightRestrictionTargetMax = 0;
+                        double elevatorHeightRestrictionTargetMax = MAX_HEIGHT;
 
                         if(wristCurrentAngle <= -20 && wristCurrentAngle >= -140) {
                               elevatorHeightRestrictionCurrentMin = MIN_HEIGHT+(6 * Math.sin(lerp(wristCurrentAngle, -140, -20, 0, Math.PI)));
                         }
                         else elevatorHeightRestrictionCurrentMin = MIN_HEIGHT;
 
-                        if(wristCurrentAngle <= -100) {
-                              //TODO: We need to measure this, and we can probably just set it to the actual height
-                              //as a fixed value
-                              // elevatorHeightRestrictionMax = MIN_HEIGHT+(7 * Math.sin(lerp(wristAngle, -180, -100, 0, Math.PI)));
-                              elevatorHeightRestrictionCurrentMax = MIN_HEIGHT + 4;
-                        }
-                        else elevatorHeightRestrictionCurrentMax = MAX_HEIGHT;
+                        // if(wristCurrentAngle <= -100) {
+                        //       //TODO: We need to measure this, and we can probably just set it to the actual height
+                        //       //as a fixed value
+                        //       // elevatorHeightRestrictionMax = MIN_HEIGHT+(7 * Math.sin(lerp(wristAngle, -180, -100, 0, Math.PI)));
+                        //       elevatorHeightRestrictionCurrentMax = MIN_HEIGHT + 4;
+                        // }
+                        elevatorHeightRestrictionCurrentMax = MAX_HEIGHT;
 
 
                         if(wristTargetAngle <= -20 && wristTargetAngle >= -140) {
-                              elevatorHeightRestrictionTargetMin = MIN_HEIGHT+(6 * Math.sin(lerp(wristTargetAngle, -140, -20, 0, Math.PI)));
+                              elevatorHeightRestrictionTargetMin = MIN_HEIGHT+(10 * Math.sin(lerp(wristTargetAngle, -140, -20, 0, Math.PI)));
                         }
                         else elevatorHeightRestrictionTargetMin = MIN_HEIGHT;
 
@@ -163,16 +166,16 @@ public class Elevator extends Subsystem {
 
 
                         elevatorHeightRestrictionMin = Math.max(elevatorHeightRestrictionCurrentMin, elevatorHeightRestrictionTargetMin);
-                        elevatorHeightRestrictionMax = Math.min(elevatorHeightRestrictionCurrentMax, elevatorHeightRestrictionTargetMax);
+                        // elevatorHeightRestrictionMax = Math.min(elevatorHeightRestrictionCurrentMax, elevatorHeightRestrictionTargetMax);
 
                         //Restrict our height based on physical limits
                         target = Clamp.clamp(target, MIN_HEIGHT, MAX_HEIGHT);
                         //Restrict our height based on current pose constraints
                         target = Clamp.clamp(target, elevatorHeightRestrictionMin, elevatorHeightRestrictionMax);
 
-                        elevatorPwr = FB.fb(target, currentPos, kElevatorGain);
+                        elevatorPwr = FB.fb(target, currentPos, kElevatorGain)*2.0;
                         if(elevatorPwr > 0) elevatorPwr += elevatorFF;
-                        else elevatorPwr += elevatorFF/3.0;
+                        else elevatorPwr += elevatorFF/5.0;
                   break;
 
                   case HOMING:
