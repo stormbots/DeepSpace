@@ -42,7 +42,7 @@ public class ChassisPixyDrive_v2 extends Command {
     // Use requires() here to declare subsystem dependencies
     requires(Robot.chassis);
 
-    System.out.println("ChassisPixyDrive Constructor ran");
+    System.out.println("ChassisPixyDrive_v2 Constructor ran");
   }
 
   // Called just before this Command runs the first time
@@ -64,7 +64,7 @@ public class ChassisPixyDrive_v2 extends Command {
       startX = endX;
       endX = startXstaged;
       startY = endY;
-      endY = startY;
+      endY = startYstaged;
     }
 
     if(startX <= endX-0.1) {
@@ -86,7 +86,7 @@ public class ChassisPixyDrive_v2 extends Command {
         leftPixyPower = 0.1;
         rightPixyPower = 0.6;
       }
-      if(entrySide == EntrySide.RIGHT) {
+      if(entrySide == EntrySide.NA) {
         leftPixyPower = 0.4;
         rightPixyPower = 0.4;
       }
@@ -106,28 +106,34 @@ public class ChassisPixyDrive_v2 extends Command {
     if(lines.length>0) {
       cyclesSinceLastLine = 0;
       line = lines[0];
-    }
+      line.normalizeBottom();
+      
+      }
     if(cyclesSinceLastLine > 5){
       Robot.chassis.tankDrive(-0.3, -0.3);
       return ;
     }
 
     //Here we can trust a line regardless of what frame it was from
-
     System.out.println(line + "   " + cyclesSinceLastLine);
-    line.normalizeBottom();
+
 
     //followAugmentedCloseLine(line.x0, line.y0, line.x1, line.y1);
     followRawCloseLine(line.x0, line.y0, line.x1, line.y1);
 
-    leftPixyPower = -clamp(leftPixyPower, -1, 1);
-    rightPixyPower = -clamp(rightPixyPower, -1, 1);
+    leftPixyPower = -Math.abs(clamp(leftPixyPower, -1, 1));
+    rightPixyPower = -Math.abs(clamp(rightPixyPower, -1, 1));
 
     Robot.chassis.tankDrive(leftPixyPower, rightPixyPower);
 
     SmartDashboard.putNumber("Chassis/LeftPixyPower", leftPixyPower);
     SmartDashboard.putNumber("Chassis/RightPixyPower", rightPixyPower);
     SmartDashboard.putNumber("Chassis/biasToRight", leftPixyPower-rightPixyPower);
+    SmartDashboard.putString("Chassis/PixyEntrySide", entrySide.toString());
+    SmartDashboard.putNumber("Chassis/PixyStartX", line.x0);
+    SmartDashboard.putNumber("Chassis/PixyStartY", line.y0);
+    SmartDashboard.putNumber("Chassis/PixyEndX", line.x1);
+    SmartDashboard.putNumber("Chassis/PixyEndY", line.y1);
 
   }
 
