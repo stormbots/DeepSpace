@@ -110,7 +110,7 @@ public class Wrist extends Subsystem {
             if(Robot.isCompbot){
                   wristMotor.setInverted(true);
                   kWristFF = 0.11;
-                  HOME_OUTPUT_POWER_MIN = 0.07;
+                  HOME_OUTPUT_POWER_MIN = 0.09;
             }
             else{
                   pidWrist = new MiniPID(1.0/1350.0*6, 1.0/20000.0, 1.0/100000.0);
