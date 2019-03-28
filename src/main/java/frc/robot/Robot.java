@@ -19,22 +19,20 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.commandgroups.DefenseModeDisengage;
-import frc.robot.commandgroups.DefenseModeEngage;
+import frc.robot.commandgroups.DefenseModeEngage_v2;
 import frc.robot.commandgroups.DefenseMode_v2;
-import frc.robot.commandgroups.LoadCargoNew;
 import frc.robot.commandgroups.LoadCargo_v2;
 import frc.robot.commandgroups.LoadCargo_v3;
 import frc.robot.commandgroups.RobotStartup;
 import frc.robot.commands.ArmPose;
 import frc.robot.commands.ChassisPixyDrive;
+import frc.robot.commands.ChassisPixyDrive_v3;
 import frc.robot.commands.DefenseModeSwitcher;
 import frc.robot.commands.IntakeGrabBall;
 import frc.robot.commands.RobotGrabHab2;
 import frc.robot.commands.RobotGrabHab2_v2;
 import frc.robot.commands.RobotGrabHab3;
 import frc.robot.commands.RobotGrabHab3_v2;
-import frc.robot.commands.WristHoming;
 import frc.robot.subsystems.ArmElevator;
 import frc.robot.subsystems.ArmElevator.Pose;
 import frc.robot.subsystems.Chassis;
@@ -107,11 +105,6 @@ public class Robot extends TimedRobot {
     // chooser.addOption("My Auto", new MyAutoCommand());
     // SmartDashboard.putData("Auto mode", m_chooser);
 
-    
-
-    CameraServer.getInstance().startAutomaticCapture(0);
-    CameraServer.getInstance().startAutomaticCapture(1);
-
     //Throw commands on Shuffleboards
 
     //Commented out adjusted for better runtime
@@ -122,32 +115,28 @@ public class Robot extends TimedRobot {
     SmartDashboard.putData("Commands/Cargo 1",new ArmPose(Pose.CARGO_1));
     SmartDashboard.putData("Commands/Cargo 2",new ArmPose(Pose.CARGO_2));
     SmartDashboard.putData("Commands/Cargo 3",new ArmPose(Pose.CARGO_3));
-    SmartDashboard.putData("Commands/DefenseMode Engage",new DefenseModeEngage());
-    SmartDashboard.putData("Commands/DefenseMode Disengage",new DefenseModeDisengage());
-    SmartDashboard.putData("Commands/DefenseModeToggle",new DefenseModeSwitcher());
+    // SmartDashboard.putData("Commands/DefenseMode Engage",new DefenseModeEngage_v2());
+    // SmartDashboard.putData("Commands/DefenseMode Disengage",new DefenseModeDisengage());
 
-    SmartDashboard.putData("Commands/Hide",new ArmPose(Pose.HIDE));
-    SmartDashboard.putData("Commands/Hab3", new RobotGrabHab3(8));
-    SmartDashboard.putData("Commands/Hab2", new RobotGrabHab2(4));
+    SmartDashboard.putData("Commands/Hide", new ArmPose(Pose.HIDE));
     // SmartDashboard.putData("Commands/ExitHab", new RobotExitHab2());
     // SmartDashboard.putData("Commands/CargoShip", new ArmPose(Pose.CARGO_SHIP));
-    SmartDashboard.putData("Commands/Load Ball Into Hand",new LoadCargoNew());
     // SmartDashboard.putData("Commands/Place Hatch", new HatchPickup());
-    SmartDashboard.putData("Commands/NEW Hab2", new RobotGrabHab2_v2(4));
-    SmartDashboard.putData("Commands/NEW Hab3", new RobotGrabHab3_v2(8));
+    SmartDashboard.putData("Commands/Hab2", new RobotGrabHab2_v2(4));
+    SmartDashboard.putData("Commands/Hab3", new RobotGrabHab3_v2(8));
 
     SmartDashboard.putData("Commands/Load Ball V2",new LoadCargo_v2());
 
     SmartDashboard.putData("Commands/GrabBall", new IntakeGrabBall());
     // SmartDashboard.putData("Commands/Home Intake", new IntakeHoming());
 
+    SmartDashboard.putData("Commands/Pixy v3", new ChassisPixyDrive_v3());
     SmartDashboard.putString("Chassis/Pixy Version", pixy.getVersion().toString());
     SmartDashboard.putData("pdp", pdp);
-    SmartDashboard.putData("Chassis/Start Pixy", new ChassisPixyDrive());
   
     SmartDashboard.putData("Commands/DefenseMode_v2", new DefenseMode_v2());
+    SmartDashboard.putData("Commands/DefenseMode Switcher", new DefenseModeSwitcher());
     SmartDashboard.putData("Commands/LoadCargo_v3", new LoadCargo_v3());
-    //SmartDashboard.putData("Commands/DefenseMode_v2", new DefenseMode_v2());
     
 
   }
