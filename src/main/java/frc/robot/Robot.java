@@ -25,6 +25,7 @@ import frc.robot.commandgroups.DefenseMode_v2;
 import frc.robot.commandgroups.LoadCargoNew;
 import frc.robot.commandgroups.LoadCargo_v2;
 import frc.robot.commandgroups.LoadCargo_v3;
+import frc.robot.commandgroups.RobotStartup;
 import frc.robot.commands.ArmPose;
 import frc.robot.commands.ChassisPixyDrive;
 import frc.robot.commands.DefenseModeSwitcher;
@@ -71,7 +72,7 @@ public class Robot extends TimedRobot {
 
   Command m_autonomousCommand;
   SendableChooser<Command> m_chooser = new SendableChooser<>();
-  Command wristHoming = new WristHoming();
+  Command robotStartup = new RobotStartup();
 
   /**
    * This function is run when the robot is first started up and should be
@@ -193,7 +194,7 @@ public class Robot extends TimedRobot {
     chassis.reset();
     m_autonomousCommand = m_chooser.getSelected();
     if(!armLift.wrist.isHomed()){
-      wristHoming.start();
+      robotStartup.start();
     }
     //armLift.setPose(armLift.elevator.getPosition(),armLift.arm.getArmAngle(),armLift.wrist.getWristAngleFromFloor());
 
@@ -235,7 +236,7 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
     if(!armLift.wrist.isHomed()){
-      wristHoming.start();
+      robotStartup.start();
     }
 
     //armLift.setPose(armLift.elevator.getPosition(),armLift.arm.getArmAngle(),armLift.wrist.getWristAngleFromFloor());

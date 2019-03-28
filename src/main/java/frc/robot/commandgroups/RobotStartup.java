@@ -7,20 +7,16 @@
 
 package frc.robot.commandgroups;
 
-import edu.wpi.first.wpilibj.command.CommandGroup;
-import edu.wpi.first.wpilibj.command.WaitCommand;
-import frc.robot.commands.ArmHoming;
-import frc.robot.commands.ArmPose;
-import frc.robot.commands.HandPose;
-import frc.robot.commands.PassThroughPower;
-import frc.robot.subsystems.ArmElevator.Pose;
-import frc.robot.subsystems.Hand;
+import com.stormbots.commands.LambdaCommand;
 
-public class DefenseMode_v2 extends CommandGroup {
+import edu.wpi.first.wpilibj.command.CommandGroup;
+import frc.robot.commands.ArmHoming;
+
+public class RobotStartup extends CommandGroup {
   /**
    * Add your docs here.
    */
-  public DefenseMode_v2() {
+  public RobotStartup() {
     // Add Commands here:
     // e.g. addSequential(new Command1());
     // addSequential(new Command2());
@@ -37,14 +33,14 @@ public class DefenseMode_v2 extends CommandGroup {
     // e.g. if Command1 requires chassis, and Command2 requires arm,
     // a CommandGroup containing them would require both the chassis and the
     // arm.
-    addParallel(new PassThroughPower(-0.3),2);
-    addParallel(new HandPose(Hand.Position.CLOSE,Hand.EJECT_POWER,  Hand.Position.CLOSE,Hand.OFF),0.2);
-    addSequential(new WaitCommand(0.15));
-    // addParallel(new IntakeHoming());
-    //                        E     A     W
-    //addSequential(new ArmPose(Pose.HIDE_1));
-    //addSequential(new ArmPose(Pose.HIDE_2));
-    addSequential(new ArmPose(Pose.HIDE));
+
+
+    addSequential(new LambdaCommand(()->{
+      return true;
+    }));
+
     addSequential(new ArmHoming());
+    // addSequential(new LoadCargo_v3());
+    
   }
 }

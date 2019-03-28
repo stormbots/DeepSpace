@@ -110,6 +110,7 @@ public class Wrist extends Subsystem {
             if(Robot.isCompbot){
                   wristMotor.setInverted(true);
                   kWristFF = 0.11;
+                  HOME_OUTPUT_POWER_MIN = 0.07;
             }
             else{
                   pidWrist = new MiniPID(1.0/1350.0*6, 1.0/20000.0, 1.0/100000.0);
@@ -254,7 +255,7 @@ public class Wrist extends Subsystem {
                   //expect wrist to be at switch
                   //if not at switch, add motor power
                   //if at swtich, zero out
-            if(angleFromFloor > -90 && targetWristToFloorAngle >= 0 && armPosition < -85){
+            if(targetWristToFloorAngle >= -10 && armPosition < -80){
 
                   // if!lastIsPressed && isLimitPressed();
                   //double lastIsPRessed = isLimitPressed()

@@ -87,7 +87,7 @@ public class ArmElevator extends Subsystem {
             CARGO_2(41,+33,0), //not sure elev height, might have to move arm
             CARGO_3(65-3,+90,0),
 
-            CARGO_SHIP(69,-90,-30),
+            CARGO_SHIP(69+3,-90,-30),
 
             HATCH_1(41,-90,0-3),
             HATCH_2(69,-90,0),
