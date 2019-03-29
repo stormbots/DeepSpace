@@ -166,7 +166,7 @@ public class Intake extends Subsystem {
     
     SmartDashboard.putNumber("Intake/Current Position(final)",getAngle());
     SmartDashboard.putNumber("Intake/Output Power",pivotPower);
-    SmartDashboard.putNumber("Intake/Target after increment",targetPosition);
+    // SmartDashboard.putNumber("Intake/Target after increment",targetPosition);
 
 
 

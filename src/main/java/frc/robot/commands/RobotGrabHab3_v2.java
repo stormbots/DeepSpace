@@ -49,7 +49,7 @@ public class RobotGrabHab3_v2 extends Command {
   @Override
   protected void initialize() {
     startTime = Timer.getFPGATimestamp();
-    System.out.println("RobotGrabHab has initialized");
+    // System.out.println("RobotGrabHab has initialized");
 
     // TankDrive Adaptations
     //Robot.chassis.setMode(Mode.TANKDRIVE);
@@ -135,7 +135,7 @@ public class RobotGrabHab3_v2 extends Command {
     Robot.chassis.arcadeDrive(0, 0);
     Robot.pogos.setPosition(Pogos.RETRACTED);
     Robot.intake.setMode(Intake.Mode.CLOSEDLOOP);
-    System.out.println("RobotGrabHab has ended");
+    // System.out.println("RobotGrabHab has ended");
     Robot.pogos.kPogoGain = Pogos.POGO_GAIN_IDLE;
 
   }
@@ -145,7 +145,7 @@ public class RobotGrabHab3_v2 extends Command {
   @Override
   protected void interrupted() {
     end();
-    System.out.println("RobotGrabHab has been interrupted");
+    // System.out.println("RobotGrabHab has been interrupted");
     
     // NOTE:  DO NOT allow the pogos to retract, or we will topple over the edge and destroy the robot
   }

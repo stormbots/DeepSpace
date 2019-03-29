@@ -197,7 +197,7 @@ public class OI {
     //   j *=.5;
     // }
 
-    SmartDashboard.putNumber("Chassis/drive stick", j);
+    // SmartDashboard.putNumber("Chassis/drive stick", j);
     return j;
     
   }

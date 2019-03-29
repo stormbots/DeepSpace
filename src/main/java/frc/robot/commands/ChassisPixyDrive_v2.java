@@ -42,7 +42,6 @@ public class ChassisPixyDrive_v2 extends Command {
     // Use requires() here to declare subsystem dependencies
     requires(Robot.chassis);
 
-    System.out.println("ChassisPixyDrive_v2 Constructor ran");
   }
 
   // Called just before this Command runs the first time
@@ -126,14 +125,14 @@ public class ChassisPixyDrive_v2 extends Command {
 
     Robot.chassis.tankDrive(leftPixyPower, rightPixyPower);
 
-    SmartDashboard.putNumber("Chassis/LeftPixyPower", leftPixyPower);
-    SmartDashboard.putNumber("Chassis/RightPixyPower", rightPixyPower);
-    SmartDashboard.putNumber("Chassis/biasToRight", leftPixyPower-rightPixyPower);
-    SmartDashboard.putString("Chassis/PixyEntrySide", entrySide.toString());
-    SmartDashboard.putNumber("Chassis/PixyStartX", line.x0);
-    SmartDashboard.putNumber("Chassis/PixyStartY", line.y0);
-    SmartDashboard.putNumber("Chassis/PixyEndX", line.x1);
-    SmartDashboard.putNumber("Chassis/PixyEndY", line.y1);
+    // SmartDashboard.putNumber("Chassis/LeftPixyPower", leftPixyPower);
+    // SmartDashboard.putNumber("Chassis/RightPixyPower", rightPixyPower);
+    // SmartDashboard.putNumber("Chassis/biasToRight", leftPixyPower-rightPixyPower);
+    // SmartDashboard.putString("Chassis/PixyEntrySide", entrySide.toString());
+    // SmartDashboard.putNumber("Chassis/PixyStartX", line.x0);
+    // SmartDashboard.putNumber("Chassis/PixyStartY", line.y0);
+    // SmartDashboard.putNumber("Chassis/PixyEndX", line.x1);
+    // SmartDashboard.putNumber("Chassis/PixyEndY", line.y1);
 
   }
 

@@ -33,7 +33,6 @@ public class ChassisPixyDrive extends Command {
     // Use requires() here to declare subsystem dependencies
     requires(Robot.chassis);
 
-    System.out.println("ChassisPixyDrive Constructor ran");
   }
 
   // Called just before this Command runs the first time

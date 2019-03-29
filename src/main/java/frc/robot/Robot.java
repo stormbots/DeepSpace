@@ -125,14 +125,12 @@ public class Robot extends TimedRobot {
     SmartDashboard.putData("Commands/Hab2", new RobotGrabHab2_v2(4));
     SmartDashboard.putData("Commands/Hab3", new RobotGrabHab3_v2(8));
 
-    SmartDashboard.putData("Commands/Load Ball V2",new LoadCargo_v2());
-
     SmartDashboard.putData("Commands/GrabBall", new IntakeGrabBall());
     // SmartDashboard.putData("Commands/Home Intake", new IntakeHoming());
 
     SmartDashboard.putData("Commands/Pixy v3", new ChassisPixyDrive_v3());
     SmartDashboard.putString("Chassis/Pixy Version", pixy.getVersion().toString());
-    SmartDashboard.putData("pdp", pdp);
+    // SmartDashboard.putData("pdp", pdp);
   
     SmartDashboard.putData("Commands/DefenseMode_v2", new DefenseMode_v2());
     SmartDashboard.putData("Commands/DefenseMode Switcher", new DefenseModeSwitcher());

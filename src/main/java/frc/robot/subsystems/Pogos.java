@@ -53,7 +53,6 @@ public class Pogos extends Subsystem {
   private Mode mode = Mode.CLOSEDLOOP;
 
   public Pogos(){
-    System.out.println("Pogo is Initialized");  
     pogo.setSensorPhase(true); //default for talon + encoder combo
 
     //TODO Pogo initialization? 

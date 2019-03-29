@@ -208,7 +208,7 @@ public class Elevator extends Subsystem {
       @Override
       public void periodic(){
             SmartDashboard.putBoolean("Elevator/SwitchRaw", elevLimit.get());
-            SmartDashboard.putBoolean("Elevator/Homed", homed);
+            // SmartDashboard.putBoolean("Elevator/Homed", homed);
             SmartDashboard.putString("Elevator/Command", getCurrentCommandName());            
       }
 }

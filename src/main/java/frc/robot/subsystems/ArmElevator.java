@@ -27,15 +27,15 @@ public class ArmElevator extends Subsystem {
       @Override
       public void periodic(){
             SmartDashboard.putNumber("Wrist/Current Angle (Floor)", wrist.getWristAngleFromFloor());
-            SmartDashboard.putNumber("Wrist/Current Angle (Arm)", wrist.getWristAngleFromArm());
+            // SmartDashboard.putNumber("Wrist/Current Angle (Arm)", wrist.getWristAngleFromArm());
             SmartDashboard.putNumber("Wrist/Encoder", wrist.wristMotor.getSelectedSensorPosition());
-            SmartDashboard.putNumber("Wrist/Target Angle", pose.wristAngle);
+            // SmartDashboard.putNumber("Wrist/Target Angle", pose.wristAngle);
 
             SmartDashboard.putNumber("Arm/Current Angle", arm.getArmAngle());
             SmartDashboard.putNumber("Arm/Encoder", arm.armEncoder.getPosition());
-            SmartDashboard.putNumber("Arm/Target Angle", pose.armAngle);
+            // SmartDashboard.putNumber("Arm/Target Angle", pose.armAngle);
 
-            SmartDashboard.putNumber("Elevator/Target Height", pose.eleHeight);
+            // SmartDashboard.putNumber("Elevator/Target Height", pose.eleHeight);
             SmartDashboard.putNumber("Elevator/Height", elevator.getPosition());
             SmartDashboard.putNumber("Elevator/Encoder", elevator.elevMotor.getSelectedSensorPosition());
 

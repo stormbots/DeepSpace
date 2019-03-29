@@ -61,7 +61,7 @@ public class PassThrough extends Subsystem {
     SmartDashboard.putString("PT/Command", getCurrentCommandName());
     beltMotor.set(ControlMode.PercentOutput,-beltPower);
 
-    SmartDashboard.putNumber("PT/Current", beltMotor.getOutputCurrent());
+    // SmartDashboard.putNumber("PT/Current", beltMotor.getOutputCurrent());
     SmartDashboard.putNumber("PT/Poutput", beltPower);
     
   }

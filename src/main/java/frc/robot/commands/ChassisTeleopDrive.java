@@ -26,14 +26,14 @@ public class ChassisTeleopDrive extends Command {
   public ChassisTeleopDrive() {
     // Use requires() here to declare subsystem dependencies
     requires(Robot.chassis);
-    System.out.println("ChassisTeleopDrive Constructor ran");
+    // System.out.println("ChassisTeleopDrive Constructor ran");
   }
 
   // Called just before this Command runs the first time 
   @Override
   protected void initialize() {
     //set mode back to manual
-    System.out.println("ChassisTeleopDrive execute is running");
+    // System.out.println("ChassisTeleopDrive execute is running");
     Robot.chassis.setMode(Mode.ARCADEDRIVE);
 
     startTime = Timer.getFPGATimestamp();
@@ -55,30 +55,6 @@ public class ChassisTeleopDrive extends Command {
     
     //Robot.chassis.arcadeDrive(0.4, 0);
     //Robot.drive.motorL.set(0.3);
-    
-
-    // BELOW THIS POINT IS DANGEROUS
-
-    double currentVelocity = Math.abs(Robot.chassis.motorL0.getEncoder().getVelocity());
-    double currentTime = Timer.getFPGATimestamp();
-
-    if(currentVelocity == 0) {
-      startTime = Timer.getFPGATimestamp();
-    }
-
-    double accelerationTime = Integer.MAX_VALUE;
-
-    if(maxVelocity == currentVelocity && maxVelocity > 5100) {
-      accelerationTime = currentTime - startTime;
-    }
-
-    maxVelocity = Math.max(maxVelocity, currentVelocity);
-    minAccelerationTime = Math.min(minAccelerationTime, accelerationTime);
-
-
-    SmartDashboard.putNumber("Chassis/Drive MaxAccelerationTime: ", minAccelerationTime);
-    SmartDashboard.putNumber("Chassis/Drive Velocity: ", maxVelocity);
-    SmartDashboard.putNumber("Chassis/Drive MaxAcceleration", maxVelocity/minAccelerationTime);
   }
 
   // Make this return true when this Command no longer needs to run execute()

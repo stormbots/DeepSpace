@@ -235,14 +235,14 @@ public class Chassis extends Subsystem {
 
   public void update(){
 
-    SmartDashboard.putNumber("Chassis/Left Ultrasonic", sonarL.getRangeInches());
-    SmartDashboard.putNumber("Chassis/Right Ultrasonic", sonarR.getRangeInches());
+    // SmartDashboard.putNumber("Chassis/Left Ultrasonic", sonarL.getRangeInches());
+    // SmartDashboard.putNumber("Chassis/Right Ultrasonic", sonarR.getRangeInches());
     SmartDashboard.putString("Chassis/CurrentCommand", getCurrentCommandName());
     SmartDashboard.putNumber("Chassis/arcadeForward", arcadeForward);
     SmartDashboard.putNumber("Chassis/arcadeTurn", arcadeTurn);
-    SmartDashboard.putNumber("Chassis/Left0 RPM", motorL0.getEncoder().getVelocity());
-    SmartDashboard.putNumber("Chassis/Left1 RPM", motorL1.getEncoder().getVelocity());
-    SmartDashboard.putNumber("Chassis/Left2 RPM", motorL2.getEncoder().getVelocity());
+    // SmartDashboard.putNumber("Chassis/Left0 RPM", motorL0.getEncoder().getVelocity());
+    // SmartDashboard.putNumber("Chassis/Left1 RPM", motorL1.getEncoder().getVelocity());
+    // SmartDashboard.putNumber("Chassis/Left2 RPM", motorL2.getEncoder().getVelocity());
 
 
 
@@ -299,8 +299,8 @@ public class Chassis extends Subsystem {
     double rightSidePower = rightMotorOutput * -1;
     double maximumRPM = 5700;
 
-    SmartDashboard.putNumber("Chassis/Left Side Joystick", leftSidePower);
-    SmartDashboard.putNumber("Chassis/Left Side Speed", leftSidePower*maximumRPM);
+    // SmartDashboard.putNumber("Chassis/Left Side Joystick", leftSidePower);
+    // SmartDashboard.putNumber("Chassis/Left Side Speed", leftSidePower*maximumRPM);
 
     pidControllerL.setReference(leftSidePower*maximumRPM, ControlType.kSmartVelocity);
     pidControllerR.setReference(rightSidePower*maximumRPM, ControlType.kSmartVelocity);
@@ -308,7 +308,7 @@ public class Chassis extends Subsystem {
   }
 
   public void periodic(){
-    SmartDashboard.putNumber("Chassis/Output actual Left", motorL0.getAppliedOutput());
-    SmartDashboard.putNumber("Chassis/Output actual Right", motorR0.getAppliedOutput());
+    // SmartDashboard.putNumber("Chassis/Output actual Left", motorL0.getAppliedOutput());
+    // SmartDashboard.putNumber("Chassis/Output actual Right", motorR0.getAppliedOutput());
   }
 }
