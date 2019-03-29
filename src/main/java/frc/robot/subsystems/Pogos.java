@@ -43,9 +43,12 @@ public class Pogos extends Subsystem {
   double outputPower = 0;
   
   public static double POGO_GAIN_HAB = 0.02;
+  // public static double POGO_GAIN_HAB = 0.02/0.66/0.66*1.5;  // 1 to 1 pogos, too high?
+  // public static double POGO_GAIN_HAB = 0.02/0.66;  // 1 to 1 pogos, maybe right?
   public static double POGO_GAIN_IDLE = POGO_GAIN_HAB/4;
   public double kPogoGain = POGO_GAIN_IDLE;
 
+  // public static Lerp toInches = new Lerp(0, -24991, -1, 19);  // 1 to 1 pogos
   public static Lerp toInches = new Lerp(0, -76859, -1, 19);
 
 
