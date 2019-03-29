@@ -11,6 +11,7 @@ import com.stormbots.commands.LambdaCommand;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import frc.robot.commands.ArmHoming;
+import frc.robot.commands.WristHoming;
 
 public class RobotStartup extends CommandGroup {
   /**
@@ -39,7 +40,7 @@ public class RobotStartup extends CommandGroup {
       return true;
     }));
 
-    addSequential(new ArmHoming());
+    addSequential(new WristHoming());
     // addSequential(new LoadCargo_v3());
     
   }

@@ -31,7 +31,7 @@ public class WristHoming extends Command {
     Robot.armLift.wrist.setMode(Mode.MANUAL);
     setTimeout(2);
     // Robot.armLift.arm.set(Pose.HATCH_1);
-    Robot.armLift.arm.setAngle(-77);
+    Robot.armLift.arm.setAngle(-90);
 
     Robot.armLift.elevator.set(Pose.CARGO_1);
     Robot.hand.setPosition(frc.robot.subsystems.Hand.Position.CLOSE);
@@ -75,6 +75,7 @@ public class WristHoming extends Command {
   @Override
   protected void interrupted() {
     Robot.armLift.wrist.setPower(0);
-    if(!Robot.isCompbot)end();
+    // if(!Robot.isCompbot)end();
+    end();
   }
 }

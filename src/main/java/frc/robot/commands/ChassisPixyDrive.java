@@ -83,24 +83,10 @@ public class ChassisPixyDrive extends Command {
       endY = startY;
     }
 
-    boolean approachFromRight = startX <= endX;
-
-    double modifier = (approachFromRight? -1 : 1);
-
-    if(startY <= 0.1 && startX <= (0.4 * (approachFromRight? -1 : 1)) ) {
-      // shortSidePower = 0.2 - 0.8*Math.abs(startX);
-      // longSidePower = 0.2 + 0.8*Math.abs(startX);
-      shortSidePower = -Math.abs(startX);
-      longSidePower = Math.abs(startX);
-    }
-    else {
-      shortSidePower = 0.4;
-      longSidePower = 0.4;
-    }
-
-    // The Problem Child
     shortSidePower = 0.3 - 0.4*Math.abs(startX);
     longSidePower = 0.3 + 0.4*Math.abs(startX);
+    shortSidePower *= 1.3;
+    longSidePower *= 1.3;
   }
 
   // Called repeatedly when this Command is scheduled to run

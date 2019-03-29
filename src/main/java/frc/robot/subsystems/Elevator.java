@@ -133,40 +133,20 @@ public class Elevator extends Subsystem {
                   case CLOSEDLOOP:
 
                         double elevatorHeightRestrictionCurrentMin = 0;
-                        double elevatorHeightRestrictionCurrentMax = MAX_HEIGHT;
                         double elevatorHeightRestrictionTargetMin = 0;
-                        double elevatorHeightRestrictionTargetMax = MAX_HEIGHT;
 
                         if(wristCurrentAngle <= -20 && wristCurrentAngle >= -140) {
                               elevatorHeightRestrictionCurrentMin = MIN_HEIGHT+(6 * Math.sin(lerp(wristCurrentAngle, -140, -20, 0, Math.PI)));
                         }
                         else elevatorHeightRestrictionCurrentMin = MIN_HEIGHT;
 
-                        // if(wristCurrentAngle <= -100) {
-                        //       //TODO: We need to measure this, and we can probably just set it to the actual height
-                        //       //as a fixed value
-                        //       // elevatorHeightRestrictionMax = MIN_HEIGHT+(7 * Math.sin(lerp(wristAngle, -180, -100, 0, Math.PI)));
-                        //       elevatorHeightRestrictionCurrentMax = MIN_HEIGHT + 4;
-                        // }
-                        elevatorHeightRestrictionCurrentMax = MAX_HEIGHT;
-
-
                         if(wristTargetAngle <= -20 && wristTargetAngle >= -140) {
                               elevatorHeightRestrictionTargetMin = MIN_HEIGHT+(10 * Math.sin(lerp(wristTargetAngle, -140, -20, 0, Math.PI)));
                         }
                         else elevatorHeightRestrictionTargetMin = MIN_HEIGHT;
 
-                        if(wristTargetAngle <= -100) {
-                              //TODO: We need to measure this, and we can probably just set it to the actual height
-                              //as a fixed value
-                              // elevatorHeightRestrictionMax = MIN_HEIGHT+(7 * Math.sin(lerp(wristAngle, -180, -100, 0, Math.PI)));
-                              elevatorHeightRestrictionTargetMax = MIN_HEIGHT + 4;
-                        }
-                        else elevatorHeightRestrictionTargetMax = MAX_HEIGHT;
-
 
                         elevatorHeightRestrictionMin = Math.max(elevatorHeightRestrictionCurrentMin, elevatorHeightRestrictionTargetMin);
-                        // elevatorHeightRestrictionMax = Math.min(elevatorHeightRestrictionCurrentMax, elevatorHeightRestrictionTargetMax);
 
                         //Restrict our height based on physical limits
                         target = Clamp.clamp(target, MIN_HEIGHT, MAX_HEIGHT);
@@ -192,17 +172,14 @@ public class Elevator extends Subsystem {
                   
                   break;
             }
-
-            // //manipulate our velocity
-		// if(!elevLimit.get() && elevatorPwr <0) {
-		// 	elevatorPwr = 0;
-		// }
 		
 		// //check for limit switch and reset if found
 		// if(!elevLimit.get()) {
 		// 	homed = true;
 		// 	reset();
             // }
+
+            // For debugging! 
             //elevatorPwr = Clamp.clamp(elevatorPwr, -0.2, 0.2);
             
             elevMotor.set(ControlMode.PercentOutput, elevatorPwr);
@@ -214,12 +191,18 @@ public class Elevator extends Subsystem {
             SmartDashboard.putNumber("Elevator/Output Total", elevatorPwr);
             SmartDashboard.putNumber("Elevator/Output FF", elevatorFF);
             SmartDashboard.putNumber("Elevator/Output FB", FB.fb(target, currentPos, kElevatorGain));
-            SmartDashboard.putString("Elevator/Command", getCurrentCommandName());
       }
 
       @Override
       public void initDefaultCommand() {
             // Set the default command for a subsystem here.
             // setDefaultCommand(new MySpecialCommand());
+      }
+
+      @Override
+      public void periodic(){
+            SmartDashboard.putBoolean("Elevator/SwitchRaw", elevLimit.get());
+            SmartDashboard.putBoolean("Elevator/Homed", homed);
+            SmartDashboard.putString("Elevator/Command", getCurrentCommandName());            
       }
 }
