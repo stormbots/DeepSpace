@@ -242,7 +242,7 @@ public class Robot extends TimedRobot {
     pogos.update();
     chassis.update();
 
-    SmartDashboard.putData(pdp);
+    // SmartDashboard.putData(pdp);
   }
 
   /**
