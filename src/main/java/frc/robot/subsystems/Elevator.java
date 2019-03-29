@@ -47,7 +47,9 @@ public class Elevator extends Subsystem {
       // add more positions for lvl 1,2,3 of cargo and hatches
       double kElevatorGain = 0.1;
       double elevatorPwr = 0;
-      double elevatorFF = 0.084;
+      public double elevatorFF = 0.084;
+
+      boolean lastSwitch = false;
 
       /** Convert ticks to the positional height of the arm pivot, in inches */
       public Lerp elevToInches = new Lerp(0, -25_000, MIN_HEIGHT, MAX_HEIGHT); //maxElevator  -28450, minElevator -3170 
@@ -113,6 +115,10 @@ public class Elevator extends Subsystem {
 
       public void set(Pose pose){
             setPosition(pose.eleHeight());
+      }
+
+      public void setPower(double power){
+            elevatorPwr = power;
       }
 
       public boolean isOnTarget(double tolerance){
@@ -187,7 +193,7 @@ public class Elevator extends Subsystem {
             //ArmElevator.armavatorTab.add("Elevator Power", elevatorPwr);
             //ArmElevator.armavatorTab.add("Limit Touched", elevLimit.get());
             //SmartDashboard.putNumber("")
-            SmartDashboard.putNumber("Elevator/Constrained Height", target);
+            SmartDashboard.putNumber("Elevator/Height", getPosition());
             SmartDashboard.putNumber("Elevator/Output Total", elevatorPwr);
             SmartDashboard.putNumber("Elevator/Output FF", elevatorFF);
             SmartDashboard.putNumber("Elevator/Output FB", FB.fb(target, currentPos, kElevatorGain));
