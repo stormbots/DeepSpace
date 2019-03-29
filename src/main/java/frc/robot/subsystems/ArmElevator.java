@@ -212,18 +212,18 @@ public class ArmElevator extends Subsystem {
             //     elevator.elevatorHeightRestriction = Elevator.ElevatorPosition.WRIST_SAFETY_LIMIT
             // }
 
-            if(getCurrentCommandName().isBlank() && isOnTarget(2,10,10)){
-                  SmartDashboard.putBoolean("Elevator/ManualPose",true);
-                  switch(pose){
-                        case LOAD_CARGO_PREP:
-                        setPose(Pose.HATCH_1);
-                        break;
-                        case LOAD_CARGO_PREP_2:
-                        setPose(Pose.LOAD_CARGO_PREP);
-                        break;
-                        // case STARTUP:
-                  }
-            }
+            // if(getCurrentCommandName().isBlank() && isOnTarget(2,10,10)){
+            //       SmartDashboard.putBoolean("Elevator/ManualPose",true);
+            //       switch(pose){
+            //             case LOAD_CARGO_PREP:
+            //             setPose(Pose.HATCH_1);
+            //             break;
+            //             case LOAD_CARGO_PREP_2:
+            //             setPose(Pose.LOAD_CARGO_PREP);
+            //             break;
+            //             // case STARTUP:
+            //       }
+            // }
       
 
             //Run all the updates

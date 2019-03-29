@@ -45,6 +45,6 @@ public class DefenseModeEngage_v2 extends CommandGroup {
     //addSequential(new ArmPose(Pose.HIDE_1));
     //addSequential(new ArmPose(Pose.HIDE_2));
     addSequential(new ArmPose(Pose.HIDE));
-    addSequential(new ArmHoming());
+    // addSequential(new ArmHoming());
   }
 }

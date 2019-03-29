@@ -38,7 +38,7 @@ public class Pogos extends Subsystem {
   public static final double RETRACTED = -1;
   public static double DEPLOY_HAB_2 = 6; 
   public static double DEPLOY_HAB_3 = 19; // is the inches from the ground 
-  public double kPogoGainInches = 0.7;
+  // public double kPogoGainInches = 0.7;
   public double targetPos = 0;
   double outputPower = 0;
   

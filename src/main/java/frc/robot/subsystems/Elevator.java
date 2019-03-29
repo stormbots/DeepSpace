@@ -154,10 +154,11 @@ public class Elevator extends Subsystem {
 
                         elevatorHeightRestrictionMin = Math.max(elevatorHeightRestrictionCurrentMin, elevatorHeightRestrictionTargetMin);
 
-                        //Restrict our height based on physical limits
-                        target = Clamp.clamp(target, MIN_HEIGHT, MAX_HEIGHT);
                         //Restrict our height based on current pose constraints
                         target = Clamp.clamp(target, elevatorHeightRestrictionMin, elevatorHeightRestrictionMax);
+
+                        //Restrict our height based on physical limits
+                        target = Clamp.clamp(target, MIN_HEIGHT, MAX_HEIGHT);
 
                         elevatorPwr = FB.fb(target, currentPos, kElevatorGain)*2.0;
                         if(elevatorPwr > 0) elevatorPwr += elevatorFF;

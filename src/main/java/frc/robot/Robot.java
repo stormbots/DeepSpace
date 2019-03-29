@@ -8,7 +8,6 @@
 package frc.robot;
 import com.stormbots.devices.pixy2.Pixy2;
 
-import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.Preferences;
@@ -19,19 +18,15 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.commandgroups.DefenseModeEngage_v2;
 import frc.robot.commandgroups.DefenseMode_v2;
-import frc.robot.commandgroups.LoadCargo_v2;
 import frc.robot.commandgroups.LoadCargo_v3;
 import frc.robot.commandgroups.RobotStartup;
 import frc.robot.commands.ArmPose;
-import frc.robot.commands.ChassisPixyDrive;
 import frc.robot.commands.ChassisPixyDrive_v3;
 import frc.robot.commands.DefenseModeSwitcher;
 import frc.robot.commands.IntakeGrabBall;
-import frc.robot.commands.RobotGrabHab2;
+import frc.robot.commands.PlaceHatch_v2;
 import frc.robot.commands.RobotGrabHab2_v2;
-import frc.robot.commands.RobotGrabHab3;
 import frc.robot.commands.RobotGrabHab3_v2;
 import frc.robot.subsystems.ArmElevator;
 import frc.robot.subsystems.ArmElevator.Pose;
@@ -115,6 +110,8 @@ public class Robot extends TimedRobot {
     SmartDashboard.putData("Commands/Cargo 1",new ArmPose(Pose.CARGO_1));
     SmartDashboard.putData("Commands/Cargo 2",new ArmPose(Pose.CARGO_2));
     SmartDashboard.putData("Commands/Cargo 3",new ArmPose(Pose.CARGO_3));
+
+    SmartDashboard.putData("Commands/Place Hatch v2",new PlaceHatch_v2());
     // SmartDashboard.putData("Commands/DefenseMode Engage",new DefenseModeEngage_v2());
     // SmartDashboard.putData("Commands/DefenseMode Disengage",new DefenseModeDisengage());
 

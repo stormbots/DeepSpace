@@ -35,44 +35,22 @@ public class PlaceHatch_v2 extends Command {
   @Override
   protected void execute() {
     currentTime = Timer.getFPGATimestamp() - startTime;
-    //close hand
-    //small delay
-    //if hatch1, hatch2
-      //rotate wrist down
-    //if hatch3, elevatordown // maybe wait and move wrist up?
 
-    //HATCH 3
-    if(Robot.armLift.getPose() == Pose.HATCH_3){
-      if(currentTime < 0.3){
-        Robot.hand.setPosition(Position.CLOSE);
-      }
-      else if(currentTime < 0.8){
-        Robot.armLift.elevator.setPosition(Robot.armLift.getPose().eleHeight()-2);
-      }
-      else if(currentTime < 1){
-        Robot.chassis.arcadeDrive(-0.2, 0);
-      }
-      else if(currentTime < 2){
-        Robot.chassis.arcadeDrive(0, 0);
-      }
+    if(currentTime < 0.1){
+      Robot.hand.setPosition(Position.CLOSE);
+      return;
     }
-    //ANY OTHER POSE
-    else{
-      if(currentTime < 0.3){
-        Robot.hand.setPosition(Position.CLOSE);
-      }
-      else if(currentTime < 0.8){
-        
-        if(Robot.armLift.getPose() == Pose.HATCH_2){
-          Robot.armLift.wrist.setTargetAngleFromFloor(-45);
-          Robot.armLift.elevator.setPosition(Robot.armLift.getPose().eleHeight()-2);
-        }
-        else{
-        Robot.armLift.wrist.setTargetAngleFromFloor(-10);
-        }
-      
-      }
+    switch(Robot.armLift.getPose()){
+      case HATCH_1:
+        Robot.armLift.arm.setAngle(-100);
+        // Robot.armLift.wrist.setTargetAngleFromFloor(-10); //maybe needed later?
+        break;
+      default:
+        Robot.armLift.elevator.setPosition(Robot.armLift.getPose().eleHeight()-1);
+        break;
     }
+
+
   }
 
   // Make this return true when this Command no longer needs to run execute()
