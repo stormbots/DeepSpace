@@ -58,9 +58,9 @@ public class ChassisPixyDrive_v3 extends Command {
 
 
     //Do stuff! 
-    double BASEPOWER = 0.3;
-    double NEARBIAS  = 0.3; 
-    double FARBIAS = 0.4;
+    double BASEPOWER = 0.05;
+    double NEARBIAS  = 0.2; 
+    double FARBIAS =   0.0;
     rightPixyPower = BASEPOWER;
     rightPixyPower += SinCurve.scurve(x1, 0, x2, 0.5, NEARBIAS); 
     rightPixyPower += y2*SinCurve.ncurve(x2, 0, 1, 0, FARBIAS);
