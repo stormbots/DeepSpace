@@ -65,7 +65,8 @@ public class RobotGrabHab2_v2 extends Command {
       //gain elevation
       Robot.intake.setTargetPosition(timeToIntakeAngle.get(moveCurrentTime));
       Robot.pogos.setPosition(timeToPogoPosition.get(moveCurrentTime));
-      Robot.chassis.arcadeDrive(0, 0);
+      Robot.intake.setRollerPower(0.5); // Check this... may be necesary
+      Robot.chassis.arcadeDrive(0.2, 0);
     }
     else if(runTime < moveTime + 2){
 

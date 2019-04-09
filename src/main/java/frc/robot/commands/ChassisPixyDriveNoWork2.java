@@ -8,20 +8,18 @@
 package frc.robot.commands;
 
 import static com.stormbots.Clamp.clamp;
-import static com.stormbots.Lerp.lerp;
 
 import com.stormbots.devices.pixy2.Line;
 import com.stormbots.interp.SinCurve;
 
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.subsystems.Chassis.Mode;
 
 /**
  * An example command.  You can replace me with your own command.
  */
-public class ChassisPixyDrive_v3 extends Command {
+public class ChassisPixyDriveNoWork2 extends Command {
 
   boolean areWeBroken = false;
   Line line = new Line();
@@ -31,7 +29,7 @@ public class ChassisPixyDrive_v3 extends Command {
   double rightPixyPower = 0;
 
 
-  public ChassisPixyDrive_v3() {
+  public ChassisPixyDriveNoWork2() {
     // Use requires() here to declare subsystem dependencies
     requires(Robot.chassis);
 

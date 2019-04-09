@@ -59,7 +59,7 @@ public class LoadCargo_v3 extends CommandGroup {
 
     // //use the TimeOut argument of addSequential to hijack the passthrough command with a max time
     addSequential(new WaitCommand(0.05));
-    addSequential(new PassThroughPower(PassThrough.LOAD_BALL_POWER),1.5);
+    addSequential(new PassThroughPower(PassThrough.LOAD_BALL_POWER),1.5-0.3+0.1-0.2-0.2);
     addSequential(new HandPose(Hand.Position.CLOSE,Hand.HOLD_POWER));
 
     // addSequential(new WaitCommand(0.05));
@@ -75,7 +75,7 @@ public class LoadCargo_v3 extends CommandGroup {
 
     // Exit
     
-    addParallel(new PassThroughPower(1), 0.5); //make sure we don't snag ball on rollers
+    // addParallel(new PassThroughPower(1), 0.5); //make sure we don't snag ball on rollers
     addSequential(new ArmPose(Pose.HATCH_1));
 
     //ball is free, but make sure we try to reseat the ball on a failure

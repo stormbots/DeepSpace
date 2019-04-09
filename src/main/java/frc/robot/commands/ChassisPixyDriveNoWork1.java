@@ -20,7 +20,7 @@ import frc.robot.subsystems.Chassis.Mode;
 /**
  * An example command.  You can replace me with your own command.
  */
-public class ChassisPixyDrive_v2 extends Command {
+public class ChassisPixyDriveNoWork1 extends Command {
 
   boolean areWeBroken = false;
   Line line = new Line();
@@ -38,7 +38,7 @@ public class ChassisPixyDrive_v2 extends Command {
   EntrySide entrySide = EntrySide.NA;
 
 
-  public ChassisPixyDrive_v2() {
+  public ChassisPixyDriveNoWork1() {
     // Use requires() here to declare subsystem dependencies
     requires(Robot.chassis);
 

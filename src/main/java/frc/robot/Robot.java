@@ -22,10 +22,10 @@ import frc.robot.commandgroups.DefenseMode_v2;
 import frc.robot.commandgroups.LoadCargo_v3;
 import frc.robot.commandgroups.RobotStartup;
 import frc.robot.commands.ArmPose;
-import frc.robot.commands.ChassisPixyDrive_v3;
+import frc.robot.commands.ChassisPixyDrive;
+import frc.robot.commands.ChassisPixyDriveFast;
 import frc.robot.commands.DefenseModeSwitcher;
 import frc.robot.commands.IntakeGrabBall;
-import frc.robot.commands.PlaceHatch_v2;
 import frc.robot.commands.RobotGrabHab2_v2;
 import frc.robot.commands.RobotGrabHab3_v2;
 import frc.robot.subsystems.ArmElevator;
@@ -111,7 +111,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putData("Commands/Cargo 2",new ArmPose(Pose.CARGO_2));
     SmartDashboard.putData("Commands/Cargo 3",new ArmPose(Pose.CARGO_3));
 
-    SmartDashboard.putData("Commands/Place Hatch v2",new PlaceHatch_v2());
+    // SmartDashboard.putData("Commands/Place Hatch v2",new PlaceHatch_v2());
     // SmartDashboard.putData("Commands/DefenseMode Engage",new DefenseModeEngage_v2());
     // SmartDashboard.putData("Commands/DefenseMode Disengage",new DefenseModeDisengage());
 
@@ -120,12 +120,13 @@ public class Robot extends TimedRobot {
     // SmartDashboard.putData("Commands/CargoShip", new ArmPose(Pose.CARGO_SHIP));
     // SmartDashboard.putData("Commands/Place Hatch", new HatchPickup());
     SmartDashboard.putData("Commands/Hab2", new RobotGrabHab2_v2(4));
-    SmartDashboard.putData("Commands/Hab3", new RobotGrabHab3_v2(8));
+    SmartDashboard.putData("Commands/Hab3", new RobotGrabHab3_v2(8)); // 8 is known good
 
     SmartDashboard.putData("Commands/GrabBall", new IntakeGrabBall());
     // SmartDashboard.putData("Commands/Home Intake", new IntakeHoming());
 
-    SmartDashboard.putData("Commands/Pixy v3", new ChassisPixyDrive_v3());
+    SmartDashboard.putData("Commands/Pixy Drive", new ChassisPixyDrive());
+    SmartDashboard.putData("Commands/Pixy Drive Fast", new ChassisPixyDriveFast());
     SmartDashboard.putString("Chassis/Pixy Version", pixy.getVersion().toString());
     // SmartDashboard.putData("pdp", pdp);
   
@@ -250,8 +251,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void testPeriodic() {
-    SmartDashboard.putString("Chassis/Pixy Version", pixy.getVersion().toString());
-    compressor.setClosedLoopControl(true);
+    // SmartDashboard.putString("Chassis/Pixy Version", pixy.getVersion().toString());
+    // compressor.setClosedLoopControl(true);
   }
 
 }

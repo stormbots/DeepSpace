@@ -36,18 +36,24 @@ public class PlaceHatch_v2 extends Command {
   protected void execute() {
     currentTime = Timer.getFPGATimestamp() - startTime;
 
-    if(currentTime < 0.1){
+    if(currentTime < 0.3){
       Robot.hand.setPosition(Position.CLOSE);
       return;
     }
-    switch(Robot.armLift.getPose()){
-      case HATCH_1:
-        Robot.armLift.arm.setAngle(-100);
-        // Robot.armLift.wrist.setTargetAngleFromFloor(-10); //maybe needed later?
-        break;
-      default:
-        Robot.armLift.elevator.setPosition(Robot.armLift.getPose().eleHeight()-1);
-        break;
+    else if(currentTime < 1){
+      switch(Robot.armLift.getPose()){
+        case HATCH_1:
+          Robot.armLift.arm.setAngle(-100);
+          Robot.armLift.wrist.setTargetAngleFromFloor(-15); //maybe needed later?
+          break;
+        default:
+          Robot.armLift.elevator.setPosition(Robot.armLift.getPose().eleHeight()-1);
+          break;
+      }
+    }
+    else if(currentTime < 1.2){
+      Robot.chassis.arcadeDrive(
+        0.2, 0);
     }
 
 

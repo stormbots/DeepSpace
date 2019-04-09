@@ -9,7 +9,6 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commandgroups.DefenseMode_v2;
 import frc.robot.commandgroups.LoadCargo_v3;
 // import frc.robot.commands.ArmPose;
@@ -18,7 +17,6 @@ import frc.robot.commandgroups.LoadCargo_v3;
 import frc.robot.commands.ArmPose;
 import frc.robot.commands.ChassisPixyDrive;
 import frc.robot.commands.ChassisShift;
-import frc.robot.commands.DefenseModeSwitcher;
 import frc.robot.commands.HandPose;
 import frc.robot.commands.IntakeGrabBall;
 import frc.robot.commands.IntakeHoming;
@@ -96,6 +94,8 @@ public class OI {
     //intakeCargo.whenPressed(new ArmPose(Pose.LOAD_CARGO));
     intakeCargo.whenPressed(new LoadCargo_v3());
     //armDown.whenPressed(new ArmPose(Pose.HIDE));
+
+    //defenseMode.whenPressed(new DefenseModeSwitcher()); // WE MIGHT NOT NEED THIS
     defenseMode.whenPressed(new DefenseMode_v2());
 
     cargoShip.whenPressed(new ArmPose(Pose.CARGO_SHIP));
@@ -107,7 +107,6 @@ public class OI {
     placeHatch.whenPressed(new PlaceHatch());
 
     homeIntake.whileHeld(new IntakeHoming());
-    defenseMode.whenPressed(new DefenseModeSwitcher()); // WE MIGHT NOT NEED THIS
 
     //autoLineup.whileHeld(new ChassisPixyDrive());
 
@@ -123,8 +122,8 @@ public class OI {
     // Press+Release creates a "hold" behaviour without special isFinished() conditions
     shifter.whenPressed(new ChassisShift(Gear.HIGH));
     shifter.whenReleased(new ChassisShift(Gear.LOW));
-    climbSequenceHab3.whenPressed(new RobotGrabHab3_v2(8));
-    climbSequenceHab2.whenPressed(new RobotGrabHab2_v2(4));
+    climbSequenceHab3.whenPressed(new RobotGrabHab3_v2(2));
+    climbSequenceHab2.whenPressed(new RobotGrabHab2_v2(1));
 
   }
   
