@@ -134,6 +134,8 @@ public class Robot extends TimedRobot {
     SmartDashboard.putData("Commands/DefenseMode Switcher", new DefenseModeSwitcher());
     SmartDashboard.putData("Commands/LoadCargo_v3", new LoadCargo_v3());
     
+    SmartDashboard.putNumber("Chassis/Ultrasonic Left", chassis.sonarL.getRangeInches());
+    SmartDashboard.putNumber("Chassis/Ultrasonic Right", chassis.sonarR.getRangeInches());
 
   }
 
@@ -147,6 +149,9 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
+    
+    SmartDashboard.putNumber("Chassis/Ultrasonic Left", chassis.sonarL.getRangeInches());
+    SmartDashboard.putNumber("Chassis/Ultrasonic Right", chassis.sonarR.getRangeInches());
   }
 
   /**

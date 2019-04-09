@@ -115,11 +115,11 @@ public class Wrist extends Subsystem {
             else{
                   pidWrist = new MiniPID(1.0/1350.0*6, 1.0/20000.0, 1.0/100000.0);
                   pidWrist.setMaxIOutput(0.15);
-                  kWristFF = 0.16;
+                  kWristFF = 0.11;
                   wristMotor.setInverted(false);
                   // HOME_OUTPUT_POWER_MIN = 0.12; //old usable
                   // HOME_OUTPUT_POWER_MIN = 0.09; //low power, but insufficient for matches
-                  HOME_OUTPUT_POWER_MIN = 0.11;
+                  HOME_OUTPUT_POWER_MIN = 0.09;
             }
       }
       /** Specified by 4096 ticks per rotation, with a 42:24 gear ratio */

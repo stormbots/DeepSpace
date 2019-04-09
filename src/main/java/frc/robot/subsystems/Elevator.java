@@ -82,8 +82,10 @@ public class Elevator extends Subsystem {
                   elevatorFF = 0.1;
             }
             else{
+                  kElevatorGain = 0.1;
+                  kElevatorGain = 0.07;
                   elevatorFF = 0.3;
-
+                  elevatorFF = 0.1;
             }
       }
 
