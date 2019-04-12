@@ -7,14 +7,13 @@
 
 package frc.robot.subsystems;
 
+import com.revrobotics.CANEncoder;
 import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import com.stormbots.Clamp;
 import com.revrobotics.ControlType;
 
-import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.Ultrasonic;
@@ -76,8 +75,8 @@ public class Chassis extends Subsystem {
   // Use an Enum to define pnuematic truth values, so that you get good named values 
   // backed by type checking everywhere.
   public enum Gear{
-    HIGH(true,false),
-    LOW(false,true);
+    HIGH(true,true),
+    LOW(false,false);
     private boolean compbot,practicebot;
     Gear(boolean compbot, boolean practicebot){
       this.compbot = compbot;
@@ -231,6 +230,14 @@ public class Chassis extends Subsystem {
 
   public void setMode(Mode newMode) {
     driveMode = newMode;
+  }
+
+  public CANEncoder getLeftEncoder() {
+    return motorL0.getEncoder();
+  }
+
+  public CANEncoder getRightEncoder() {
+    return motorR0.getEncoder();
   }
 
   public void update(){

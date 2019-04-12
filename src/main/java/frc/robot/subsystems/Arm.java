@@ -102,6 +102,7 @@ public class Arm extends Subsystem {
                   kArmGain = 0.025;
                   kArmFF = 0.2; 
                   kWristFF = 0.03;
+                  kWristFF = 0.02;
                   // kWristFF = 0.0;
                   MIN_ANGLE = -115.0;
             }

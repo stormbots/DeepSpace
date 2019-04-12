@@ -66,7 +66,6 @@ public class OI {
   public JoystickButton handGrab = new JoystickButton(leftStick,1);
   public JoystickButton handSuckIn = new JoystickButton(leftStick,6);
   public JoystickButton handSpitOut = new JoystickButton(leftStick,7);
-  public JoystickButton autoLineup = new JoystickButton(leftStick,8);
   public JoystickButton placeHatch = new JoystickButton(leftStick,10);
   public JoystickButton homeIntake = new JoystickButton(leftStick,11);
 
