@@ -84,8 +84,8 @@ public class ChassisPixyDrive extends Command {
 
     shortSidePower = 0.3 - 0.4*Math.abs(startX);
     longSidePower = 0.3 + 0.4*Math.abs(startX);
-    shortSidePower *= 1.4; // 1.3..1.4 works
-    longSidePower *= 1.4;  // 1.3..1.4 works
+    shortSidePower *= 1.3; // 1.3..1.4 works
+    longSidePower *= 1.3;  // 1.3..1.4 works
   }
 
   // Called repeatedly when this Command is scheduled to run

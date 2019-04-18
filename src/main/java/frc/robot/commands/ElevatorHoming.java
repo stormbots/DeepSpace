@@ -41,8 +41,9 @@ public class ElevatorHoming extends Command {
     //CAN'T DO THIS. elevatorUpdate and FB is still running in update, which uses another 
     //motor.set, resulting in double-writes to the motor.
     //use changeMode and setPower(v) to do this properly
-    Robot.armLift.elevator.setPower(Robot.armLift.elevator.elevatorFF * 0.4);
+    Robot.armLift.elevator.setPower(Robot.armLift.elevator.elevatorFF * 0.1);
   }    
+
 
   // Make this return true when this Command no longer needs to run execute()
   @Override

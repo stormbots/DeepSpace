@@ -33,6 +33,7 @@ public class PlaceHatch extends Command {
     startTime = Timer.getFPGATimestamp();
     wristCurrentAngle = Robot.armLift.wrist.getWristAngleFromFloor();
     Robot.armLift.arm.setAngle(Robot.armLift.arm.getArmAngle());
+    Robot.chassis.arcadeDrive(0, 0);
   }
 
   // Called repeatedly when this Command is scheduled to run
@@ -51,7 +52,7 @@ public class PlaceHatch extends Command {
         Robot.hand.setPosition(Position.CLOSE);
       }
       else if(currentTime < 0.8){
-        Robot.armLift.elevator.setPosition(Robot.armLift.getPose().eleHeight()-2);
+        Robot.armLift.elevator.setPosition(Robot.armLift.getPose().eleHeight()-3);
       }
       else if(currentTime < 1){
         Robot.chassis.arcadeDrive(0.2, 0);
@@ -69,17 +70,17 @@ public class PlaceHatch extends Command {
         
         if(Robot.armLift.getPose() == Pose.HATCH_2){
           // Robot.armLift.wrist.setTargetAngleFromFloor(-45);
-          Robot.armLift.elevator.setPosition(Robot.armLift.getPose().eleHeight()-1);
+          Robot.armLift.elevator.setPosition(Robot.armLift.getPose().eleHeight()-4);
         }
         else{
-        Robot.armLift.wrist.setTargetAngleFromFloor(wristCurrentAngle-10);
+        Robot.armLift.wrist.setTargetAngleFromFloor(wristCurrentAngle-10-5);
         }
       
       }
-      else if(currentTime < 1.0) {
+      else if(currentTime < 1.2) {
         Robot.chassis.arcadeDrive(0.2, 0);
       }
-      else if(currentTime < 1.2) {
+      else if(currentTime < 1.25) {
         Robot.chassis.arcadeDrive(0, 0);
       }
     }

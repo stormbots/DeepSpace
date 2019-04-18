@@ -21,6 +21,7 @@ public class AutoDrive extends Command {
   double landingDelay;
   double mainMoveTime;
   double turnTime;
+  double endForwardTime;
 
   Lerp tickToInch;
 
@@ -29,24 +30,38 @@ public class AutoDrive extends Command {
   Lerp leftTargetPos;
   Lerp rightTargetPos;
 
-  Lerp leftTurnTarget;
-  Lerp rightTurnTarget;
-  
+  Lerp turnTargetPos;
 
+  Lerp endForwardPos;
 
   public AutoDrive() {
 
     landingDelay = 1250;
     mainMoveTime = 1500;
     turnTime = 750;
+    endForwardTime = 1000;
+
+    double currentTime = landingDelay;
+    double currentPos = 0;
     
     tickToInch = new Lerp(0, 40960, 0, 120);
     
-    startingAcceleration = new Lerp(0, 500, 0, 1);
-    leftTargetPos = new Lerp(landingDelay, landingDelay+mainMoveTime, 0, tickToInch.getReverse(155));
-    rightTargetPos = new Lerp(landingDelay, landingDelay+mainMoveTime, 0, tickToInch.getReverse(170));
+    startingAcceleration = new Lerp(0, 500, 0, 1); // to ramp up at the beginning
 
-    // leftTurnTarget = new Lerp(0)
+    leftTargetPos = new Lerp(landingDelay, currentTime+mainMoveTime, 0, tickToInch.getReverse(155));
+    rightTargetPos = new Lerp(landingDelay, currentTime+mainMoveTime, 0, tickToInch.getReverse(170));
+
+    currentTime += mainMoveTime;
+    currentPos += leftTargetPos.get(currentTime);
+
+    double distanceFromWheelToWheel = 22.75;
+    double distanceOfQuarterTurn = (distanceFromWheelToWheel*Math.PI) / 4.0;
+    turnTargetPos = new Lerp(currentTime, currentTime+turnTime, currentPos, currentPos+tickToInch.getReverse(distanceOfQuarterTurn));
+
+    currentTime += turnTime;
+    currentPos += turnTargetPos.get(currentTime);
+
+    endForwardPos = new Lerp(currentTime, currentTime+endForwardTime, currentPos, currentPos+tickToInch.getReverse(6));
 
     // Use requires() here to declare subsystem dependencies
     requires(Robot.chassis);
@@ -79,6 +94,14 @@ public class AutoDrive extends Command {
     else if(runTime < landingDelay+mainMoveTime) {
       powerL = FB.fb(leftTargetPos.get(runTime), Robot.chassis.getLeftEncoder().getPosition(), 0.02);
       powerR = FB.fb(rightTargetPos.get(runTime), Robot.chassis.getRightEncoder().getPosition(), 0.02);
+    }
+    else if(runTime < landingDelay+mainMoveTime+turnTime) {
+      powerL = FB.fb(turnTargetPos.get(runTime), Robot.chassis.getLeftEncoder().getPosition(), 0.02);
+      powerR = 0;
+    }
+    else if(runTime < landingDelay+mainMoveTime+turnTime+endForwardTime) {
+      powerL = FB.fb(endForwardPos.get(runTime), Robot.chassis.getLeftEncoder().getPosition(), 0.02);
+      powerR = FB.fb(endForwardPos.get(runTime), Robot.chassis.getRightEncoder().getPosition(), 0.02);
     }
 
     Robot.chassis.tankDrive(powerL, powerR);

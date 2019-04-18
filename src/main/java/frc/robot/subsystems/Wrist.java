@@ -274,6 +274,13 @@ public class Wrist extends Subsystem {
                   }
             }
             
+            // if(targetWristToFloorAngle >= -10 && armPosition > 70) {
+
+            //       if(isLimitPressed()) {
+            //             setHomedReversed();
+            //       }
+            // }
+            
             //TODO Check for physical limits based on arm angles
             //if(wristPower > 0 && angleFromArm > MAX_ANGLE_TO_ARM) wristPower = 0;
             //if(wristPower < 0 && angleFromArm < MIN_ANGLE_TO_ARM) wristPower = 0;

@@ -25,10 +25,14 @@ public class PlaceHatch_v2 extends Command {
     requires(Robot.chassis);
   }
 
+  double wristCurrentAngle = 0;
+
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
+    wristCurrentAngle = Robot.armLift.wrist.getWristAngleFromFloor();
     startTime = Timer.getFPGATimestamp();
+    Robot.chassis.arcadeDrive(0, 0);
   }
 
   // Called repeatedly when this Command is scheduled to run
@@ -38,22 +42,29 @@ public class PlaceHatch_v2 extends Command {
 
     if(currentTime < 0.3){
       Robot.hand.setPosition(Position.CLOSE);
-      return;
     }
-    else if(currentTime < 1){
+    else if(currentTime < 0.8){
       switch(Robot.armLift.getPose()){
         case HATCH_1:
-          Robot.armLift.arm.setAngle(-100);
-          Robot.armLift.wrist.setTargetAngleFromFloor(-15); //maybe needed later?
+          // Robot.armLift.arm.setAngle(-100);
+          Robot.armLift.wrist.setTargetAngleFromFloor(wristCurrentAngle-15); //maybe needed later?
           break;
-        default:
-          Robot.armLift.elevator.setPosition(Robot.armLift.getPose().eleHeight()-1);
+        case HATCH_2:
+          Robot.armLift.elevator.setPosition(Robot.armLift.getPose().eleHeight()-4);
+          break;
+        case HATCH_3:
+          Robot.armLift.elevator.setPosition(Robot.armLift.getPose().eleHeight()-3);
+          break;
+        default: // shouldn't ever run... but just in case
+          Robot.armLift.elevator.setPosition(Robot.armLift.getPose().eleHeight()-2);
           break;
       }
     }
     else if(currentTime < 1.2){
-      Robot.chassis.arcadeDrive(
-        0.2, 0);
+      Robot.chassis.arcadeDrive(0.2, 0);
+    }
+    else {
+      Robot.chassis.arcadeDrive(0, 0);
     }
 
 
@@ -62,7 +73,7 @@ public class PlaceHatch_v2 extends Command {
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return currentTime > 2;
+    return currentTime > 1.25;
   }
 
   // Called once after isFinished returns true

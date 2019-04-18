@@ -13,7 +13,6 @@ import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
@@ -27,6 +26,8 @@ import frc.robot.commands.ChassisPixyDrive;
 import frc.robot.commands.ChassisPixyDriveFast;
 import frc.robot.commands.DefenseModeSwitcher;
 import frc.robot.commands.IntakeGrabBall;
+import frc.robot.commands.PlaceHatch;
+import frc.robot.commands.PlaceHatch_v2;
 import frc.robot.commands.RobotGrabHab2_v2;
 import frc.robot.commands.RobotGrabHab3_v2;
 import frc.robot.subsystems.ArmElevator;
@@ -136,10 +137,12 @@ public class Robot extends TimedRobot {
     SmartDashboard.putData("Commands/DefenseMode_v2", new DefenseMode_v2());
     SmartDashboard.putData("Commands/DefenseMode Switcher", new DefenseModeSwitcher());
     SmartDashboard.putData("Commands/LoadCargo_v3", new LoadCargo_v3());
+
+    SmartDashboard.putData("Commands/Place Hatch v1", new PlaceHatch());
+    SmartDashboard.putData("Commands/Place Hatch v2", new PlaceHatch_v2());
     
     SmartDashboard.putNumber("Chassis/Ultrasonic Left", chassis.sonarL.getRangeInches());
     SmartDashboard.putNumber("Chassis/Ultrasonic Right", chassis.sonarR.getRangeInches());
-
   }
 
   /**

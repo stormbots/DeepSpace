@@ -80,7 +80,7 @@ public class Intake extends Subsystem {
   public static final double PIVOT_GRAB_HAB_2 = 20;
   public static final double PIVOT_GRAB_HAB_3 = 20;
   public static final double PIVOT_REST = PIVOT_MAX-1;
-  public static final double PIVOT_GRAB_CARGO = 71.5; //was 61.5, 76.5
+  public static final double PIVOT_GRAB_CARGO = 71.5-2; //was 71.5 -- old were 61.5, 76.5
   public static final double ROLLER_GRAB_CARGO = 1.0;
   // public static final double ROLLER_GRAB_POWER = 0;
 
@@ -165,7 +165,7 @@ public class Intake extends Subsystem {
     // if(pivotPower < 0  && currentPosition < PIVOT_MIN) { pivotPower = 0;}
     // if(pivotPower > 0  && currentPosition > PIVOT_MAX) { pivotPower = 0;}
     
-    SmartDashboard.putNumber("Intake/Active Current", pivotMotor.getOutputCurrent());
+    // SmartDashboard.putNumber("Intake/Active Current", pivotMotor.getOutputCurrent());
     SmartDashboard.putNumber("Intake/Current Position(final)",getAngle());
     SmartDashboard.putNumber("Intake/Output Power",pivotPower);
     // SmartDashboard.putNumber("Intake/Target after increment",targetPosition);
