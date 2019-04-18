@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
@@ -62,6 +63,8 @@ public class Robot extends TimedRobot {
   public static Intake intake = new Intake();
   public static PassThrough passThrough = new PassThrough();
   public static OI m_oi = new OI();
+
+  public double timeLastLoop = 0;
 
   Command m_autonomousCommand;
   SendableChooser<Command> m_chooser = new SendableChooser<>();
@@ -150,8 +153,10 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     
-    SmartDashboard.putNumber("Chassis/Ultrasonic Left", chassis.sonarL.getRangeInches());
-    SmartDashboard.putNumber("Chassis/Ultrasonic Right", chassis.sonarR.getRangeInches());
+    // SmartDashboard.putNumber("Chassis/Ultrasonic Left", chassis.sonarL.getRangeInches());
+    // SmartDashboard.putNumber("Chassis/Ultrasonic Right", chassis.sonarR.getRangeInches());
+    // SmartDashboard.putNumber("Robot/dt", Timer.getFPGATimestamp() - timeLastLoop);
+    // timeLastLoop = Timer.getFPGATimestamp();
   }
 
   /**

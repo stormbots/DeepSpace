@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.command.WaitCommand;
 import frc.robot.commands.ArmHoming;
 import frc.robot.commands.ArmPose;
 import frc.robot.commands.HandPose;
+import frc.robot.commands.IntakeHoming;
 import frc.robot.commands.PassThroughPower;
 import frc.robot.subsystems.ArmElevator.Pose;
 import frc.robot.subsystems.Hand;
@@ -40,7 +41,7 @@ public class DefenseMode_v2 extends CommandGroup {
     addParallel(new PassThroughPower(-0.3),2);
     addParallel(new HandPose(Hand.Position.CLOSE,Hand.EJECT_POWER,  Hand.Position.CLOSE,Hand.OFF),0.2);
     addSequential(new WaitCommand(0.15));
-    // addParallel(new IntakeHoming());
+    addParallel(new IntakeHoming(),4);
     //                        E     A     W
     //addSequential(new ArmPose(Pose.HIDE_1));
     //addSequential(new ArmPose(Pose.HIDE_2));
