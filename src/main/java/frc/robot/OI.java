@@ -22,6 +22,7 @@ import frc.robot.commands.IntakeGrabBall;
 import frc.robot.commands.IntakeHoming;
 import frc.robot.commands.PlaceHatch;
 import frc.robot.commands.RobotGrabHab2_v2;
+import frc.robot.commands.RobotGrabHab2to3;
 import frc.robot.commands.RobotGrabHab3_v2;
 import frc.robot.subsystems.ArmElevator.Pose;
 import frc.robot.subsystems.Chassis.Gear;// import frc.robot.commands.ArmPose;// import frc.robot.subsystems.ArmElevator;// import frc.robot.subsystems.ArmElevator.Pose;
@@ -66,6 +67,7 @@ public class OI {
   public JoystickButton handGrab = new JoystickButton(leftStick,1);
   public JoystickButton handSuckIn = new JoystickButton(leftStick,6);
   public JoystickButton handSpitOut = new JoystickButton(leftStick,7);
+  public JoystickButton climbSequenceHab2to3 = new JoystickButton(leftStick,9);
   public JoystickButton placeHatch = new JoystickButton(leftStick,10);
   public JoystickButton homeIntake = new JoystickButton(leftStick,11);
 
@@ -123,7 +125,7 @@ public class OI {
     shifter.whenReleased(new ChassisShift(Gear.LOW));
     climbSequenceHab3.whenPressed(new RobotGrabHab3_v2(2));
     climbSequenceHab2.whenPressed(new RobotGrabHab2_v2(1));
-
+    climbSequenceHab2to3.whenPressed(new RobotGrabHab2to3(2));
   }
   
 
@@ -166,7 +168,9 @@ public class OI {
   // button.whenReleased(new ExampleCommand());
 
   
-
+  public boolean getLiftIntake() {
+    return rightStick.getRawButtonPressed(11);
+  }
 
   public static double getDriveForward() {
     //return driveStick.getRawAxis(1);

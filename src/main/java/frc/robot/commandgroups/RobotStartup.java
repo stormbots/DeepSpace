@@ -10,8 +10,10 @@ package frc.robot.commandgroups;
 import com.stormbots.commands.LambdaCommand;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
+import frc.robot.commands.ArmPose;
 import frc.robot.commands.ElevatorHoming;
 import frc.robot.commands.WristHoming;
+import frc.robot.subsystems.ArmElevator.Pose;
 
 public class RobotStartup extends CommandGroup {
   /**
@@ -42,7 +44,9 @@ public class RobotStartup extends CommandGroup {
 
     addSequential(new ElevatorHoming());
     addSequential(new WristHoming());
-    // addSequential(new LoadCargo_v3());
+    // addSequential(new ArmPose(41, -80, 0));
+    // addSequential(new ArmPose(Pose.HATCH_1));
+    // addSequential(new LoadCargo_v3());+
     
   }
 }

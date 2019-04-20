@@ -8,12 +8,10 @@
 package frc.robot.commands;
 
 import static com.stormbots.Clamp.clamp;
-import static com.stormbots.Lerp.lerp;
 
-import com.stormbots.devices.pixy2.Line;
+import com.stormbots.Lerp;
 
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.subsystems.Chassis.Mode;
 
@@ -21,11 +19,9 @@ import frc.robot.subsystems.Chassis.Mode;
  * An example command.  You can replace me with your own command.
  */
 public class ChassisPixyBallChase extends Command {
-
-  boolean areWeBroken = false;
   
-  double imageBottom = 600;
-  double imageCenterX = 400;
+  double imageBottom = 600; // need to get the real values
+  double imageCenterX = 400; // need to get the real values
 
   double[] xValues={0,1,2};
   double[] yValues={0,1,2};
@@ -36,6 +32,8 @@ public class ChassisPixyBallChase extends Command {
 
   double leftSidePower = 0;
   double rightSidePower = 0;
+
+  Lerp pixelToAbsolute = new Lerp(0, imageCenterX, 0, 1);
 
   public ChassisPixyBallChase() {
     // Use requires() here to declare subsystem dependencies
@@ -48,28 +46,6 @@ public class ChassisPixyBallChase extends Command {
   protected void initialize() {
     Robot.pixy.setLamp(true, false);
     Robot.chassis.setMode(Mode.TANKDRIVE);
-  }
-
-
-  private void followRawCloseLine(double x1, double y1, double x2, double y2) {
-    double startX = x1;
-    double startY = y1;
-    double endX = x2;
-    double endY = y2;
-
-    if(y2 > y1) { 
-      double startXstaged = startX;
-      double startYstaged = startY;
-      startX = endX;
-      endX = startXstaged;
-      startY = endY;
-      endY = startY;
-    }
-
-    leftSidePower = 0.3 - 0.4*Math.abs(startX);
-    rightSidePower = 0.3 + 0.4*Math.abs(startX);
-    leftSidePower *= 1.4; // 1.3..1.4 works
-    rightSidePower *= 1.4;  // 1.3..1.4 works
   }
 
   public double getDistance(double x, double y) {
@@ -103,7 +79,7 @@ public class ChassisPixyBallChase extends Command {
       // }
     }
 
-    if(bestX + 20 > secondBestX) {
+    if(bestX + 30 > secondBestX) {
       if(getDistance(xValues[bestXIndex], yValues[bestXIndex]) > getDistance(xValues[secondBestXIndex], yValues[secondBestXIndex])) {
         return secondBestXIndex;
       }
@@ -136,7 +112,6 @@ public class ChassisPixyBallChase extends Command {
       return ;
     }
 
-
     int bestBallIndex = getBestBallIndex();
     double ballX = xValues[bestBallIndex];
     double ballY = xValues[bestBallIndex];
@@ -144,14 +119,16 @@ public class ChassisPixyBallChase extends Command {
 
     double ballXNormalizedCenter = ballX - imageCenterX;
 
-    leftSidePower = 0.3 + clamp(0.7*ballXNormalizedCenter, -0.3, 0.7);
-    rightSidePower = 0.3 + clamp(0.7*ballXNormalizedCenter, -0.3, 0.7);
+    double ballAbsoluteX = pixelToAbsolute.get(ballXNormalizedCenter);
 
-    Robot.chassis.tankDrive(leftSidePower, rightSidePower);
+    leftSidePower = 0.3 + clamp(0.7*ballAbsoluteX, -0.3, 0.7);
+    rightSidePower = 0.3 + clamp(0.7*ballAbsoluteX, -0.3, 0.7);
 
-    // SmartDashboard.putNumber("Chassis/LeftPixyPower", leftPixyPower);
-    // SmartDashboard.putNumber("Chassis/RightPixyPower", rightPixyPower);
-    // SmartDashboard.putNumber("Chassis/biasToRight", leftPixyPower-rightPixyPower);
+    Robot.chassis.tankDrive(-leftSidePower, -rightSidePower);
+
+    // SmartDashboard.putNumber("Chassis/LeftChasePower", -leftSidePower);
+    // SmartDashboard.putNumber("Chassis/RightChasePower", -rightSidePower);
+    // SmartDashboard.putNumber("Chassis/ChaseBiasToRight", -leftSidePower+rightSidePower);
 
   }
 

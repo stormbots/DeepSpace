@@ -77,7 +77,7 @@ public class ArmElevator extends Subsystem {
       public enum Pose{
             // Elevator bottom pos 41
             // E  A  W 
-            HIDE(41,-100,-155), //MAR 6 practice bot
+            HIDE(41,-100,-155+5), //MAR 6 practice bot
             // HOMING(),
 
             STARTUP(41,-90,0), //TODO

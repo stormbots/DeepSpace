@@ -51,7 +51,9 @@ public class LoadCargo_v3 extends CommandGroup {
 
     //   //if on target ()
     // addSequential(new WaitCommand(0.05));
-    addSequential(new ArmPose(41,-85+5,-170)); //replacement load cargo
+
+              //TODO: THIS NEEDS TO BE CHECKED BEFORE RUNNING!!!!!!!!!!!!
+    addSequential(new ArmPose(41,-85+5+3,-170)); //replacement load cargo // arm was -85+5
     
 
     // //Open the hand now, with a fallback to close and hold the ball if interrupted 
@@ -59,7 +61,8 @@ public class LoadCargo_v3 extends CommandGroup {
 
     // //use the TimeOut argument of addSequential to hijack the passthrough command with a max time
     addSequential(new WaitCommand(0.05));
-    addSequential(new PassThroughPower(PassThrough.LOAD_BALL_POWER),1.5-0.3+0.1-0.2-0.2);
+              //TODO: THIS NEEDS TO BE CHECKED BEFORE RUNNING!!!!!!!!!!!!
+    addSequential(new PassThroughPower(PassThrough.LOAD_BALL_POWER),1.5-0.3+0.1-0.4-0.2); // was 1.5-0.3+0.1-0.4
     addSequential(new HandPose(Hand.Position.CLOSE,Hand.HOLD_POWER));
 
     // addSequential(new WaitCommand(0.05));
