@@ -20,7 +20,7 @@ import frc.robot.subsystems.Chassis.Mode;
 /**
  * An example command.  You can replace me with your own command.
  */
-public class ChassisPixyDrive extends Command {
+public class ChassisPixyDriveFast extends Command {
 
   boolean areWeBroken = false;
   Line line = new Line();
@@ -29,7 +29,7 @@ public class ChassisPixyDrive extends Command {
   double shortSidePower = 0;
   double longSidePower = 0;
 
-  public ChassisPixyDrive() {
+  public ChassisPixyDriveFast() {
     // Use requires() here to declare subsystem dependencies
     requires(Robot.chassis);
 
@@ -40,30 +40,6 @@ public class ChassisPixyDrive extends Command {
   protected void initialize() {
     Robot.pixy.setLamp(true, false);
     Robot.chassis.setMode(Mode.TANKDRIVE);
-  }
-
-
-  private void followAugmentedCloseLine(double x1, double y1, double x2, double y2) {
-    double startX = x1;
-    double startY = y1;
-    double endX = x2;
-    double endY = y2;
-
-    double startXq1 = lerp(startX, -1, 1, 0, 1);
-    double endXq1 = lerp(endX, -1, 1, 0, 1);
-
-    double k = 10.0; // needs some fixing
-
-    double newX = -(endXq1 - startXq1) * k + startXq1;
-    double newY = -(endY - startY) * k + startY;
-
-    newX = lerp(newX, 0, 1, -1, 1);
-
-    newX = clamp(newX, -1, 1);
-    newY = clamp(newY, 0, 1);
-
-    shortSidePower = 0.3 - 0.3*Math.sqrt(Math.abs(startX));
-    longSidePower = 0.3 + 0.7*Math.sqrt(Math.abs(startX));
   }
 
 
@@ -84,8 +60,14 @@ public class ChassisPixyDrive extends Command {
 
     shortSidePower = 0.3 - 0.4*Math.abs(startX);
     longSidePower = 0.3 + 0.4*Math.abs(startX);
-    shortSidePower *= 1.3; // 1.3..1.4 works
-    longSidePower *= 1.3;  // 1.3..1.4 works
+    shortSidePower *= 1.4*1.3; // 1.3 to 1.4 works
+    longSidePower *= 1.4*1.3;  // 1.3 to 1.4 works
+
+    if(longSidePower > 1) {
+      double max = longSidePower;
+      longSidePower /= max;
+      shortSidePower /= max;
+    }
   }
 
   // Called repeatedly when this Command is scheduled to run

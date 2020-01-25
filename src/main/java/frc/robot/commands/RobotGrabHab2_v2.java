@@ -48,7 +48,7 @@ public class RobotGrabHab2_v2 extends Command {
   @Override
   protected void initialize() {
     startTime = Timer.getFPGATimestamp();
-    System.out.println("RobotGrabHab has initialized");
+    // System.out.println("RobotGrabHab has initialized");
     Robot.intake.setMode(Intake.Mode.HABLIFT);
     Robot.armLift.setPose(Pose.HATCH_1);
     Robot.pogos.kPogoGain = Pogos.POGO_GAIN_HAB;
@@ -65,7 +65,8 @@ public class RobotGrabHab2_v2 extends Command {
       //gain elevation
       Robot.intake.setTargetPosition(timeToIntakeAngle.get(moveCurrentTime));
       Robot.pogos.setPosition(timeToPogoPosition.get(moveCurrentTime));
-      Robot.chassis.arcadeDrive(0, 0);
+      Robot.intake.setRollerPower(0.5); // Check this... may be necesary
+      Robot.chassis.arcadeDrive(0.2, 0);
     }
     else if(runTime < moveTime + 2){
 
@@ -119,7 +120,7 @@ public class RobotGrabHab2_v2 extends Command {
     Robot.chassis.arcadeDrive(0, 0);
     Robot.pogos.setPosition(Pogos.RETRACTED);
     Robot.intake.setMode(Intake.Mode.CLOSEDLOOP);
-    System.out.println("RobotGrabHab has ended");
+    // System.out.println("RobotGrabHab has ended");
     Robot.pogos.kPogoGain = Pogos.POGO_GAIN_IDLE;
 
   }
@@ -129,7 +130,7 @@ public class RobotGrabHab2_v2 extends Command {
   @Override
   protected void interrupted() {
     end();
-    System.out.println("RobotGrabHab has been interrupted");
+    // System.out.println("RobotGrabHab has been interrupted");
     
     // NOTE:  DO NOT allow the pogos to retract, or we will topple over the edge and destroy the robot
   }

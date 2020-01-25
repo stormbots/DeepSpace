@@ -27,15 +27,15 @@ public class ArmElevator extends Subsystem {
       @Override
       public void periodic(){
             SmartDashboard.putNumber("Wrist/Current Angle (Floor)", wrist.getWristAngleFromFloor());
-            SmartDashboard.putNumber("Wrist/Current Angle (Arm)", wrist.getWristAngleFromArm());
+            // SmartDashboard.putNumber("Wrist/Current Angle (Arm)", wrist.getWristAngleFromArm());
             SmartDashboard.putNumber("Wrist/Encoder", wrist.wristMotor.getSelectedSensorPosition());
-            SmartDashboard.putNumber("Wrist/Target Angle", pose.wristAngle);
+            // SmartDashboard.putNumber("Wrist/Target Angle", pose.wristAngle);
 
             SmartDashboard.putNumber("Arm/Current Angle", arm.getArmAngle());
             SmartDashboard.putNumber("Arm/Encoder", arm.armEncoder.getPosition());
-            SmartDashboard.putNumber("Arm/Target Angle", pose.armAngle);
+            // SmartDashboard.putNumber("Arm/Target Angle", pose.armAngle);
 
-            SmartDashboard.putNumber("Elevator/Target Height", pose.eleHeight);
+            // SmartDashboard.putNumber("Elevator/Target Height", pose.eleHeight);
             SmartDashboard.putNumber("Elevator/Height", elevator.getPosition());
             SmartDashboard.putNumber("Elevator/Encoder", elevator.elevMotor.getSelectedSensorPosition());
 
@@ -77,20 +77,20 @@ public class ArmElevator extends Subsystem {
       public enum Pose{
             // Elevator bottom pos 41
             // E  A  W 
-            HIDE(41,-100,-155), //MAR 6 practice bot
+            HIDE(41,-100,-155+5), //MAR 6 practice bot
             // HOMING(),
 
             STARTUP(41,-90,0), //TODO
             CUSTOM(41,-90,0), //TODO
 
             CARGO_1(45+2,-90,0),
-            CARGO_2(41,+33,0), //not sure elev height, might have to move arm
+            CARGO_2(41+1,+33,0), //not sure elev height, might have to move arm
             CARGO_3(65-3,+90,0),
 
-            CARGO_SHIP(69,-90,-30),
+            CARGO_SHIP(69+3,-90,-30),
 
             HATCH_1(41,-90,0-3),
-            HATCH_2(69,-90,0),
+            HATCH_2(69+2,-90,0),
             HATCH_3(58,+90,0),
 
             HIDE_1(41+4,-80.0 + 10, 0),
@@ -102,6 +102,7 @@ public class ArmElevator extends Subsystem {
             LOAD_CARGO_PREP_2(45, -50+10, -166),
             // LOAD_CARGO(41,-53,-150); /MAR04 Works on practice bot. Usually works on Comp bot
             LOAD_CARGO(41,-65 - 10,-161 + 10-10); //MAR04 Should work but untested on comp bot
+            //LOAD_CARBO(41, -75, -150)
             //LOAD_CARGO(41,-67,-156); //MAR05 PRactice bot maybe?
 
             private double eleHeight;
@@ -211,23 +212,23 @@ public class ArmElevator extends Subsystem {
             //     elevator.elevatorHeightRestriction = Elevator.ElevatorPosition.WRIST_SAFETY_LIMIT
             // }
 
-            if(getCurrentCommandName().isBlank() && isOnTarget(2,10,10)){
-                  SmartDashboard.putBoolean("Elevator/ManualPose",true);
-                  switch(pose){
-                        case LOAD_CARGO_PREP:
-                        setPose(Pose.HATCH_1);
-                        break;
-                        case LOAD_CARGO_PREP_2:
-                        setPose(Pose.LOAD_CARGO_PREP);
-                        break;
-                        // case STARTUP:
-                  }
-            }
+            // if(getCurrentCommandName().isBlank() && isOnTarget(2,10,10)){
+            //       SmartDashboard.putBoolean("Elevator/ManualPose",true);
+            //       switch(pose){
+            //             case LOAD_CARGO_PREP:
+            //             setPose(Pose.HATCH_1);
+            //             break;
+            //             case LOAD_CARGO_PREP_2:
+            //             setPose(Pose.LOAD_CARGO_PREP);
+            //             break;
+            //             // case STARTUP:
+            //       }
+            // }
       
 
             //Run all the updates
             wrist.update(arm.getArmAngle());
-            elevator.update();
+            elevator.update(wrist.getWristAngleFromFloor(), wrist.targetWristToFloorAngle);
             arm.update(wrist.wristPower);
       }
 

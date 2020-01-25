@@ -28,7 +28,7 @@ public class ArmHoming extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.armLift.arm.setPower(-0.1);
+    Robot.armLift.arm.setPower(-0.06);
   }
 
   // Make this return true when this Command no longer needs to run execute()
@@ -44,7 +44,7 @@ public class ArmHoming extends Command {
   @Override
   protected void end() {
     Robot.armLift.arm.setMode(Mode.CLOSEDLOOP);
-    Robot.armLift.arm.set(Pose.HATCH_1);
+    // Robot.armLift.arm.set(Pose.HATCH_1);
   }
 
   // Called when another command which requires one or more of the same

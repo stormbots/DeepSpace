@@ -71,10 +71,13 @@ public class ArmPose extends Command {
     //Arm moves are violent if we exit before it's all the way up, so don't. 
     double armDelta = pose.armAngle() - Robot.armLift.arm.getArmAngle(); 
     if(armDelta > 90){
-      moveTime = 0.7;
+      moveTime = 0.4;
     }
     else if(armDelta < -90){
-        moveTime = 1.2 ;
+        moveTime = 0.4 ;
+    }
+    else{
+      moveTime = 0.4;
     }
     setTimeout(2*moveTime);
 

@@ -11,6 +11,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
+import frc.robot.subsystems.ArmElevator;
 
 public class ElevatorHoming extends Command {
   boolean elevHomed = false;
@@ -18,23 +19,31 @@ public class ElevatorHoming extends Command {
   public ElevatorHoming() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
+    requires(Robot.armLift);
+    requires(Robot.armLift.elevator);
+    requires(Robot.armLift.arm);
+    requires(Robot.armLift.wrist);
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    setTimeout(4);
+    Robot.armLift.elevator.setMode(ArmElevator.Mode.MANUAL);
+    setTimeout(0.2);
+    Robot.armLift.elevator.reset();
+    // Robot.armLift.elevator.elevMotor.configContinuousCurrentLimit(1, 2200);
     Robot.armLift.arm.setAngle(-90);
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    if(Robot.armLift.arm.isOnTarget(5)){
-      Robot.armLift.elevator.elevMotor.set(ControlMode.PercentOutput, -0.2);
-    }
-    
-  }
+    //CAN'T DO THIS. elevatorUpdate and FB is still running in update, which uses another 
+    //motor.set, resulting in double-writes to the motor.
+    //use changeMode and setPower(v) to do this properly
+    Robot.armLift.elevator.setPower(Robot.armLift.elevator.elevatorFF * 0.1);
+  }    
+
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
@@ -47,7 +56,8 @@ public class ElevatorHoming extends Command {
   @Override
   protected void end() {
     Robot.armLift.elevator.elevMotor.set(ControlMode.PercentOutput, 0);
-    //Robot.armLift.elevator.setMode(Mode.CLOSEDLOOP);
+    Robot.armLift.elevator.reset();
+    Robot.armLift.elevator.setMode(ArmElevator.Mode.CLOSEDLOOP);
     elevHomed = true;
   }
 
@@ -55,5 +65,6 @@ public class ElevatorHoming extends Command {
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
+    end();
   }
 }

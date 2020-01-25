@@ -37,23 +37,25 @@ public class Pogos extends Subsystem {
   // public static final double maxAcceleration = 0;
   public static final double RETRACTED = -1;
   public static double DEPLOY_HAB_2 = 6; 
-  public static double DEPLOY_HAB_3 = 19; // is the inches from the ground 
-  public double kPogoGainInches = 0.7;
+  public static double DEPLOY_HAB_3 = 20; // is the inches from the ground 
+  // public double kPogoGainInches = 0.7;
   public double targetPos = 0;
   double outputPower = 0;
   
-  public static double POGO_GAIN_HAB = 0.02;
+  // public static double POGO_GAIN_HAB = 0.02;
+  // public static double POGO_GAIN_HAB = 0.02/0.66/0.66*1.5;  // 1 to 1 pogos, too high?
+  public static double POGO_GAIN_HAB = 0.02;  // 1 to 1 pogos, maybe right?
   public static double POGO_GAIN_IDLE = POGO_GAIN_HAB/4;
   public double kPogoGain = POGO_GAIN_IDLE;
 
-  public static Lerp toInches = new Lerp(0, -76859, -1, 19);
+  public static Lerp toInches = new Lerp(0, -24991, -1, 19);  // 1 to 1 pogos
+  // public static Lerp toInches = new Lerp(0, -76859, -1, 19);
 
 
   public enum Mode {CLOSEDLOOP,MANUAL};
   private Mode mode = Mode.CLOSEDLOOP;
 
   public Pogos(){
-    System.out.println("Pogo is Initialized");  
     pogo.setSensorPhase(true); //default for talon + encoder combo
 
     //TODO Pogo initialization? 

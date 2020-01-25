@@ -9,21 +9,20 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.commandgroups.DefenseMode;
-import frc.robot.commandgroups.LoadCargo_v2;
+import frc.robot.commandgroups.DefenseMode_v2;
+import frc.robot.commandgroups.LoadCargo_v3;
 // import frc.robot.commands.ArmPose;
 // import frc.robot.subsystems.ArmElevator;
 // import frc.robot.subsystems.ArmElevator.Pose;
 import frc.robot.commands.ArmPose;
 import frc.robot.commands.ChassisPixyDrive;
 import frc.robot.commands.ChassisShift;
-import frc.robot.commands.DefenseModeSwitcher;
 import frc.robot.commands.HandPose;
 import frc.robot.commands.IntakeGrabBall;
 import frc.robot.commands.IntakeHoming;
 import frc.robot.commands.PlaceHatch;
 import frc.robot.commands.RobotGrabHab2_v2;
+import frc.robot.commands.RobotGrabHab2to3;
 import frc.robot.commands.RobotGrabHab3_v2;
 import frc.robot.subsystems.ArmElevator.Pose;
 import frc.robot.subsystems.Chassis.Gear;// import frc.robot.commands.ArmPose;// import frc.robot.subsystems.ArmElevator;// import frc.robot.subsystems.ArmElevator.Pose;
@@ -68,7 +67,7 @@ public class OI {
   public JoystickButton handGrab = new JoystickButton(leftStick,1);
   public JoystickButton handSuckIn = new JoystickButton(leftStick,6);
   public JoystickButton handSpitOut = new JoystickButton(leftStick,7);
-  public JoystickButton autoLineup = new JoystickButton(leftStick,8);
+  public JoystickButton climbSequenceHab2to3 = new JoystickButton(leftStick,9);
   public JoystickButton placeHatch = new JoystickButton(leftStick,10);
   public JoystickButton homeIntake = new JoystickButton(leftStick,11);
 
@@ -94,9 +93,11 @@ public class OI {
     poseCargo2.whenPressed(new ArmPose(Pose.CARGO_2));
     poseCargo3.whenPressed(new ArmPose(Pose.CARGO_3));
     //intakeCargo.whenPressed(new ArmPose(Pose.LOAD_CARGO));
-    intakeCargo.whenPressed(new LoadCargo_v2());
+    intakeCargo.whenPressed(new LoadCargo_v3());
     //armDown.whenPressed(new ArmPose(Pose.HIDE));
-    defenseMode.whenPressed(new DefenseMode());
+
+    //defenseMode.whenPressed(new DefenseModeSwitcher()); // WE MIGHT NOT NEED THIS
+    defenseMode.whenPressed(new DefenseMode_v2());
 
     cargoShip.whenPressed(new ArmPose(Pose.CARGO_SHIP));
 
@@ -107,7 +108,6 @@ public class OI {
     placeHatch.whenPressed(new PlaceHatch());
 
     homeIntake.whileHeld(new IntakeHoming());
-    defenseMode.whenPressed(new DefenseModeSwitcher());
 
     //autoLineup.whileHeld(new ChassisPixyDrive());
 
@@ -123,9 +123,9 @@ public class OI {
     // Press+Release creates a "hold" behaviour without special isFinished() conditions
     shifter.whenPressed(new ChassisShift(Gear.HIGH));
     shifter.whenReleased(new ChassisShift(Gear.LOW));
-    climbSequenceHab3.whenPressed(new RobotGrabHab3_v2(8));
-    climbSequenceHab2.whenPressed(new RobotGrabHab2_v2(4));
-
+    climbSequenceHab3.whenPressed(new RobotGrabHab3_v2(2));
+    climbSequenceHab2.whenPressed(new RobotGrabHab2_v2(1));
+    climbSequenceHab2to3.whenPressed(new RobotGrabHab2to3(2));
   }
   
 
@@ -168,7 +168,9 @@ public class OI {
   // button.whenReleased(new ExampleCommand());
 
   
-
+  public boolean getLiftIntake() {
+    return rightStick.getRawButtonPressed(11);
+  }
 
   public static double getDriveForward() {
     //return driveStick.getRawAxis(1);
@@ -197,7 +199,7 @@ public class OI {
     //   j *=.5;
     // }
 
-    SmartDashboard.putNumber("Chassis/drive stick", j);
+    // SmartDashboard.putNumber("Chassis/drive stick", j);
     return j;
     
   }

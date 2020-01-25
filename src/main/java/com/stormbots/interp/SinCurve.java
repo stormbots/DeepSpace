@@ -46,7 +46,7 @@ public class SinCurve {
    * @param y2
    * @return output between [y1..y2] for any x
    */
-  public double scurve(double x,double x1,double x2,double y1,double y2){
+  public static double scurve(double x,double x1,double x2,double y1,double y2){
     x = (x-x1)/(x2-x1);
     if(x<0)x=0;
     if(x>1)x=1;
@@ -78,7 +78,7 @@ public class SinCurve {
    * @param yPeak
    * @return output between [y1..yPeak] for any x
    */  
-  public double ncurve(double x,double x1,double x2,double y1,double yPeak){
+  public static double ncurve(double x,double x1,double x2,double y1,double yPeak){
     x = (x-x1)/(x2-x1);
     if(x<0)x=0;
     if(x>1)x=1;

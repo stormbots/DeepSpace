@@ -110,13 +110,17 @@ public class Wrist extends Subsystem {
             if(Robot.isCompbot){
                   wristMotor.setInverted(true);
                   kWristFF = 0.11;
+                  HOME_OUTPUT_POWER_MIN = 0.09;
             }
             else{
                   pidWrist = new MiniPID(1.0/1350.0*6, 1.0/20000.0, 1.0/100000.0);
                   pidWrist.setMaxIOutput(0.15);
-                  kWristFF = 0.16;
-                  wristMotor.setInverted(false);
-                  HOME_OUTPUT_POWER_MIN = 0.12;
+                  kWristFF = 0.11;
+                  wristMotor.setInverted(true);
+                  wristMotor.setSensorPhase(false);
+                  // HOME_OUTPUT_POWER_MIN = 0.12; //old usable
+                  // HOME_OUTPUT_POWER_MIN = 0.09; //low power, but insufficient for matches
+                  HOME_OUTPUT_POWER_MIN = 0.11;
             }
       }
       /** Specified by 4096 ticks per rotation, with a 42:24 gear ratio */
@@ -143,6 +147,7 @@ public class Wrist extends Subsystem {
       }
 
       public double getWristAngleFromFloor(){
+            // return targetWristToFloorAngle;
             return wristToDegrees.get(wristMotor.getSelectedSensorPosition());
       }
 
@@ -251,7 +256,7 @@ public class Wrist extends Subsystem {
                   //expect wrist to be at switch
                   //if not at switch, add motor power
                   //if at swtich, zero out
-            if(angleFromFloor > -90 && targetWristToFloorAngle >= 0 && armPosition < -85){
+            if(targetWristToFloorAngle >= -10 && armPosition < -80){
 
                   // if!lastIsPressed && isLimitPressed();
                   //double lastIsPRessed = isLimitPressed()
@@ -268,6 +273,13 @@ public class Wrist extends Subsystem {
                         }
                   }
             }
+            
+            // if(targetWristToFloorAngle >= -10 && armPosition > 70) {
+
+            //       if(isLimitPressed()) {
+            //             setHomedReversed();
+            //       }
+            // }
             
             //TODO Check for physical limits based on arm angles
             //if(wristPower > 0 && angleFromArm > MAX_ANGLE_TO_ARM) wristPower = 0;

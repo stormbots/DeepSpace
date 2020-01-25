@@ -13,7 +13,9 @@ import com.ctre.phoenix.motorcontrol.LimitSwitchSource;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.stormbots.Clamp;
 import com.stormbots.Lerp;
+import static com.stormbots.Lerp.lerp;
 import com.stormbots.closedloop.FB;
+import com.stormbots.interp.SinCurve;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.command.Subsystem;
@@ -38,13 +40,16 @@ public class Elevator extends Subsystem {
       //Elevator has two positions that need to be programmed in supposedly
       public static final double MAX_HEIGHT = 69;
       public static final double MIN_HEIGHT = 41;
-      double elevatorHeightRestriction = MAX_HEIGHT;
+      double elevatorHeightRestrictionMin = MIN_HEIGHT;
+      double elevatorHeightRestrictionMax = MAX_HEIGHT;
       double elevatorTargetHeight = 0;
       double currentPos = 0;
       // add more positions for lvl 1,2,3 of cargo and hatches
       double kElevatorGain = 0.1;
       double elevatorPwr = 0;
-      double elevatorFF = 0.084;
+      public double elevatorFF = 0.084;
+
+      boolean lastSwitch = false;
 
       /** Convert ticks to the positional height of the arm pivot, in inches */
       public Lerp elevToInches = new Lerp(0, -25_000, MIN_HEIGHT, MAX_HEIGHT); //maxElevator  -28450, minElevator -3170 
@@ -73,10 +78,14 @@ public class Elevator extends Subsystem {
       public void robotInit(){
             if(Robot.isCompbot){
                   kElevatorGain = 0.08;
+                  kElevatorGain = 0.07;
+                  elevatorFF = 0.1;
             }
             else{
+                  kElevatorGain = 0.1;
+                  kElevatorGain = 0.07;
                   elevatorFF = 0.3;
-
+                  elevatorFF = 0.1;
             }
       }
 
@@ -98,6 +107,7 @@ public class Elevator extends Subsystem {
 
       /** Convert ticks to the positional height of the arm pivot, in inches */
       public double getPosition(){
+            // return elevatorTargetHeight;
             return elevToInches.get(elevMotor.getSelectedSensorPosition(0));
       }
 
@@ -109,11 +119,15 @@ public class Elevator extends Subsystem {
             setPosition(pose.eleHeight());
       }
 
+      public void setPower(double power){
+            elevatorPwr = power;
+      }
+
       public boolean isOnTarget(double tolerance){
             return Clamp.bounded( getPosition(), elevatorTargetHeight-tolerance, elevatorTargetHeight+tolerance);
       }
 
-      public void update(){
+      public void update(double wristCurrentAngle, double wristTargetAngle){
             
             currentPos = getPosition();
             //Use a local target copy to avoid modifying our long term target
@@ -125,14 +139,32 @@ public class Elevator extends Subsystem {
                   break;
 
                   case CLOSEDLOOP:
+
+                        double elevatorHeightRestrictionCurrentMin = 0;
+                        double elevatorHeightRestrictionTargetMin = 0;
+
+                        if(wristCurrentAngle <= -20 && wristCurrentAngle >= -140) {
+                              elevatorHeightRestrictionCurrentMin = MIN_HEIGHT+(6 * Math.sin(lerp(wristCurrentAngle, -140, -20, 0, Math.PI)));
+                        }
+                        else elevatorHeightRestrictionCurrentMin = MIN_HEIGHT;
+
+                        if(wristTargetAngle <= -20 && wristTargetAngle >= -140) {
+                              elevatorHeightRestrictionTargetMin = MIN_HEIGHT+(10 * Math.sin(lerp(wristTargetAngle, -140, -20, 0, Math.PI)));
+                        }
+                        else elevatorHeightRestrictionTargetMin = MIN_HEIGHT;
+
+
+                        elevatorHeightRestrictionMin = Math.max(elevatorHeightRestrictionCurrentMin, elevatorHeightRestrictionTargetMin);
+
+                        //Restrict our height based on current pose constraints
+                        target = Clamp.clamp(target, elevatorHeightRestrictionMin, elevatorHeightRestrictionMax);
+
                         //Restrict our height based on physical limits
                         target = Clamp.clamp(target, MIN_HEIGHT, MAX_HEIGHT);
-                        //Restrict our height based on current pose constraints
-                        target = Clamp.clamp(target, MIN_HEIGHT, elevatorHeightRestriction);
 
-                        elevatorPwr = FB.fb(target, currentPos, kElevatorGain);
+                        elevatorPwr = FB.fb(target, currentPos, kElevatorGain)*2.0;
                         if(elevatorPwr > 0) elevatorPwr += elevatorFF;
-                        else elevatorPwr += elevatorFF/3.0;
+                        else elevatorPwr += elevatorFF/5.0;
                   break;
 
                   case HOMING:
@@ -149,32 +181,37 @@ public class Elevator extends Subsystem {
                   
                   break;
             }
-
-            // //manipulate our velocity
-		// if(!elevLimit.get() && elevatorPwr <0) {
-		// 	elevatorPwr = 0;
-		// }
 		
 		// //check for limit switch and reset if found
 		// if(!elevLimit.get()) {
 		// 	homed = true;
 		// 	reset();
             // }
+
+            // For debugging! 
             //elevatorPwr = Clamp.clamp(elevatorPwr, -0.2, 0.2);
             
             elevMotor.set(ControlMode.PercentOutput, elevatorPwr);
 
             //ArmElevator.armavatorTab.add("Elevator Power", elevatorPwr);
             //ArmElevator.armavatorTab.add("Limit Touched", elevLimit.get());
+            //SmartDashboard.putNumber("")
+            SmartDashboard.putNumber("Elevator/Height", getPosition());
             SmartDashboard.putNumber("Elevator/Output Total", elevatorPwr);
             SmartDashboard.putNumber("Elevator/Output FF", elevatorFF);
             SmartDashboard.putNumber("Elevator/Output FB", FB.fb(target, currentPos, kElevatorGain));
-            SmartDashboard.putString("Elevator/Command", getCurrentCommandName());
       }
 
       @Override
       public void initDefaultCommand() {
             // Set the default command for a subsystem here.
             // setDefaultCommand(new MySpecialCommand());
+      }
+
+      @Override
+      public void periodic(){
+            SmartDashboard.putBoolean("Elevator/SwitchRaw", elevLimit.get());
+            // SmartDashboard.putBoolean("Elevator/Homed", homed);
+            SmartDashboard.putString("Elevator/Command", getCurrentCommandName());            
       }
 }

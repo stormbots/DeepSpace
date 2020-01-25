@@ -8,7 +8,6 @@
 package frc.robot;
 import com.stormbots.devices.pixy2.Pixy2;
 
-import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.Preferences;
@@ -19,19 +18,18 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.commandgroups.DefenseModeDisengage;
-import frc.robot.commandgroups.DefenseModeEngage;
-import frc.robot.commandgroups.LoadCargoNew;
-import frc.robot.commandgroups.LoadCargo_v2;
+import frc.robot.commandgroups.DefenseMode_v2;
+import frc.robot.commandgroups.LoadCargo_v3;
+import frc.robot.commandgroups.RobotStartup;
 import frc.robot.commands.ArmPose;
 import frc.robot.commands.ChassisPixyDrive;
+import frc.robot.commands.ChassisPixyDriveFast;
 import frc.robot.commands.DefenseModeSwitcher;
 import frc.robot.commands.IntakeGrabBall;
-import frc.robot.commands.RobotGrabHab2;
+import frc.robot.commands.PlaceHatch;
+import frc.robot.commands.PlaceHatch_v2;
 import frc.robot.commands.RobotGrabHab2_v2;
-import frc.robot.commands.RobotGrabHab3;
 import frc.robot.commands.RobotGrabHab3_v2;
-import frc.robot.commands.WristHoming;
 import frc.robot.subsystems.ArmElevator;
 import frc.robot.subsystems.ArmElevator.Pose;
 import frc.robot.subsystems.Chassis;
@@ -54,7 +52,8 @@ public class Robot extends TimedRobot {
   public static ExampleSubsystem m_subsystem = new ExampleSubsystem();
   public static ArmElevator armLift = new ArmElevator();
   public static Hand hand = new Hand();
-  //public static ShuffleboardTab driveTab = Shuffleboard.getTab("Match Dashboard");
+  // public static ShuffleboardTab driveTab = Shuffleboard.getTab("Match
+  // Dashboard");
   public static Pogos pogos = new Pogos();
 
   public static Pixy2 pixy = new Pixy2(Port.kOnboardCS0);
@@ -66,9 +65,11 @@ public class Robot extends TimedRobot {
   public static PassThrough passThrough = new PassThrough();
   public static OI m_oi = new OI();
 
+  public double timeLastLoop = 0;
+
   Command m_autonomousCommand;
   SendableChooser<Command> m_chooser = new SendableChooser<>();
-  Command wristHoming = new WristHoming();
+  Command robotStartup = new RobotStartup();
 
   /**
    * This function is run when the robot is first started up and should be
@@ -103,11 +104,6 @@ public class Robot extends TimedRobot {
     // chooser.addOption("My Auto", new MyAutoCommand());
     // SmartDashboard.putData("Auto mode", m_chooser);
 
-    
-
-    CameraServer.getInstance().startAutomaticCapture(0);
-    CameraServer.getInstance().startAutomaticCapture(1);
-
     //Throw commands on Shuffleboards
 
     //Commented out adjusted for better runtime
@@ -118,29 +114,35 @@ public class Robot extends TimedRobot {
     SmartDashboard.putData("Commands/Cargo 1",new ArmPose(Pose.CARGO_1));
     SmartDashboard.putData("Commands/Cargo 2",new ArmPose(Pose.CARGO_2));
     SmartDashboard.putData("Commands/Cargo 3",new ArmPose(Pose.CARGO_3));
-    SmartDashboard.putData("Commands/DefenseMode Engage",new DefenseModeEngage());
-    SmartDashboard.putData("Commands/DefenseMode Disengage",new DefenseModeDisengage());
-    SmartDashboard.putData("Commands/DefenseModeToggle",new DefenseModeSwitcher());
 
-    SmartDashboard.putData("Commands/Hide",new ArmPose(Pose.HIDE));
-    SmartDashboard.putData("Commands/Hab3", new RobotGrabHab3(8));
-    SmartDashboard.putData("Commands/Hab2", new RobotGrabHab2(4));
+    // SmartDashboard.putData("Commands/Place Hatch v2",new PlaceHatch_v2());
+    // SmartDashboard.putData("Commands/DefenseMode Engage",new DefenseModeEngage_v2());
+    // SmartDashboard.putData("Commands/DefenseMode Disengage",new DefenseModeDisengage());
+
+    SmartDashboard.putData("Commands/Hide", new ArmPose(Pose.HIDE));
     // SmartDashboard.putData("Commands/ExitHab", new RobotExitHab2());
     // SmartDashboard.putData("Commands/CargoShip", new ArmPose(Pose.CARGO_SHIP));
-    SmartDashboard.putData("Commands/Load Ball Into Hand",new LoadCargoNew());
     // SmartDashboard.putData("Commands/Place Hatch", new HatchPickup());
-    SmartDashboard.putData("Commands/NEW Hab2", new RobotGrabHab2_v2(4));
-    SmartDashboard.putData("Commands/NEW Hab3", new RobotGrabHab3_v2(8));
-
-    SmartDashboard.putData("Commands/Load Ball V2",new LoadCargo_v2());
+    SmartDashboard.putData("Commands/Hab2", new RobotGrabHab2_v2(4));
+    SmartDashboard.putData("Commands/Hab3", new RobotGrabHab3_v2(8)); // 8 is known good
 
     SmartDashboard.putData("Commands/GrabBall", new IntakeGrabBall());
     // SmartDashboard.putData("Commands/Home Intake", new IntakeHoming());
 
+    SmartDashboard.putData("Commands/Pixy Drive", new ChassisPixyDrive());
+    SmartDashboard.putData("Commands/Pixy Drive Fast", new ChassisPixyDriveFast());
     SmartDashboard.putString("Chassis/Pixy Version", pixy.getVersion().toString());
-    SmartDashboard.putData("pdp", pdp);
-    SmartDashboard.putData("Chassis/Start Pixy", new ChassisPixyDrive());
+    // SmartDashboard.putData("pdp", pdp);
   
+    SmartDashboard.putData("Commands/DefenseMode_v2", new DefenseMode_v2());
+    SmartDashboard.putData("Commands/DefenseMode Switcher", new DefenseModeSwitcher());
+    SmartDashboard.putData("Commands/LoadCargo_v3", new LoadCargo_v3());
+
+    SmartDashboard.putData("Commands/Place Hatch v1", new PlaceHatch());
+    SmartDashboard.putData("Commands/Place Hatch v2", new PlaceHatch_v2());
+    
+    SmartDashboard.putNumber("Chassis/Ultrasonic Left", chassis.sonarL.getRangeInches());
+    SmartDashboard.putNumber("Chassis/Ultrasonic Right", chassis.sonarR.getRangeInches());
   }
 
   /**
@@ -153,6 +155,11 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
+    
+    // SmartDashboard.putNumber("Chassis/Ultrasonic Left", chassis.sonarL.getRangeInches());
+    // SmartDashboard.putNumber("Chassis/Ultrasonic Right", chassis.sonarR.getRangeInches());
+    // SmartDashboard.putNumber("Robot/dt", Timer.getFPGATimestamp() - timeLastLoop);
+    // timeLastLoop = Timer.getFPGATimestamp();
   }
 
   /**
@@ -185,7 +192,7 @@ public class Robot extends TimedRobot {
     chassis.reset();
     m_autonomousCommand = m_chooser.getSelected();
     if(!armLift.wrist.isHomed()){
-      wristHoming.start();
+      robotStartup.start();
     }
     //armLift.setPose(armLift.elevator.getPosition(),armLift.arm.getArmAngle(),armLift.wrist.getWristAngleFromFloor());
 
@@ -227,7 +234,7 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
     if(!armLift.wrist.isHomed()){
-      wristHoming.start();
+      robotStartup.start();
     }
 
     //armLift.setPose(armLift.elevator.getPosition(),armLift.arm.getArmAngle(),armLift.wrist.getWristAngleFromFloor());
@@ -249,7 +256,7 @@ public class Robot extends TimedRobot {
     pogos.update();
     chassis.update();
 
-    SmartDashboard.putData(pdp);
+    // SmartDashboard.putData(pdp);
   }
 
   /**
@@ -257,8 +264,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void testPeriodic() {
-    SmartDashboard.putString("Chassis/Pixy Version", pixy.getVersion().toString());
-    compressor.setClosedLoopControl(true);
+    // SmartDashboard.putString("Chassis/Pixy Version", pixy.getVersion().toString());
+    // compressor.setClosedLoopControl(true);
   }
 
 }

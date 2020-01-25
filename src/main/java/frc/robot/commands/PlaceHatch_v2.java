@@ -7,75 +7,83 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
-import frc.robot.subsystems.ArmElevator.Mode;
 import frc.robot.subsystems.ArmElevator.Pose;
+import frc.robot.subsystems.Hand.Position;
 
-public class WristHoming extends Command {
-
-  public WristHoming() {
+public class PlaceHatch_v2 extends Command {
+  double startTime;
+  double currentTime;
+  public PlaceHatch_v2() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
-    requires(Robot.intake);
-    requires(Robot.armLift);
-    requires(Robot.armLift.arm);
+    requires(Robot.hand);
     requires(Robot.armLift.wrist);
     requires(Robot.armLift.elevator);
-    requires(Robot.hand);
+    requires(Robot.chassis);
   }
+
+  double wristCurrentAngle = 0;
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    Robot.armLift.wrist.setMode(Mode.MANUAL);
-    setTimeout(2);
-    // Robot.armLift.arm.set(Pose.HATCH_1);
-    Robot.armLift.arm.setAngle(-90);
-
-    Robot.armLift.elevator.set(Pose.CARGO_1);
-    Robot.hand.setPosition(frc.robot.subsystems.Hand.Position.CLOSE);
+    wristCurrentAngle = Robot.armLift.wrist.getWristAngleFromFloor();
+    startTime = Timer.getFPGATimestamp();
+    Robot.chassis.arcadeDrive(0, 0);
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    //wait for arm
-    if(Robot.armLift.arm.isOnTarget(5)){
-      Robot.armLift.wrist.setPower(0.3);
+    currentTime = Timer.getFPGATimestamp() - startTime;
+
+    if(currentTime < 0.3){
+      Robot.hand.setPosition(Position.CLOSE);
     }
-    else{
-      Robot.armLift.wrist.setPower(0.15);
+    else if(currentTime < 0.8){
+      switch(Robot.armLift.getPose()){
+        case HATCH_1:
+          // Robot.armLift.arm.setAngle(-100);
+          Robot.armLift.wrist.setTargetAngleFromFloor(wristCurrentAngle-15); //maybe needed later?
+          break;
+        case HATCH_2:
+          Robot.armLift.elevator.setPosition(Robot.armLift.getPose().eleHeight()-4);
+          break;
+        case HATCH_3:
+          Robot.armLift.elevator.setPosition(Robot.armLift.getPose().eleHeight()-3);
+          break;
+        default: // shouldn't ever run... but just in case
+          Robot.armLift.elevator.setPosition(Robot.armLift.getPose().eleHeight()-2);
+          break;
+      }
     }
+    else if(currentTime < 1.2){
+      Robot.chassis.arcadeDrive(0.2, 0);
+    }
+    else {
+      Robot.chassis.arcadeDrive(0, 0);
+    }
+
+
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    //we run out of time and give up
-    //we hit the switch
-    if(isTimedOut()){return true;}
-    if(Robot.armLift.wrist.isLimitPressed()){return true;}
-    
-    return false;
+    return currentTime > 1.25;
   }
 
   // Called once after isFinished returns true
   @Override
   protected void end() {
-    Robot.armLift.wrist.setHomedForward();
-    Robot.armLift.wrist.setPower(0);
-    Robot.armLift.wrist.setMode(Mode.CLOSEDLOOP);
-    Robot.armLift.elevator.set(Pose.HATCH_1);
-    
   }
 
   // Called when another command which requires one or more of the same
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
-    Robot.armLift.wrist.setPower(0);
-    // if(!Robot.isCompbot)end();
-    end();
   }
 }

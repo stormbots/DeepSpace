@@ -25,10 +25,15 @@ public class PlaceHatch extends Command {
     requires(Robot.chassis);
   }
 
+  double wristCurrentAngle = 0;
+
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
     startTime = Timer.getFPGATimestamp();
+    wristCurrentAngle = Robot.armLift.wrist.getWristAngleFromFloor();
+    Robot.armLift.arm.setAngle(Robot.armLift.arm.getArmAngle());
+    Robot.chassis.arcadeDrive(0, 0);
   }
 
   // Called repeatedly when this Command is scheduled to run
@@ -47,12 +52,12 @@ public class PlaceHatch extends Command {
         Robot.hand.setPosition(Position.CLOSE);
       }
       else if(currentTime < 0.8){
-        Robot.armLift.elevator.setPosition(Robot.armLift.getPose().eleHeight()-2);
+        Robot.armLift.elevator.setPosition(Robot.armLift.getPose().eleHeight()-3);
       }
       else if(currentTime < 1){
-        Robot.chassis.arcadeDrive(-0.2, 0);
+        Robot.chassis.arcadeDrive(0.2, 0);
       }
-      else if(currentTime < 2){
+      else if(currentTime < 1.4){
         Robot.chassis.arcadeDrive(0, 0);
       }
     }
@@ -64,13 +69,19 @@ public class PlaceHatch extends Command {
       else if(currentTime < 0.8){
         
         if(Robot.armLift.getPose() == Pose.HATCH_2){
-          Robot.armLift.wrist.setTargetAngleFromFloor(-45);
-          Robot.armLift.elevator.setPosition(Robot.armLift.getPose().eleHeight()-2);
+          // Robot.armLift.wrist.setTargetAngleFromFloor(-45);
+          Robot.armLift.elevator.setPosition(Robot.armLift.getPose().eleHeight()-4);
         }
         else{
-        Robot.armLift.wrist.setTargetAngleFromFloor(-10);
+        Robot.armLift.wrist.setTargetAngleFromFloor(wristCurrentAngle-10-5);
         }
       
+      }
+      else if(currentTime < 1.2) {
+        Robot.chassis.arcadeDrive(0.2, 0);
+      }
+      else if(currentTime < 1.25) {
+        Robot.chassis.arcadeDrive(0, 0);
       }
     }
   }
@@ -78,7 +89,7 @@ public class PlaceHatch extends Command {
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return currentTime > 2;
+    return currentTime > 1.4;
   }
 
   // Called once after isFinished returns true

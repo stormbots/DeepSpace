@@ -7,14 +7,13 @@
 
 package frc.robot.subsystems;
 
+import com.revrobotics.CANEncoder;
 import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import com.stormbots.Clamp;
 import com.revrobotics.ControlType;
 
-import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.Ultrasonic;
@@ -76,8 +75,8 @@ public class Chassis extends Subsystem {
   // Use an Enum to define pnuematic truth values, so that you get good named values 
   // backed by type checking everywhere.
   public enum Gear{
-    HIGH(true,false),
-    LOW(false,true);
+    HIGH(true,true),
+    LOW(false,false);
     private boolean compbot,practicebot;
     Gear(boolean compbot, boolean practicebot){
       this.compbot = compbot;
@@ -156,7 +155,7 @@ public class Chassis extends Subsystem {
     //TODO: Make sure we budget appropriately for the number of motors we're running
     //TODO: Examine how much power we're using and see where it needs to all go
     int stallLimit = 160/6;  // /6;  
-    int freeLimit = 180/6;  // /6;
+    int freeLimit = 180/6;  // 180/6;
     int limitRPM = 6700/3;
     motorL0.setSmartCurrentLimit(stallLimit, freeLimit, limitRPM);
     motorL1.setSmartCurrentLimit(stallLimit, freeLimit, limitRPM);
@@ -233,13 +232,26 @@ public class Chassis extends Subsystem {
     driveMode = newMode;
   }
 
+  public CANEncoder getLeftEncoder() {
+    return motorL0.getEncoder();
+  }
+
+  public CANEncoder getRightEncoder() {
+    return motorR0.getEncoder();
+  }
+
   public void update(){
 
-    SmartDashboard.putNumber("Chassis/Left Ultrasonic", sonarL.getRangeInches());
-    SmartDashboard.putNumber("Chassis/Right Ultrasonic", sonarR.getRangeInches());
+    // SmartDashboard.putNumber("Chassis/Left Ultrasonic", sonarL.getRangeInches());
+    // SmartDashboard.putNumber("Chassis/Right Ultrasonic", sonarR.getRangeInches());
     SmartDashboard.putString("Chassis/CurrentCommand", getCurrentCommandName());
     SmartDashboard.putNumber("Chassis/arcadeForward", arcadeForward);
     SmartDashboard.putNumber("Chassis/arcadeTurn", arcadeTurn);
+    // SmartDashboard.putNumber("Chassis/Left0 RPM", motorL0.getEncoder().getVelocity());
+    // SmartDashboard.putNumber("Chassis/Left1 RPM", motorL1.getEncoder().getVelocity());
+    // SmartDashboard.putNumber("Chassis/Left2 RPM", motorL2.getEncoder().getVelocity());
+
+
 
     //pidControllerL.setReference(JoystickValue, ControlType.kSmartVelocity);
     //pidControllerR.setReference(JoystickValue, ControlType.kSmartVelocity);
@@ -294,8 +306,8 @@ public class Chassis extends Subsystem {
     double rightSidePower = rightMotorOutput * -1;
     double maximumRPM = 5700;
 
-    SmartDashboard.putNumber("Chassis/Left Side Joystick", leftSidePower);
-    SmartDashboard.putNumber("Chassis/Left Side Speed", leftSidePower*maximumRPM);
+    // SmartDashboard.putNumber("Chassis/Left Side Joystick", leftSidePower);
+    // SmartDashboard.putNumber("Chassis/Left Side Speed", leftSidePower*maximumRPM);
 
     pidControllerL.setReference(leftSidePower*maximumRPM, ControlType.kSmartVelocity);
     pidControllerR.setReference(rightSidePower*maximumRPM, ControlType.kSmartVelocity);
@@ -303,7 +315,7 @@ public class Chassis extends Subsystem {
   }
 
   public void periodic(){
-    SmartDashboard.putNumber("Chassis/Output actual Left", motorL0.getAppliedOutput());
-    SmartDashboard.putNumber("Chassis/Output actual Right", motorR0.getAppliedOutput());
+    // SmartDashboard.putNumber("Chassis/Output actual Left", motorL0.getAppliedOutput());
+    // SmartDashboard.putNumber("Chassis/Output actual Right", motorR0.getAppliedOutput());
   }
 }
